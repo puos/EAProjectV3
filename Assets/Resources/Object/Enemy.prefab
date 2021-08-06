@@ -231,6 +231,7 @@ GameObject:
   - component: {fileID: 4458956059991848}
   - component: {fileID: 8106693076413179786}
   - component: {fileID: 2817186376191478574}
+  - component: {fileID: 5201721772474148445}
   m_Layer: 10
   m_Name: Enemy
   m_TagString: Untagged
@@ -282,6 +283,35 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.85, y: 1.96, z: 2.38}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &5201721772474148445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317711653960856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34f128b1d3c91a5459f0510afa76ad79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoneNames:
+  - TankRenderers
+  - ShootPoint
+  - SP1
+  - SP2
+  - TankBody
+  Bones:
+  - {fileID: 4233304373910206}
+  - {fileID: 4855042662882726}
+  - {fileID: 4100280803173364}
+  - {fileID: 4070670886554054}
+  - {fileID: 4692404715736840}
+  renderers:
+  - {fileID: 23346738104536986}
+  - {fileID: 23000606554525178}
+  - {fileID: 23314012701724456}
+  - {fileID: 23691586456518028}
 --- !u!1 &1774695782116710
 GameObject:
   m_ObjectHideFlags: 0

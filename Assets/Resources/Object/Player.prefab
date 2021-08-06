@@ -55,6 +55,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -80,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1246666319710022
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,6 +167,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -190,6 +193,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1454862678244028
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,6 +347,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -368,6 +373,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1615629565534640
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,6 +415,7 @@ GameObject:
   - component: {fileID: 4717490778460748}
   - component: {fileID: 7574994854852165085}
   - component: {fileID: 496632597049153463}
+  - component: {fileID: 3866244603674773092}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -460,6 +467,35 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.85, y: 1.96, z: 2.38}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &3866244603674773092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646507218356936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34f128b1d3c91a5459f0510afa76ad79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoneNames:
+  - TankRenderers
+  - ShootPoint
+  - SP1
+  - SP2
+  - TankBody
+  Bones:
+  - {fileID: 4419609544586030}
+  - {fileID: 4046727077436042}
+  - {fileID: 4932719152155986}
+  - {fileID: 4598489870316430}
+  - {fileID: 4966025717795744}
+  renderers:
+  - {fileID: 23688777884097448}
+  - {fileID: 23730516974171362}
+  - {fileID: 23881870428406480}
+  - {fileID: 23190441611655542}
 --- !u!1 &1711344574598046
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,6 +551,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -541,3 +578,4 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
