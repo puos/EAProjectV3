@@ -9,7 +9,7 @@ public class EAObject : MonoBehaviour
 
     private Rigidbody rigidBody = null;
     protected Transform cachedTransform = null;
-    private Collider cachedCollider = null;
+    protected Collider cachedCollider = null;
    
     public Rigidbody rb { get{ return rigidBody; } }
 
@@ -37,7 +37,6 @@ public class EAObject : MonoBehaviour
     public virtual void Release()
     {
         EAMainFrame.onUpdate.Remove(OnUpdate);
-        
     }
 
     protected virtual void UpdatePerFrame() { }

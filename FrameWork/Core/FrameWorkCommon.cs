@@ -85,7 +85,7 @@ public static class EAFrameUtil
 
     public static Transform FindChildRecursively(Transform parent, string name)
     {
-        if (name.Equals(parent.name))
+        if (name.Equals(parent.name,StringComparison.Ordinal))
         {
             return parent;
         }
