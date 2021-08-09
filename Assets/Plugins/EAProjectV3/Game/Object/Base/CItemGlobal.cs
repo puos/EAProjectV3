@@ -137,7 +137,7 @@ public class EAItemInfo
         m_nPrice = 0;
         m_nWeight = 0;
         m_nCount = 0;
-        m_objClassType = default(Type);
+        m_objClassType = typeof(EAItem);
     }
 
     public EAItemInfo(EAItemInfo ib)
@@ -177,7 +177,7 @@ public class EAItemAttackWeaponInfo
         fKillDistance = 50.0f;
         fFiringTime = 0;
         uProjectileModelType = "";
-        m_objProjectileClassType = default(Type);
+        m_objProjectileClassType = typeof(EAProjectile);
         fProjectileSpeed = 0;
         bAutoMode = true;
         m_fTargetDistance = 0;

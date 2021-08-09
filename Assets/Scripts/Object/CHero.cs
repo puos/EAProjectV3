@@ -7,14 +7,17 @@ public class CHero : EAActor
     protected float fShootCoolTime = 0;
     protected float updateCheckTime = 0;
 
-    [SerializeField] private Transform muzzle = null;
-    [SerializeField] private Transform turret = null;
+    private Transform muzzle = null;
+    private Transform turret = null;
 
     private Quaternion turret_rotation = Quaternion.identity;
 
     public override void Initialize()
     {
         base.Initialize();
+
+        muzzle = GetTransform("muzzle");
+        turret = GetTransform("turret");
 
         actorMover.isReachedSetPos = false;
 

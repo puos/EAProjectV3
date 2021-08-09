@@ -23,6 +23,8 @@ public class EAActor : EAObject
     {
         base.Initialize();
 
+        if(cachedCollider == null) cachedCollider = gameObject.AddComponent<CapsuleCollider>();
+
         states.Clear();
         updates.Clear();
         transformList.Clear();
@@ -30,48 +32,34 @@ public class EAActor : EAObject
         actorMover = GetComponent<EAActorMover>();
         actorMover.Initialize();
     }
-
     public override void Release()
     {
         base.Release();
 
         ReleaseParts();
     }
-
-    /// <summary>
-    /// Works after SetItemAttachment function
-    /// </summary>
-    /// <param name="attachItem"></param>
+    // Works after SetItemAttachment function
     public virtual void DoAttachItem(eAttachType attachType)
     {       
     }
-
     public virtual void OnAction(params object[] parms)
     {
     }
 
-    /// <summary>
-    /// Works before DoSwitchWeapon
-    /// </summary>
-    /// <param name="attachType"></param>
-    /// <param name="gameobject"></param>
-    /// <returns></returns>
+    // Works before DoSwitchWeapon
     public virtual bool SetItemAttachment(eAttachType attachType , EAObject gameObject)
     {
         return true; 
     }
-
     protected override void UpdatePerFrame()
     {
         base.UpdatePerFrame();
         actorMover.UpdateMove();
     }
-    
     public void FSMUpdate()
     {
         if (updates.TryGetValue(curState, out Action value)) value();
     }
-
     public void ChangeFSMState(int newState)
     {
         if (curState == newState) return;
@@ -81,7 +69,6 @@ public class EAActor : EAObject
 
         if (states.TryGetValue(curState, out Action value)) value();
     }
-
     public void SetCharBase(EA_CCharBPlayer pDiaCharBase)
     {
         m_pDiaCharBase = pDiaCharBase;
@@ -93,79 +80,47 @@ public class EAActor : EAObject
     {
         m_pDiaCharBase.GetObjInfo().m_eObjState = state;
     }
-
     public Transform GetObjectInActor(string strObjectName)
     {
         Transform t = GetTransform(strObjectName);
         if (t != null) return t;
         return null;
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="_key"></param>
-    /// <returns></returns>
-    public Transform GetTransform(string _key)
+    public Transform GetTransform(string key)
     {
-        int key = CRC32.GetHashForAnsi(_key);
-        transformList.TryGetValue(key, out Transform outValue);
+        int nkey = CRC32.GetHashForAnsi(key);
+        transformList.TryGetValue(nkey, out Transform outValue);
         return outValue;
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
     private void ReleaseParts()
     {
         Transform mesh = GetTransform("mesh");
 
         for (int i = 0; i < m_PartTblId.Length; ++i)
         {
-            if (!string.IsNullOrEmpty(m_PartTblId[i]))
-            {
-                ReleasePart(mesh, m_PartTblId[i]);
-            }
+            if (!string.IsNullOrEmpty(m_PartTblId[i])) ReleasePart(mesh, m_PartTblId[i]);
 
             m_PartTblId[i] = string.Empty;
         }
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="mesh"></param>
-    /// <param name="parts"></param>
     private void ReleasePart(Transform mesh, string parts)
     {
         Transform mesh_part = EAFrameUtil.FindChildRecursively(mesh, parts);
         if (mesh_part == null) return;
         GameResourceManager.instance.ReleaseObject(mesh_part.gameObject);
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="PartTblId"></param>
     private void FindParts(string[] PartTblId)
     {
         Transform mesh = GetTransform("mesh");
 
         for (int i = 0; i < PartTblId.Length; ++i)
         {
-            if (m_PartTblId[i].Equals(PartTblId[i])) continue;
+            if (m_PartTblId[i].Equals(PartTblId[i],StringComparison.Ordinal)) continue;
 
             ReleasePart(mesh, m_PartTblId[i]);
             AddPart(mesh, i , PartTblId[i]);
         }
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="mesh"></param>
-    /// <param name="idx"></param>
-    /// <param name="parts"></param>
     public virtual void AddPart(Transform mesh, int idx, string parts)
     {
         m_PartTblId[idx] = parts;

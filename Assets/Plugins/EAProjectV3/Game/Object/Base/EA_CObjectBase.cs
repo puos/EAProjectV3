@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using EAObjID = System.UInt32;
 using EATblID = System.UInt32;
+using System;
 
 public class EA_CObjectBase 
 {
@@ -80,7 +81,7 @@ public class EA_CObjectBase
     // The ability to change the name of a character  [9/16/2009 jgb] 
     public void ChangeName(string strGameName)
     {
-        if (m_ObjInfo.m_strGameName.Equals(strGameName)) return;
+        if (m_ObjInfo.m_strGameName.Equals(strGameName, StringComparison.Ordinal)) return;
 
         m_ObjInfo.SetObjName(strGameName);
     }

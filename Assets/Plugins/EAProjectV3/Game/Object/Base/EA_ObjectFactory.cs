@@ -52,14 +52,19 @@ static class EA_ObjectFactory
                 break;
             case eObjectType.CT_ITEMOBJECT:
                 {
-                    
+                    EAItem itemObject = eaObj.GetComponent<EAItem>();
+                    if(itemObject == null)
+                    {
+                        itemObject = eaObj.gameObject.AddComponent<EAItem>();
+                        setObjInfo.m_objClassType = typeof(EAItem);
+                    }
+                    ((EA_CItem)pSetObject).SetLinkItem(itemObject);
                 }
                 break;
         }
 
         return true;
     }
-
     public static bool EntityUnSetting(EA_CObjectBase pDelObjBase)
     {
         if (pDelObjBase == null) return false;
