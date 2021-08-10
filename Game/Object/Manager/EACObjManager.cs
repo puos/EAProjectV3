@@ -201,7 +201,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return returnObject;
     }
 
-    public bool DeleteGameObject(eObjectType delObjectType , EAObjID id)
+    public bool DeleteGameObject(eObjectType delObjectType, EAObjID id)
     {
         if (CObjGlobal.InvalidObjID == id) return false;
 
@@ -343,7 +343,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return mapObj;
     }
 
-    EA_CObjectBase RemovePlayer(EAObjID id)
+    private EA_CObjectBase RemovePlayer(EAObjID id)
     {
         EA_CCharUser user = GetPlayer(id);
 
@@ -356,7 +356,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return user;
     }
 
-    EA_CObjectBase RemoveMob(EAObjID id)
+    private EA_CObjectBase RemoveMob(EAObjID id)
     {
         EA_CCharMob mob = GetMob(id);
 
@@ -369,7 +369,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return mob;
     }
 
-    EA_CObjectBase RemoveNPC(EAObjID id)
+    private EA_CObjectBase RemoveNPC(EAObjID id)
     {
         EA_CCharNPC npc = GetNPC(id);
 
@@ -382,7 +382,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return npc;
     }
 
-    public EA_CObjectBase RemoveItem(EAObjID id)
+    private EA_CObjectBase RemoveItem(EAObjID id)
     {
         EA_CItem item = GetItem(id);
 
@@ -395,7 +395,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return item;
     }
 
-    EA_CObjectBase RemoveMapObject(EAObjID id)
+    private EA_CObjectBase RemoveMapObject(EAObjID id)
     {
         EA_CMapObject mapObject = GetMapObject(id);
 
@@ -408,7 +408,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return mapObject;
     }
 
-    void RemoveEntity(EA_CObjectBase gameEntity)
+    private void RemoveEntity(EA_CObjectBase gameEntity)
     {
         if (gameEntity == null) return;
 

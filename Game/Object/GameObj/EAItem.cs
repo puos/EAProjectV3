@@ -52,7 +52,6 @@ public class EAItem : EAObject
             GameObject pFindObject = GetObjectInItem(child.gameObject.transform , strObjectNanme);
             if (pFindObject != null) return pFindObject;
         }
-
         return null;
     }
 }
