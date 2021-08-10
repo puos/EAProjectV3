@@ -13,6 +13,25 @@ public class EA_CItem : EA_CObjectBase
     }
     public override eObjectKind GetKind() { return eObjectKind.CK_ITEM; }
 
+    public override bool Initialize()
+    {
+        base.Initialize();
+
+        if (m_pLinkItem != null) m_pLinkItem.Initialize();
+        return true;
+    }
+
+    public override bool Release()
+    {
+        base.Release();
+
+        if (m_pLinkItem != null) m_pLinkItem.Release();
+        if (m_pLinkItem != null) m_pLinkItem.SetItemBase(null);
+        m_pLinkItem = null;
+
+        return true;
+    }
+
     public bool SetItemInfo(ItemObjInfo itemInfo)
     {
         m_ItemInfo = new ItemObjInfo(itemInfo);
@@ -50,35 +69,4 @@ public class EA_CItem : EA_CObjectBase
     }
 
     public EAItem GetLinkItem() { return m_pLinkItem; }
-
-    public override bool SetObjInfo(ObjectInfo objInfo)
-    {
-        m_ObjInfo = new ObjectInfo(objInfo);
-        switch(m_ObjInfo.m_eObjState)
-        {
-            case eObjectState.CS_DEAD:
-                {
-                    if(m_pLinkItem != null)
-                    {
-                        m_pLinkItem.Release();
-                        m_pLinkItem.SetItemBase(null);
-                        m_pLinkItem = null;
-                    }
-                }
-                break;
-        }
-        base.SetObjInfo(objInfo);
-        switch(m_ObjInfo.m_eObjState)
-        {
-            case eObjectState.CS_SETENTITY:
-                {
-                    if(m_pLinkItem != null)
-                    {
-                        m_pLinkItem.Initialize();
-                    }
-                }
-                break;
-        }
-        return true;
-    }
 }

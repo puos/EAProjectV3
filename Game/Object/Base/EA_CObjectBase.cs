@@ -16,7 +16,7 @@ public class EA_CObjectBase
 
     public EAObjID GetObjID() { return m_ObjInfo.m_ObjId; }
 
-    public virtual bool SetObjInfo(ObjectInfo objInfo)
+    public bool SetObjInfo(ObjectInfo objInfo)
     {
         m_ObjInfo = objInfo;
 
@@ -64,9 +64,7 @@ public class EA_CObjectBase
     }
 
     public EAObject GetLinkEntity() { return m_pEntity; }
-
     public virtual bool Initialize() { return true; }
-
     public virtual bool Release() { return true; }
     public virtual bool ChangeModel(string modelType)  { return true; }
     public virtual bool ChangeParts() { return true;  }

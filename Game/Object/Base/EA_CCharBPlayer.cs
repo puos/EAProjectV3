@@ -41,6 +41,9 @@ public class EA_CCharBPlayer : EA_CObjectBase
         base.Release();
 
         if (m_pLinkActor != null) m_pLinkActor.Release();
+        if (m_pLinkActor != null) m_pLinkActor.SetCharBase(null);
+        m_pLinkActor = null;
+
         EACObjManager.instance.DeleteGameObject(GetObjInfo().m_eObjType, GetObjInfo().m_ObjId);
         return true;
     }
