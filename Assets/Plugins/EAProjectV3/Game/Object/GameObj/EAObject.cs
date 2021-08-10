@@ -5,8 +5,7 @@ using UnityEngine;
 public class EAObject : MonoBehaviour
 {
     protected bool initialized = false;
-    protected bool isCollision = false;
-
+    
     private Rigidbody rigidBody = null;
     protected Transform cachedTransform = null;
     protected Collider cachedCollider = null;
@@ -27,8 +26,6 @@ public class EAObject : MonoBehaviour
 
         if (rigidBody != null) rigidBody.velocity = Vector3.zero;
         if (rigidBody != null) rigidBody.angularVelocity = Vector3.zero;
-
-        isCollision = false;
 
         EAMainFrame.onUpdate.Remove(OnUpdate);
         EAMainFrame.onUpdate.Add(OnUpdate);
@@ -88,8 +85,6 @@ public class EAObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        isCollision = true;
-
         if (triggerEvent != null) triggerEvent(collider, this);
     }
 

@@ -77,11 +77,16 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
         if (itemUnit == null) return false;
         if (itemUnit.GetObjId() == CObjGlobal.InvalidObjID) return false;
 
-        EACObjManager.instance.RemoveItem(itemUnit.GetObjId());
+        EACObjManager.instance.DeleteGameObject(eObjectType.CT_ITEMOBJECT,itemUnit.GetObjId());
 
         m_mapItemUnitList.Remove(id);
         m_IDGenerater.FreeID(id);
 
         return true;
+    }
+    public EA_CItemUnit GetItemUnit(ITEM_UNIT_INDEX id)
+    {
+        m_mapItemUnitList.TryGetValue(id, out EA_CItemUnit itemUnit);
+        return itemUnit;
     }
 }

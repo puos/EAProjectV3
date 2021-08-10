@@ -12,7 +12,13 @@ public class EAWeapon : EAItem
     bool bLock = false;
     float coolTime = 0;
 
-    protected Transform muzzleTransform = null; 
+    protected Transform muzzleTransform = null;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        muzzleTransform = cachedTransform;
+    }
 
     public virtual void StartFire()
     {
@@ -45,7 +51,22 @@ public class EAWeapon : EAItem
         itemInfo.m_eItemType = eItemObjType.IK_Projectile;
         EA_CItem item = EACObjManager.instance.CreateItem(objInfo, itemInfo);
         EAProjectile projectile = item.GetLinkItem() as EAProjectile;
-        //projectile.SetWeaponInfo()
+        projectile.SetWeaponInfo(weaponInfo);
+    }
 
+    public EAItemAttackWeaponInfo GetWeaponInfo() { return weaponInfo; }
+
+    // Carry a weapon
+    public void RaiseWeapon() 
+    {
+        EA_CItem itemBase = GetItemBase();
+
+        if (itemBase == null) return;
+        if (itemBase.GetItemInfo().m_iItemIndex == CObjGlobal.InvalidItemID) return;
+
+        EA_CItemUnit pItemUnit = EA_ItemManager.instance.GetItemUnit(itemBase.GetItemInfo().m_iItemIndex);
+        if (pItemUnit != null) weaponInfo = new EAItemAttackWeaponInfo(pItemUnit.GetAttackWeaponinfo());
+
+        StopFire();
     }
 }

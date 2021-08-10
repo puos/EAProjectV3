@@ -59,4 +59,5 @@ public class EA_CItemUnit
     {
         m_ItemDefenseInfo = new EAItemDefenseInfo(defenseInfo);
     }
+    public EAItemAttackWeaponInfo GetAttackWeaponinfo() { return m_ItemAttackWeaponInfo; }
 }
