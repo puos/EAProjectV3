@@ -48,10 +48,10 @@ public class EA_CCharBPlayer : EA_CObjectBase
         return true;
     }
 
-    public void DoAttachItem(eAttachType attachType)
+    public void DoAttachItem(eAttachType attachType,eItemType itemType)
     {
         if (m_pLinkActor == null) return;
-        m_pLinkActor.DoAttachItem(attachType);
+        m_pLinkActor.DoAttachItem(attachType,itemType);
     }
 
     public void SetItemAttachment(eAttachType attachType, EAObject gameObject)

@@ -98,7 +98,7 @@ public class EA_Equipment
         EAObjID objId = SetActorItem(user, itemUnit);
         itemUnit.SetObjId(objId);
         nCurrEquipSlot = equip_slot;
-        user.DoAttachItem(itemUnit.GetAttachType());
+        user.DoAttachItem(itemUnit.GetAttachType(), itemUnit.GetItemType());
     }
     EAObjID SetActorItem(EA_CCharBPlayer user,EA_CItemUnit itemUnit)
     {

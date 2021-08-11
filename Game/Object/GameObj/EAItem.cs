@@ -31,14 +31,18 @@ public class EAItem : EAObject
         if (GetItemBase() == null) return null;
 
         EAObjID objID = GetItemBase().GetItemInfo().m_HavenUser;
-        EA_CCharBPlayer pActor = EACObjManager.instance.GetActor(objID);
-        if (pActor != null) return pActor.GetLinkIActor();
+        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetActor(objID);
+        if (pCharBase != null) return pCharBase.GetLinkIActor();
 
         return null;
     }
+    public virtual void OnAction(params object[] parms)
+    {
+    }
+
     public GameObject GetObjectInItem(string strObjectName)
     {
-        return GetObjectInItem(cachedTransform, strObjectName);
+        return GetObjectInItem(tr, strObjectName);
     }
     protected GameObject GetObjectInItem(Transform tr, string strObjectNanme)
     {

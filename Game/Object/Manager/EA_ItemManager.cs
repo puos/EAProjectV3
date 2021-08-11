@@ -36,7 +36,7 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
         m_PCEquipMap.Add(id, pPLEquip);
         return true;
     }
-    // Delete the PC device by id.
+    // Delete the PCEquip by id.
     public bool RemovePCEquip(EAObjID id)
     {
         if (!m_PCEquipMap.TryGetValue(id, out EA_Equipment pEquipment)) return false;
@@ -46,17 +46,26 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
         return true;
     }
     // Find the player equipment by id
-    public EA_Equipment GetPCEquipItem(EAObjID id)
+    public EA_Equipment GetEquipment(EAObjID id)
+    {
+        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetActor(id);
+        if (pCharBase == null) return new EA_Equipment();
+        if (pCharBase.GetObjInfo().m_eObjType == eObjectType.CT_MYPLAYER) return m_pMyEquipment;
+
+        return GetPCEquipItem(id);
+    }
+    
+    private EA_Equipment GetPCEquipItem(EAObjID id)
     {
         m_PCEquipMap.TryGetValue(id, out EA_Equipment pEquipment);
         return pEquipment;
     }
     public bool RemoveEquip(EAObjID id)
     {
-        EA_CCharBPlayer actor = EACObjManager.instance.GetActor(id);
+        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetActor(id);
         
-        if (actor == null) return false;
-        if (actor.GetObjInfo().m_eObjType == eObjectType.CT_MYPLAYER) return false;
+        if (pCharBase == null) return false;
+        if (pCharBase.GetObjInfo().m_eObjType == eObjectType.CT_MYPLAYER) return false;
         
         RemovePCEquip(id);
         return true;

@@ -7,12 +7,12 @@ public class EAObject : MonoBehaviour
     protected bool initialized = false;
     
     private Rigidbody rigidBody = null;
-    protected Transform cachedTransform = null;
+    private Transform cachedTransform = null;
     protected Collider cachedCollider = null;
    
     public Rigidbody rb { get{ return rigidBody; } }
-
     public Collider col { get { return cachedCollider;  } }
+    public Transform tr { get { return cachedTransform; } }
 
     public System.Action<Collider, EAObject> triggerEvent = null;
     public System.Action<Collision, EAObject> collisionEvent = null;
