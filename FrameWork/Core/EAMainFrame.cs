@@ -10,9 +10,10 @@ public enum MainFrameAddFlags
     ClockMgr    =  1 << 2,
     ResourceMgr =  1 << 3,
     SceneMgr    =  1 << 4,
+    SoundMgr    =  1 << 5, 
 
     // add above
-    AllFlags = ResourceMgr | SceneMgr  | UiManager,
+    AllFlags = ResourceMgr | SceneMgr  | UiManager | SoundMgr,
 }
 
 
