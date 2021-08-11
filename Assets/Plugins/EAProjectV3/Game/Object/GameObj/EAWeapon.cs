@@ -11,23 +11,32 @@ public class EAWeapon : EAItem
 
     bool bLock = false;
     float coolTime = 0;
+    float updateCheckTime = 0;
 
     protected Transform muzzleTransform = null;
 
     public override void Initialize()
     {
         base.Initialize();
-        muzzleTransform = cachedTransform;
+        muzzleTransform = tr;
+        StopFire();
+    }
+
+    public override void Release()
+    {
+        base.Release();
+        StopFire();
     }
 
     public virtual void StartFire()
     {
-        coolTime = 0f;
+        bLock = false;
     }
 
     public virtual void StopFire()
     {
-
+        bLock = true;
+        updateCheckTime = 0;
     }
 
     public void FireShoot()
@@ -52,6 +61,7 @@ public class EAWeapon : EAItem
         EA_CItem item = EACObjManager.instance.CreateItem(objInfo, itemInfo);
         EAProjectile projectile = item.GetLinkItem() as EAProjectile;
         projectile.SetWeaponInfo(weaponInfo);
+        projectile.Use();
     }
 
     public EAItemAttackWeaponInfo GetWeaponInfo() { return weaponInfo; }
@@ -67,6 +77,21 @@ public class EAWeapon : EAItem
         EA_CItemUnit pItemUnit = EA_ItemManager.instance.GetItemUnit(itemBase.GetItemInfo().m_iItemIndex);
         if (pItemUnit != null) weaponInfo = new EAItemAttackWeaponInfo(pItemUnit.GetAttackWeaponinfo());
 
+        coolTime = weaponInfo.fFiringTime;
+
         StopFire();
+    }
+
+    protected override void UpdatePerFrame()
+    {
+        base.UpdatePerFrame();
+
+        if (bLock == true) return;
+
+        if (updateCheckTime >= Time.time) return;
+        if (updateCheckTime < Time.time) updateCheckTime = Time.time;
+        updateCheckTime += coolTime;
+
+        FireShoot();
     }
 }

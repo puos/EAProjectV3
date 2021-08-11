@@ -11,11 +11,21 @@ public class EAProjectile : EAItem
 {
     protected EAItemAttackWeaponInfo WeaponInfo = new EAItemAttackWeaponInfo();
 
+    private Vector3 vStartPos = Vector3.zero;
+    private Vector3 vStartDir = Vector3.zero;
+    private Transform target = null;
+
+    private float lifeTime = 0f;
+    private float killDistance = 0f;
+
     public override void Initialize()
     {
         base.Initialize();
 
         if (cachedCollider == null) cachedCollider = gameObject.AddComponent<SphereCollider>();
+
+        cachedCollider.isTrigger = true;
+        target = null;
 
         this.triggerEvent = (Collider c,EAObject obj) => 
         {
@@ -35,6 +45,30 @@ public class EAProjectile : EAItem
         };
     }
 
+    public void Move(Vector3 targetDir, float speed = 1f, Transform offset = null, float lifeTime = 0f, float killDistance = 0f)
+    {
+        vStartPos = (offset == null) ? tr.position : offset.position;
+        vStartDir = targetDir;
+
+        this.lifeTime = lifeTime;
+        this.killDistance = killDistance;
+
+        rb.velocity = vStartDir * speed;
+        SetPos(vStartPos);
+    }
+
+    protected override void UpdatePerFrame()
+    {
+        base.UpdatePerFrame();
+
+        if (killDistance == 0) return;
+
+        if (Vector3.Distance(tr.position, vStartPos) > killDistance)
+        {
+            Release();
+        }
+    }
+
     public void SetWeaponInfo(EAItemAttackWeaponInfo WeaponInfo)
     {
         this.WeaponInfo = new EAItemAttackWeaponInfo(WeaponInfo);
@@ -42,6 +76,6 @@ public class EAProjectile : EAItem
 
     private void OnDrawGizmos()
     {
-        DebugExtension.DrawCircle(cachedTransform.position, Vector3.up, Color.magenta, GetBRadius());
+        DebugExtension.DrawCircle(tr.position, Vector3.up, Color.magenta, GetBRadius());
     }
 }
