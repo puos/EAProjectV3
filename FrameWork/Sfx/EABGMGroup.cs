@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
-public class BGMGroup : MonoBehaviour
+public class EABGMGroup : MonoBehaviour
 {
     [Serializable]
     public class BGMSlot
