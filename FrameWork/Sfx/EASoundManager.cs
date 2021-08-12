@@ -92,6 +92,13 @@ public class EASoundManager : Singleton<EASoundManager>
         SetVolume(source, desiredVolume, type);
         if (source != null) source.Play();
     }
+    public void PlayOneShot(AudioClip clip, float volume , EASOUND_TYPE type)
+    {
+        if (clip == null) return;
+        if (subAudio == null) return;
+        SetVolume(subAudio, volume, type);
+        subAudio.PlayOneShot(clip, GetVolume(type));
+    }
     public void SetVolume(AudioSource source,float desiredVolume,EASOUND_TYPE type)
     {
         if (source != null) source.volume = GetVolume(type) * desiredVolume;
