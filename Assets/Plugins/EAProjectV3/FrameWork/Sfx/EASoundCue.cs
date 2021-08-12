@@ -34,7 +34,12 @@ public class EASoundCue : MonoBehaviour
 
     private void PlayOne() 
     {
+        if (curPlayIdx >= audioClip.Count) return;
+        if (curPlayIdx < 0) return;
+
         Debug.Log("PlayOne idx :" + curPlayIdx);
+
+        EASoundManager.instance.PlayOneShot(audioClip[curPlayIdx], volume, EASOUND_TYPE.SFX);
     }
 
     private void PlayRandom()
