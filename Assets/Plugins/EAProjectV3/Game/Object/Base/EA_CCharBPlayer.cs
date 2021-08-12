@@ -48,7 +48,7 @@ public class EA_CCharBPlayer : EA_CObjectBase
         return true;
     }
 
-    public void DoAttachItem(eAttachType attachType,eItemType itemType)
+    public void DoAttachItem(eAttachType attachType,eItemType itemType = eItemType.eIT_Base)
     {
         if (m_pLinkActor == null) return;
         m_pLinkActor.DoAttachItem(attachType,itemType);
