@@ -21,6 +21,10 @@ public class EASoundManager : Singleton<EASoundManager>
 
     AudioLowPassFilter lowPassFilter = null;
 
+    readonly private float lowPassDefault  = 22000f;
+    readonly private float lowPassLowValue = 7000.0f;
+    readonly private float lowPasLowTime = 2.3f;
+
     EABGMGroup bGMGroup = null;
 
     // BGM , SFX volume
@@ -38,6 +42,9 @@ public class EASoundManager : Singleton<EASoundManager>
         {
             mainAudio = gameObject.AddComponent<AudioSource>();
             subAudio = gameObject.AddComponent<AudioSource>();
+            lowPassFilter = gameObject.AddComponent<AudioLowPassFilter>();
+            lowPassFilter.cutoffFrequency = 5000.0f;
+            
             mainAudioOriVolume = mainAudio.volume;
             mainAudio.volume = GetVolume(EASOUND_TYPE.BGM) * mainAudio.volume;
         }
@@ -102,5 +109,35 @@ public class EASoundManager : Singleton<EASoundManager>
     public void SetVolume(AudioSource source,float desiredVolume,EASOUND_TYPE type)
     {
         if (source != null) source.volume = GetVolume(type) * desiredVolume;
+    }
+    public void PlayBGM(string name,bool useLowPassFilter = false)
+    {
+        if (bGMGroup == null) return;
+
+        EABGMGroup.BGMSlot slot = bGMGroup.GetBGM(name);
+
+        if (slot == null) return;
+        if (slot.audioClip == null) return;
+
+        AudioClip clip = slot.audioClip;
+
+        if(mainAudio.clip == null)
+        {
+            mainAudio.clip = clip;
+            mainAudio.loop = slot.loop;
+            lowPassFilter.cutoffFrequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
+            Play(mainAudio, slot.volume, EASOUND_TYPE.BGM);
+            return;
+        }
+
+        if (mainAudio.isPlaying)
+        {
+            if (mainAudio.clip.name.Equals(clip.name, StringComparison.Ordinal)) return;
+        }
+
+        mainAudio.clip = clip;
+        mainAudio.loop = slot.loop;
+        lowPassFilter.cutoffFrequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
+        Play(mainAudio, slot.volume, EASOUND_TYPE.BGM);
     }
 }
