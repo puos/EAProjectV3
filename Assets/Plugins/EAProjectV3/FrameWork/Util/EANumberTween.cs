@@ -136,9 +136,21 @@ public class EANumberTween
         numTween.StartTween(numTo, speed, maxTime, userData);
         return numTween;
     }
+    // pause the tweener
     public void Pause() 
     {
         if (tweener != null) DOTween.Pause(tweener);
     }
-
+    public void Restart() 
+    {
+        if (tweener != null) DOTween.Restart(tweener);
+    }
+    public void Complete() 
+    {
+        if (tweener != null) DOTween.Complete(tweener);
+    }
+    public void Kill()
+    {
+        if (tweener != null) DOTween.Kill(tweener);
+    }
 }
