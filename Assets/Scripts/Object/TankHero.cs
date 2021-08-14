@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 [EASceneInfo(typeof(TankHero))]
 public class TankHero : EASceneLogic
 {
+    public enum State { None, Init, Start, End, Result, Exit }
+    
     private CHero hero = null;
     private CTarget target = null;
 
@@ -60,6 +62,33 @@ public class TankHero : EASceneLogic
     //    //ChangeState(State.Init);
     //}
 
+    protected override void OnInit()
+    {
+        CHero.MainPlayerCreate();
+
+        //                //hero = 
+
+        //                //hero.triggerEvent = (Collider c, EAObject myObj) =>
+        //                //{
+        //                //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
+
+        //                //    if (bullet == null) return;
+        //                //    if (bullet.ownerId == hero.Id) return;
+
+        //                //    bullet.Release();
+        //                //    myObj.Release();
+
+        //                //    //CFx fx = fxManager.StartFx(EFxTag.HitTankFx);
+        //                //    //fx.SetPos(hero.GetPos());
+
+        //                //    myObj.Release();
+
+        //                //    ChangeState(State.Result);
+        //                //};
+
+
+    }
+
     //protected override bool ChangeState(State newState)
     //{
     //    bool changed = base.ChangeState(newState);
@@ -74,9 +103,9 @@ public class TankHero : EASceneLogic
     //                unitList.Clear();
 
     //                GameObject obj = null;
-                    
+
     //                //EACObjManager.instance
-                    
+
     //                //hero = 
 
     //                //hero.triggerEvent = (Collider c, EAObject myObj) =>
@@ -112,7 +141,7 @@ public class TankHero : EASceneLogic
     //                //obj = Instantiate(hqTemplate);
     //                //target = obj.GetComponent<CTarget>();
     //                //target.Initialize();
-                
+
     //                //target.triggerEvent = (Collider c, EAObject myObj) => 
     //                //{
     //                //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
@@ -529,7 +558,7 @@ public class TankHero : EASceneLogic
     {
         float updateTime = Time.time;
 
-        enemy.UpdateAdd(CEnemy.EFSMState.Attack, () =>
+        enemy.StateAdd(CEnemy.EFSMState.Attack, () =>
         {
              Vector3 dir = enemy.target.GetPos() - enemy.GetPos();
             dir.Normalize();
@@ -647,46 +676,6 @@ public class TankHero : EASceneLogic
     public void OnAttackDrag(BaseEventData eventData)
     {
         //attackJoystick.Drag((PointerEventData)eventData);
-    }
-
-    protected override void OnInit()
-    {
-        EA_CCharUser mainPlayer = EACObjManager.instance.GetMainPlayer();
-
-        ObjectInfo obj = mainPlayer.GetObjInfo();
-        obj.m_ModelTypeIndex = "Player";
-        obj.m_objClassType = typeof(CHero);
-        mainPlayer.ResetInfo(eObjectState.CS_SETENTITY);
-
-
-        //                //hero = 
-
-        //                //hero.triggerEvent = (Collider c, EAObject myObj) =>
-        //                //{
-        //                //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
-
-        //                //    if (bullet == null) return;
-        //                //    if (bullet.ownerId == hero.Id) return;
-
-        //                //    bullet.Release();
-        //                //    myObj.Release();
-
-        //                //    //CFx fx = fxManager.StartFx(EFxTag.HitTankFx);
-        //                //    //fx.SetPos(hero.GetPos());
-
-        //                //    myObj.Release();
-
-        //                //    ChangeState(State.Result);
-        //                //};
-
-        //                //hero.collisionEvent = (Collision c, EAObject myObj) => 
-        //                //{
-        //                //    EAActor unit = c.gameObject.GetComponent<EAActor>();
-
-        //                //    if (unit == null) return;
-
-        //                //    hero.Stop();
-        //                //};
     }
 
     protected override IEnumerator OnPostInit()

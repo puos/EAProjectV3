@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class CHero : EAActor
 {
-    protected float fShootCoolTime = 0;
-    protected float updateCheckTime = 0;
-
     private Transform muzzle = null;
     private Transform turret = null;
 
@@ -16,7 +13,6 @@ public class CHero : EAActor
     {
         base.Initialize();
 
-        muzzle = GetTransform("muzzle");
         turret = GetTransform("turret");
 
         actorMover.isReachedSetPos = false;
@@ -24,10 +20,14 @@ public class CHero : EAActor
         Input.multiTouchEnabled = true;
 
         rb.useGravity = true;
-       
         actorMover.SetSpeed(400);
-        fShootCoolTime = 2f;
         if (turret != null) turret_rotation = turret.rotation;
+        collisionEvent = (Collision c, EAObject myObj) => 
+        {
+            EAActor unit = c.gameObject.GetComponent<EAActor>();
+            if (unit == null) return;
+            Stop();
+        };
     }
 
     protected override void UpdatePerFrame()
@@ -41,7 +41,6 @@ public class CHero : EAActor
 
         if (velocity.magnitude > 0)
             SetRotation(Quaternion.LookRotation(velocity, Vector3.up), true, Time.deltaTime * 2.0f);
-
 
         if(!Quaternion.Equals(turret.rotation, turret_rotation))
         {
@@ -64,8 +63,6 @@ public class CHero : EAActor
     public override void Release()
     {
         base.Release();
-
-        //if(magazine != null) magazine.Release();
     }
 
     public void SetRotationSub(Quaternion rot)
@@ -85,5 +82,14 @@ public class CHero : EAActor
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null) 
     { 
         actorMover.MoveTo(targetPosition, onMoveComplete); 
+    }
+
+    public static void MainPlayerCreate() 
+    {
+        EA_CCharUser mainPlayer = EACObjManager.instance.GetMainPlayer();
+        ObjectInfo obj = mainPlayer.GetObjInfo();
+        obj.m_ModelTypeIndex = "Player";
+        obj.m_objClassType = typeof(CHero);
+        mainPlayer.ResetInfo(eObjectState.CS_SETENTITY);
     }
 }

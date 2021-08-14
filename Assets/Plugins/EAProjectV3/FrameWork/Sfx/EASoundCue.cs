@@ -44,7 +44,15 @@ public class EASoundCue : MonoBehaviour
 
     private void PlayRandom()
     {
-        //int randomIdx = UnityEngine.Random.Range()
-        //Debug.Log("PlayOne Random idx :" + randomIdx);
+        int randomIdx = UnityEngine.Random.Range(0, audioClip.Count);
+        Debug.Log("PlayOne Random idx :" + randomIdx);
+        EASoundManager.instance.PlayOneShot(audioClip[randomIdx], volume, EASOUND_TYPE.SFX);
+    }
+    private void PlayAll() 
+    {
+        for(int i = 0;i < audioClip.Count; ++i)
+        {
+            EASoundManager.instance.PlayOneShot(audioClip[i], volume, EASOUND_TYPE.SFX);
+        }
     }
 }

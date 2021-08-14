@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class UIManager : Singleton<UIManager>
 {
@@ -26,8 +28,8 @@ public class UIManager : Singleton<UIManager>
     private Transform m_tRootAbove = null;
     private Transform m_tRootPopup = null;
 
-    private string m_eCurPage  = string.Empty;
-    private string m_eCurPopup = string.Empty;
+    private EUIPage m_eCurPage = EUIDefault.PageEnd;
+    private EUIPopup m_eCurPopup = EUIDefault.PoupEnd;
 
     public override GameObject GetSingletonParent()
     {
@@ -44,11 +46,11 @@ public class UIManager : Singleton<UIManager>
 
         if (goRoot == null)
         {
-            goRoot = new GameObject(UI_ROOT_NAME);
+            goRoot = new GameObject(UI_ROOT_NAME,typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
 
-            GameObject page = new GameObject(UI_ROOT_PAGE);
-            GameObject above = new GameObject(UI_ROOT_ABOVE);
-            GameObject popup = new GameObject(UI_ROOT_POPUP);
+            GameObject page = new GameObject(UI_ROOT_PAGE,typeof(SafeRect));
+            GameObject above = new GameObject(UI_ROOT_ABOVE,typeof(SafeRect));
+            GameObject popup = new GameObject(UI_ROOT_POPUP,typeof(SafeRect));
 
             page.transform.SetParent(goRoot.transform);
             above.transform.SetParent(goRoot.transform);
@@ -66,22 +68,22 @@ public class UIManager : Singleton<UIManager>
 
     public void Clear()
     {
-         m_eCurPage = string.Empty;
-         m_eCurPopup = string.Empty;
+         m_eCurPage = EUIDefault.PageEnd;
+         m_eCurPopup = EUIDefault.PoupEnd;
 
         uiPage.Clear();
         uiPopup.Clear();
         uiCompo.Clear();
     }
 
-    private UICtrl LoadPage(string ePage)
+    private UICtrl LoadPage(EUIPage ePage)
     {
 
-        GameObject goPage = m_ResMgr.Create(EResourceGroup.UIPage, ePage);
+        GameObject goPage = m_ResMgr.Create(EResourceGroup.UIPage, ePage.ToString());
         if (goPage == null) return null;
         goPage.transform.SetParent(m_tRootPage);
 
-        var key = CRC32.GetHashForAnsi(ePage);
+        var key = (int)ePage.Id;
         UICtrl uiCtrl = goPage.GetComponent<UICtrl>();
         if (uiPage.ContainsKey(key))
             uiPage.Remove(key);
@@ -90,13 +92,13 @@ public class UIManager : Singleton<UIManager>
         return uiCtrl;
     }
 
-    private UICtrl LoadAbove(string ePage)
+    private UICtrl LoadAbove(EUIPage ePage)
     {
-        GameObject goPage = m_ResMgr.Create(EResourceGroup.UIPage, ePage);
+        GameObject goPage = m_ResMgr.Create(EResourceGroup.UIPage, ePage.ToString());
         if (goPage == null) return null;
         goPage.transform.SetParent(m_tRootAbove);
 
-        var key = CRC32.GetHashForAnsi(ePage);
+        var key = (int)ePage.Id;
         UICtrl uiCtrl = goPage.GetComponent<UICtrl>();
         if (uiPage.ContainsKey(key))
             uiPage.Remove(key);
@@ -105,13 +107,13 @@ public class UIManager : Singleton<UIManager>
         return uiCtrl;
     }
 
-    private UICtrl LoadPopup(string ePopup)
+    private UICtrl LoadPopup(EUIPopup ePopup)
     {
-        GameObject goPopup = m_ResMgr.Create(EResourceGroup.UIPopup, ePopup);
+        GameObject goPopup = m_ResMgr.Create(EResourceGroup.UIPopup, ePopup.ToString());
         if (goPopup == null) return null;
         goPopup.transform.SetParent(m_tRootPopup);
 
-        var key = CRC32.GetHashForAnsi(ePopup);
+        var key = (int)ePopup.Id;
         UICtrl uiCtrl = goPopup.GetComponent<UICtrl>();
         if (uiPopup.ContainsKey(key))
             uiPopup.Remove(key);
@@ -120,14 +122,17 @@ public class UIManager : Singleton<UIManager>
         return uiCtrl;
     }
 
-    public T LoadComponent<T>(Transform tRoot,string eCompo)
+    public T LoadComponent<T>(Transform tRoot,EUIComponent eCompo)
     {
-        GameObject goComp = m_ResMgr.Create(EResourceGroup.UIComponent, eCompo);
+        GameObject goComp = m_ResMgr.Create(EResourceGroup.UIComponent, eCompo.ToString());
+
+        if (goComp != null) goComp.transform.SetParent(tRoot);
         if (goComp != null) return goComp.GetComponent<T>();
+        
         return default;
     }
 
-    public void OpenPage(string ePage)
+    public void OpenPage(EUIPage ePage)
     {
         if (ePage != m_eCurPage) HidePage(m_eCurPage);
         m_eCurPage = ePage;
@@ -136,16 +141,16 @@ public class UIManager : Singleton<UIManager>
         if (uiDlg != null) uiDlg.Open();
     }
 
-    public void OpenAbove(string ePage)
+    public void OpenAbove(EUIPage ePage)
     {
-        var key = CRC32.GetHashForAnsi(ePage);
+        var key = (int)ePage.Id;
         if (!uiPage.TryGetValue((int)key, out UICtrl uiDlg))
             LoadAbove(ePage);
         uiDlg.Open();
     }
-    public T OpenPopup<T>(string ePopup) where T : UICtrl
+    public T OpenPopup<T>(EUIPopup ePopup) where T : UICtrl
     {
-        if (ePopup != m_eCurPopup) HidePopup(m_eCurPage);
+        if (ePopup != m_eCurPopup) HidePopup(m_eCurPopup);
         UICtrl UiDlg = GetPopup<T>(ePopup);
         if(UiDlg != null)
         {
@@ -155,38 +160,38 @@ public class UIManager : Singleton<UIManager>
         return UiDlg as T;
     }
 
-    public void HidePage(string ePage)
+    public void HidePage(EUIPage ePage)
     {
-        var key = CRC32.GetHashForAnsi(ePage);
+        var key = (int)ePage.Id;
         if (uiPage.ContainsKey(key))
             uiPage[key].Close();
     }
 
-    public void HidePopup(string ePopup)
+    public void HidePopup(EUIPopup ePopup)
     {
-        var key = CRC32.GetHashForAnsi(ePopup);
+        var key = (int)ePopup.Id;
         if (uiPopup.ContainsKey(key))
             uiPopup[key].Close();
     }
 
-    public UICtrl GetPage(string ePage)
+    public UICtrl GetPage(EUIPage ePage)
     {
-        var key = CRC32.GetHashForAnsi(ePage);
+        var key = (int)ePage.Id;
         if (uiPage.TryGetValue((int)key, out UICtrl uiDlg)) 
             return uiDlg;
         return LoadPage(ePage);
     }
 
-    public UICtrl GetAbove(string ePage)
+    public UICtrl GetAbove(EUIPage ePage)
     {
-        var key = CRC32.GetHashForAnsi(ePage);
+        var key = (int)ePage.Id;
         if (uiPage.TryGetValue((int)key, out UICtrl uiDlg))
             return uiDlg;
         return LoadAbove(ePage);
     }
-    public T GetPopup<T>(string ePopup) where T : UICtrl
+    public T GetPopup<T>(EUIPopup ePopup) where T : UICtrl
     {
-        var key = CRC32.GetHashForAnsi(ePopup);
+        var key = (int)ePopup.Id;
         if (uiPopup.TryGetValue(key, out UICtrl uiDlg))
             return uiDlg as T;
         return LoadPopup(ePopup) as T;
