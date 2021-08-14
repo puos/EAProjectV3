@@ -17,8 +17,7 @@ public class EASoundManager : Singleton<EASoundManager>
     private AudioSource mainAudio;
     private AudioSource subAudio;
     float mainAudioOriVolume;
-    AudioClip defaultClip;
-
+    
     AudioLowPassFilter lowPassFilter = null;
 
     readonly private float lowPassDefault  = 22000f;
@@ -110,6 +109,8 @@ public class EASoundManager : Singleton<EASoundManager>
     {
         if (source != null) source.volume = GetVolume(type) * desiredVolume;
     }
+
+    // play bgm
     public void PlayBGM(string name,bool useLowPassFilter = false)
     {
         if (bGMGroup == null) return;
@@ -139,5 +140,35 @@ public class EASoundManager : Singleton<EASoundManager>
         mainAudio.loop = slot.loop;
         lowPassFilter.cutoffFrequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
         Play(mainAudio, slot.volume, EASOUND_TYPE.BGM);
+    }
+    public void SetLowPassFilter(bool useLowPassFilter,float desiredVolume = 1.0f)
+    {
+        float frequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
+
+        float numFrom = lowPassFilter.cutoffFrequency;
+        float numTo = frequency;
+
+        SetVolume(mainAudio, desiredVolume, EASOUND_TYPE.BGM);
+
+        if(useLowPassFilter == true)
+        {
+            lowPassFilter.cutoffFrequency = frequency;
+            return;
+        }
+
+        var tweener = EANumberTween.Start(numFrom, numTo, 0, lowPasLowTime);
+        tweener.onUpdate = (EANumberTween.Event e) => { lowPassFilter.cutoffFrequency = e.number; };
+        tweener.onComplete = (EANumberTween.Event e) => { lowPassFilter.cutoffFrequency = frequency; };
+    }
+
+    public void StopBGM()
+    {
+        mainAudio.Stop();
+        mainAudio.clip = null;
+    }
+    public void StopSfxSound()
+    {
+        subAudio.Stop();
+        subAudio.clip = null;
     }
 }
