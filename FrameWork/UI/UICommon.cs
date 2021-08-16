@@ -24,6 +24,14 @@ public struct EUIPage
     public override string ToString() { return name; }
     public static bool operator !=(EUIPage lhs,EUIPage rhs) {  return lhs.id != rhs.id; }
     public static bool operator ==(EUIPage lhs, EUIPage rhs) { return lhs.id == rhs.id; }
+
+    public override bool Equals(object obj) 
+    {
+        EUIPage rhs = (EUIPage)obj;
+        if (rhs == null) return false;
+        return id == rhs.id; 
+    }
+    public override int GetHashCode()  {  return base.GetHashCode(); }
 }
 
 public struct EUIPopup
@@ -47,6 +55,14 @@ public struct EUIPopup
 
     public static bool operator !=(EUIPopup lhs, EUIPopup rhs) { return lhs.id != rhs.id; }
     public static bool operator ==(EUIPopup lhs, EUIPopup rhs) { return lhs.id == rhs.id; }
+
+    public override bool Equals(object obj)
+    {
+        EUIPopup rhs = (EUIPopup)obj;
+        if (rhs == null) return false;
+        return id == rhs.id;
+    }
+    public override int GetHashCode() { return base.GetHashCode(); }
 }
 
 

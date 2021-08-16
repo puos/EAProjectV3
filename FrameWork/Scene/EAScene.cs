@@ -33,14 +33,9 @@ public class EAScene : MonoBehaviour
 
         instance = this;
 
-        EAMainFrame mainframe = FindObjectOfType<EAMainFrame>();
-
         // When the first scene runs, it creates a MainFrame.
-        if (mainframe == null)
-        {
-            mainframe = EAMainframeUtil.CreateMainFrameTree();
-            Debug.Log("Create Mainframe Tree");
-        }
+        EAMainFrame mainframe = EAMainframeUtil.CreateMainFrameTree();
+        Debug.Log("Create Mainframe Tree");
 
         AudioListener audioListener = FindObjectOfType<AudioListener>();
         if (audioListener == null) mainframe.gameObject.AddComponent<AudioListener>();

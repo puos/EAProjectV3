@@ -12,6 +12,13 @@ public static class EAFrameUtil
         return go.AddComponent(type);
     }
 
+    public static GameObject AddChild(GameObject parent,string name = null)
+    {
+        GameObject go = AddChild(parent);
+        if (!string.IsNullOrEmpty(name)) go.name = name;
+        return go;
+    }
+
     /// <summary>
     /// Add a child object to the specified parent and attaches the specified script to it.
     /// </summary>
