@@ -55,6 +55,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -80,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1129322227165912
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,6 +167,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -190,6 +193,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1208905329625342
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +235,7 @@ GameObject:
   - component: {fileID: 4458956059991848}
   - component: {fileID: 8106693076413179786}
   - component: {fileID: 2817186376191478574}
-  - component: {fileID: 5201721772474148445}
+  - component: {fileID: 4273215439600796057}
   m_Layer: 10
   m_Name: Enemy
   m_TagString: Untagged
@@ -283,7 +287,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.85, y: 1.96, z: 2.38}
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &5201721772474148445
+--- !u!114 &4273215439600796057
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -297,16 +301,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoneNames:
   - TankRenderers
+  - TankTurret
   - ShootPoint
   - SP1
   - SP2
   - TankBody
+  - TankChassis
+  - TankTracksLeft
+  - TankTracksRight
   Bones:
   - {fileID: 4233304373910206}
+  - {fileID: 4737133072379870}
   - {fileID: 4855042662882726}
   - {fileID: 4100280803173364}
   - {fileID: 4070670886554054}
   - {fileID: 4692404715736840}
+  - {fileID: 4669579990828612}
+  - {fileID: 4244049200001788}
+  - {fileID: 4790842153560548}
   renderers:
   - {fileID: 23346738104536986}
   - {fileID: 23000606554525178}
@@ -399,6 +411,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -425,6 +438,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1834954568498948
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,6 +574,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -585,3 +600,4 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}

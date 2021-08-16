@@ -25,68 +25,35 @@ public class TankHero : EASceneLogic
     private int enemiesCount = 0;
     private int myHeroId = 10000;
 
-    //[SerializeField] private GameJoystick moveJoystick = null;
-    //[SerializeField] private GameJoystick attackJoystick = null;
     //[SerializeField] private CameraFollow cameraFollow = null;
     //[SerializeField] private CubeManager cubeManager = null;
     //[SerializeField] private Transform cubeParent = null;
 
+    private IngameUI inGameUi = null;
+
     private int _TileX = 5;
     private int _TileY = 5;
 
-    //protected void Initialize()
-    //{
-    //    base.Initialize();
-
-    //    ////fxManager.Initialize();
-    //    //moveJoystick.Initialize();
-    //    //moveJoystick.gameObject.SetActive(false);
-    //    //moveJoystick.onEndEvent = () =>
-    //    //{
-    //    //    if (hero != null) hero.Stop();
-    //    //};
-
-    //    //attackJoystick.Initialize();
-    //    //attackJoystick.gameObject.SetActive(false);
-    //    //attackJoystick.onEndEvent = () =>
-    //    //{
-    //    //    //CFx fx = fxManager.StartFx(EFxTag.FireFx);
-    //    //    //fx.SetPos(hero.GetPos());
-    //    //    if (hero != null) hero.StartFire();
-    //    //};
-
-    //    //unitList.Clear();
-    //    //enemies.Clear();
-    //    //users.Clear();
-
-    //    //ChangeState(State.Init);
-    //}
-
     protected override void OnInit()
     {
-        CHero.MainPlayerCreate();
 
-        //                //hero = 
+        hero = CHero.MainPlayerCreate();
 
-        //                //hero.triggerEvent = (Collider c, EAObject myObj) =>
-        //                //{
-        //                //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
+        inGameUi = UIManager.instance.OpenPage<IngameUI>(TankUIPage.ingameUi);
 
-        //                //    if (bullet == null) return;
-        //                //    if (bullet.ownerId == hero.Id) return;
+        inGameUi.SetMoveEndEvent(() =>
+        {
+            if (hero != null) hero.Stop();
+        });
 
-        //                //    bullet.Release();
-        //                //    myObj.Release();
+        inGameUi.SetAttackEndEvent(() => 
+        {
+            if (hero != null) hero.StartFire();
+        });
 
-        //                //    //CFx fx = fxManager.StartFx(EFxTag.HitTankFx);
-        //                //    //fx.SetPos(hero.GetPos());
-
-        //                //    myObj.Release();
-
-        //                //    ChangeState(State.Result);
-        //                //};
-
-
+        unitList.Clear();
+        enemies.Clear();
+        users.Clear();
     }
 
     //protected override bool ChangeState(State newState)

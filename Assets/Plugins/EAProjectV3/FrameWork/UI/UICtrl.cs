@@ -7,9 +7,6 @@ public class UICtrl : MonoBehaviour
     [HideInInspector] public GameObject m_CachedObject = null;
     [HideInInspector] public RectTransform m_CachedTransform = null;
 
-    [NonSerialized]
-    public Delegate _resultCbD;
-
     private bool m_bInitialized = false;
     private bool m_bActive = false;
 
@@ -56,4 +53,5 @@ public class UICtrl : MonoBehaviour
     {
         m_CachedTransform.SetAsFirstSibling();
     }
+    
 }

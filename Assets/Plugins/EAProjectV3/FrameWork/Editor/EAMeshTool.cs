@@ -20,20 +20,18 @@ public class EAMeshTool : Editor
 
         for (int i = 0; i < transforms.Length; ++i)
         {
-            Renderer curRenderer = transforms[i].gameObject.GetComponent<Renderer>();
-
-            if (curRenderer != null)
-            {
-                if (!renderList.TryGetValue(transforms[i].name, out Renderer renderer))
-                    renderList.Add(transforms[i].name, curRenderer);
-
-                continue;
-            }
 
             if (partsObject.transform.GetHashCode() == transforms[i].GetHashCode()) continue;
 
             if (!transformList.TryGetValue(transforms[i].name, out Transform value))
                 transformList.Add(transforms[i].name, transforms[i]);
+
+            Renderer curRenderer = transforms[i].gameObject.GetComponent<Renderer>();
+
+            if (curRenderer == null) continue;
+            
+            if (!renderList.TryGetValue(transforms[i].name, out Renderer renderer))
+                renderList.Add(transforms[i].name, curRenderer);
         }
 
         skeleton.BoneNames = new string[transformList.Keys.Count];

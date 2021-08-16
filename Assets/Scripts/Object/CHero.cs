@@ -13,7 +13,7 @@ public class CHero : EAActor
     {
         base.Initialize();
 
-        turret = GetTransform("turret");
+        turret = GetTransform("TankTurret");
 
         actorMover.isReachedSetPos = false;
 
@@ -42,9 +42,12 @@ public class CHero : EAActor
         if (velocity.magnitude > 0)
             SetRotation(Quaternion.LookRotation(velocity, Vector3.up), true, Time.deltaTime * 2.0f);
 
-        if(!Quaternion.Equals(turret.rotation, turret_rotation))
+        if (turret != null)
         {
-            if (turret != null) turret.rotation = Quaternion.Lerp(turret.rotation, turret_rotation, Time.deltaTime * 4.0f);
+            if (!Quaternion.Equals(turret.rotation, turret_rotation))
+            {
+                turret.rotation = Quaternion.Lerp(turret.rotation, turret_rotation, Time.deltaTime * 4.0f);
+            }
         }
     }
 
@@ -84,12 +87,13 @@ public class CHero : EAActor
         actorMover.MoveTo(targetPosition, onMoveComplete); 
     }
 
-    public static void MainPlayerCreate() 
+    public static CHero MainPlayerCreate() 
     {
         EA_CCharUser mainPlayer = EACObjManager.instance.GetMainPlayer();
         ObjectInfo obj = mainPlayer.GetObjInfo();
         obj.m_ModelTypeIndex = "Player";
         obj.m_objClassType = typeof(CHero);
         mainPlayer.ResetInfo(eObjectState.CS_SETENTITY);
+        return mainPlayer.GetLinkIActor() as CHero;
     }
 }

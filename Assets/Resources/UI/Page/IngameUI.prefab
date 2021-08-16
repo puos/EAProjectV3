@@ -597,6 +597,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6445321886473219682}
+  - component: {fileID: 6686582557058331032}
   m_Layer: 5
   m_Name: IngameUI
   m_TagString: Untagged
@@ -621,10 +622,26 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &6686582557058331032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6445321886473218462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f319397d33a6ef4fb48b44e0b69ecc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CachedObject: {fileID: 0}
+  m_CachedTransform: {fileID: 0}
+  moveJoystick: {fileID: 6445321886379836594}
+  attackJoystick: {fileID: 6445321886852783133}
 --- !u!1 &6445321886852783130
 GameObject:
   m_ObjectHideFlags: 0

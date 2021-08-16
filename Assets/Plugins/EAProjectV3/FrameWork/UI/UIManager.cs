@@ -48,9 +48,12 @@ public class UIManager : Singleton<UIManager>
         {
             goRoot = new GameObject(UI_ROOT_NAME,typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
 
-            GameObject page = new GameObject(UI_ROOT_PAGE,typeof(SafeRect));
-            GameObject above = new GameObject(UI_ROOT_ABOVE,typeof(SafeRect));
-            GameObject popup = new GameObject(UI_ROOT_POPUP,typeof(SafeRect));
+            Canvas c = goRoot.GetComponent<Canvas>();
+            c.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            GameObject page = new GameObject(UI_ROOT_PAGE, typeof(RectTransform) , typeof(SafeRect));
+            GameObject above = new GameObject(UI_ROOT_ABOVE, typeof(RectTransform) , typeof(SafeRect));
+            GameObject popup = new GameObject(UI_ROOT_POPUP, typeof(RectTransform) , typeof(SafeRect));
 
             page.transform.SetParent(goRoot.transform);
             above.transform.SetParent(goRoot.transform);
@@ -141,6 +144,16 @@ public class UIManager : Singleton<UIManager>
         if (uiDlg != null) uiDlg.Open();
     }
 
+    public T OpenPage<T>(EUIPage ePage) where T : UICtrl
+    {
+        if (ePage != m_eCurPage) HidePage(m_eCurPage);
+        m_eCurPage = ePage;
+
+        UICtrl uiDlg = GetPage(ePage);
+        if (uiDlg != null) uiDlg.Open();
+        return uiDlg as T;
+    }
+
     public void OpenAbove(EUIPage ePage)
     {
         var key = (int)ePage.Id;
@@ -151,12 +164,9 @@ public class UIManager : Singleton<UIManager>
     public T OpenPopup<T>(EUIPopup ePopup) where T : UICtrl
     {
         if (ePopup != m_eCurPopup) HidePopup(m_eCurPopup);
+        m_eCurPopup = ePopup;
         UICtrl UiDlg = GetPopup<T>(ePopup);
-        if(UiDlg != null)
-        {
-            m_eCurPopup = ePopup;
-            UiDlg.Open();
-        }
+        if(UiDlg != null) { UiDlg.Open(); }
         return UiDlg as T;
     }
 
@@ -180,6 +190,11 @@ public class UIManager : Singleton<UIManager>
         if (uiPage.TryGetValue((int)key, out UICtrl uiDlg)) 
             return uiDlg;
         return LoadPage(ePage);
+    }
+
+    public UICtrl GetPage<T>(EUIPage ePage) where T : UICtrl
+    {
+        return GetPage(ePage) as T;
     }
 
     public UICtrl GetAbove(EUIPage ePage)

@@ -1,17 +1,6 @@
 ﻿using System;
 
-public enum EFxTag
+public class TankUIPage
 {
-    FireFx,
-    HitWallFx,
-    HitTankFx,
-}
-
-public enum EFSMState 
-{ 
-    None = 0, 
-    Move, 
-    Chasing, 
-    Attack, 
-    Dead 
+    public static readonly EUIPage ingameUi = new EUIPage(1, "IngameUI");
 }

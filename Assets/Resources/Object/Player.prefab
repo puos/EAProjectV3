@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 4717490778460748}
   - component: {fileID: 7574994854852165085}
   - component: {fileID: 496632597049153463}
-  - component: {fileID: 3866244603674773092}
+  - component: {fileID: 2696305074050718123}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -467,7 +467,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.85, y: 1.96, z: 2.38}
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &3866244603674773092
+--- !u!114 &2696305074050718123
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -481,16 +481,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoneNames:
   - TankRenderers
+  - TankTurret
   - ShootPoint
   - SP1
   - SP2
   - TankBody
+  - TankChassis
+  - TankTracksLeft
+  - TankTracksRight
   Bones:
   - {fileID: 4419609544586030}
+  - {fileID: 4164969535844342}
   - {fileID: 4046727077436042}
   - {fileID: 4932719152155986}
   - {fileID: 4598489870316430}
   - {fileID: 4966025717795744}
+  - {fileID: 4920074393244806}
+  - {fileID: 4380644117173362}
+  - {fileID: 4104012728574920}
   renderers:
   - {fileID: 23688777884097448}
   - {fileID: 23730516974171362}

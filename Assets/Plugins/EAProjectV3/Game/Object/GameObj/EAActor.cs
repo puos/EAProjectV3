@@ -10,13 +10,15 @@ public class EAActor : EAObject
     protected  EAActorMover actorMover = null;
     protected EAWeapon currWeapon = null;
 
-    private Dictionary<int, Transform> transformList = new Dictionary<int, Transform>();
+    private Dictionary<int, Transform> bones = new Dictionary<int, Transform>();
     private Renderer[] renderers = null;
     private string[] m_PartTblId = new string[(int)eCharParts.CP_MAX];
     
     protected Dictionary<int, System.Action> states = new Dictionary<int, System.Action>();
     protected Dictionary<int, System.Action> updates = new Dictionary<int, System.Action>();
+
     public int curState { get; private set; }
+   
     public uint Id { get { return (m_CharBase != null) ? m_CharBase.GetObjID() : CObjGlobal.InvalidObjID; } }
 
     public override void Initialize()
@@ -27,7 +29,9 @@ public class EAActor : EAObject
 
         states.Clear();
         updates.Clear();
-        transformList.Clear();
+
+        SetSkeleton();
+        SetRenderer();
 
         actorMover = GetComponent<EAActorMover>();
         actorMover.Initialize();
@@ -90,7 +94,7 @@ public class EAActor : EAObject
     public Transform GetTransform(string key)
     {
         int nkey = CRC32.GetHashForAnsi(key);
-        transformList.TryGetValue(nkey, out Transform outValue);
+        bones.TryGetValue(nkey, out Transform outValue);
         return outValue;
     }
     private void ReleaseParts()
@@ -153,5 +157,59 @@ public class EAActor : EAObject
         if (currWeapon == null) return;
 
         currWeapon.RaiseWeapon();
+    }
+    public void SetSkeleton()
+    {
+        if (bones.Count > 0) return;
+
+        EACharacterInfo characterInfo = tr.GetComponent<EACharacterInfo>();
+
+        if(characterInfo == null)
+        {
+            Transform[] tfs = tr.GetComponentsInChildren<Transform>();
+            for(int i = 0; i < tfs.Length; ++i)
+            {
+                int key = CRC32.GetHashForAnsi(tfs[i].name);
+                if (!bones.TryGetValue(key, out Transform value)) { bones.Add(key, tfs[i]); }
+            }
+            return;
+        }
+
+        Transform[] transforms = characterInfo.Bones;
+        string[] BoneNames     = characterInfo.BoneNames;
+        
+        for(int i = 0; i < transforms.Length; ++i)
+        {
+            int key = CRC32.GetHashForAnsi(transforms[i].name);
+            bones.Add(key, transforms[i]);
+        }
+
+        Transform mesh = GetTransform("mesh");
+
+        if (mesh != null) mesh.transform.parent = null;
+        if (mesh != null) GameObject.Destroy(mesh.gameObject);
+        mesh = null;
+
+        GameObject meshObj = EAFrameUtil.AddChild(gameObject, "mesh");
+        if (meshObj != null) AddTransform("mesh", meshObj.transform);
+
+    }
+    public void SetRenderer()
+    {
+        EACharacterInfo characterInfo = tr.GetComponent<EACharacterInfo>();
+        if (characterInfo == null) return;
+        renderers = characterInfo.renderers;
+
+    }
+    public void AddTransform(string key, Transform obj)
+    {
+        int nKey = CRC32.GetHashForAnsi(key);
+        if(!bones.TryGetValue(nKey,out Transform value))
+        {
+            bones.Add(nKey, obj);
+            return;
+        }
+
+        bones[nKey] = obj;
     }
 }
