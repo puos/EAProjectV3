@@ -25,6 +25,8 @@ public abstract class EASceneLogic : MonoBehaviour
 
     bool selfLoading = false;
 
+    public EADataAdaptor dataAdapter = null;
+
     abstract protected void OnInit();
 
     abstract protected IEnumerator OnPostInit();
@@ -121,5 +123,11 @@ public abstract class EASceneLogic : MonoBehaviour
     public void WillDestroy()
     {
         sceneLoadingState = SceneLoadingState.WillDestroy;
+    }
+
+    protected GameObject GetData(string name)
+    {
+        if (dataAdapter == null) return null;
+        return dataAdapter.GetData(name);
     }
 }

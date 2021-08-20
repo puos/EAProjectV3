@@ -27,7 +27,7 @@ public class TankHero : EASceneLogic
 
     //[SerializeField] private CameraFollow cameraFollow = null;
     //[SerializeField] private CubeManager cubeManager = null;
-    //[SerializeField] private Transform cubeParent = null;
+    private Transform cubeParent = null;
 
     private IngameUI inGameUi = null;
 
@@ -54,6 +54,9 @@ public class TankHero : EASceneLogic
         unitList.Clear();
         enemies.Clear();
         users.Clear();
+
+        GameObject obj = GetData("CubeParent");
+        if (obj != null) cubeParent = obj.transform;
     }
 
     protected override IEnumerator OnPostInit()
