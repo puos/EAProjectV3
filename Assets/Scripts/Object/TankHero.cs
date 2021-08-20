@@ -56,6 +56,20 @@ public class TankHero : EASceneLogic
         users.Clear();
     }
 
+    protected override IEnumerator OnPostInit()
+    {
+        yield return null;
+    }
+
+    protected override void OnUpdate()
+    {
+
+    }
+
+    protected override void OnClose()
+    {
+    }
+
     //protected override bool ChangeState(State newState)
     //{
     //    bool changed = base.ChangeState(newState);
@@ -446,8 +460,8 @@ public class TankHero : EASceneLogic
             List<EAActor> unit = WithinViewRange(users, enemy, 10f);
 
             if (unit.Count <= 0) return;
-           
-            DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f, 1f);
+
+            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f, 1f);
 
             if (unit[0].Id != myHeroId)
             {
@@ -502,7 +516,7 @@ public class TankHero : EASceneLogic
 
             updateTime = Time.time + 2f;
 
-            DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.black , 10f, 2f);
+            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.black , 10f, 2f);
 
             if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) > 12.0f)
             {
@@ -571,92 +585,5 @@ public class TankHero : EASceneLogic
         return units;
     }
 
-    public static void DebugCircle(Vector3 position,Vector3 up , Color color ,float radius = 1.0f, float duration = 0)
-    {
-        Vector3 _up = up.normalized * radius;
-        Vector3 _forward = Vector3.Slerp(_up, -_up, 0.5f);
-        Vector3 _right = Vector3.Cross(_up, _forward).normalized * radius;
-
-        Matrix4x4 matrix = new Matrix4x4();
-
-        matrix[0] = _right.x;
-        matrix[1] = _right.y;
-        matrix[2] = _right.z;
-
-        matrix[4] = _up.x;
-        matrix[5] = _up.y;
-        matrix[6] = _up.z;
-
-        matrix[8] = _forward.x;
-        matrix[9] = _forward.y;
-        matrix[10] = _forward.z;
-
-        Vector3 _lastPoint = position + matrix.MultiplyPoint3x4(new Vector3(Mathf.Cos(0), 0, Mathf.Sin(0)));
-        Vector3 _nextPoint = Vector3.zero;
-
-        color = (color == default(Color)) ? Color.white : color;
-
-        for(var i = 0; i < 91; ++i)
-        {
-            _nextPoint.x = Mathf.Cos((i * 4) * Mathf.Deg2Rad);
-            _nextPoint.z = Mathf.Sin((i * 4) * Mathf.Deg2Rad);
-            _nextPoint.y = 0;
-
-            _nextPoint = position + matrix.MultiplyPoint3x4(_nextPoint);
-
-            Debug.DrawLine(_lastPoint, _nextPoint, color, duration, true);
-            _lastPoint = _nextPoint;
-        }
-    }
-
-    public void OnPointerMoveDown(BaseEventData eventData)
-    {
-        //if (moveJoystick.gameObject.activeSelf == false) moveJoystick.gameObject.SetActive(true);
-        //moveJoystick.GetRectTransform().position = ((PointerEventData)eventData).position;
-        //moveJoystick.Down((PointerEventData)eventData);
-    }
-
-    public void OnPointerMoveUp(BaseEventData eventData)
-    {
-        //moveJoystick.Up((PointerEventData)eventData);
-        //moveJoystick.GetRectTransform().localPosition = Vector3.zero;
-    }
-
-    public void OnMoveDrag(BaseEventData eventData)
-    {
-        //moveJoystick.Drag((PointerEventData)eventData);
-    }
-
-    public void OnPointerAttackDown(BaseEventData eventData)
-    {
-        //if (attackJoystick.gameObject.activeSelf == false) attackJoystick.gameObject.SetActive(true);
-        //attackJoystick.GetRectTransform().position = ((PointerEventData)eventData).position;
-        //attackJoystick.Down((PointerEventData)eventData);
-    }
-
-    public void OnPointerAttackUp(BaseEventData eventData)
-    {
-        //attackJoystick.Up((PointerEventData)eventData);
-        //attackJoystick.GetRectTransform().localPosition = Vector3.zero;
-    }
-
-    public void OnAttackDrag(BaseEventData eventData)
-    {
-        //attackJoystick.Drag((PointerEventData)eventData);
-    }
-
-    protected override IEnumerator OnPostInit()
-    {
-        yield return null;
-    }
-
-    protected override void OnUpdate()
-    {
-       
-    }
-
-    protected override void OnClose()
-    {
-        
-    }
+  
 }

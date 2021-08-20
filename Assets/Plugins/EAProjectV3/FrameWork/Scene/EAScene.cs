@@ -13,6 +13,8 @@ using UnityEditor;
 
 public class EAScene : MonoBehaviour
 {
+    public float screenX = 1280f;
+    public float screenY = 720f;
     public string controllerClassType;
     
     public static EAScene instance { get; private set; }
@@ -33,16 +35,6 @@ public class EAScene : MonoBehaviour
 
         instance = this;
 
-        // When the first scene runs, it creates a MainFrame.
-        EAMainFrame mainframe = EAMainframeUtil.CreateMainFrameTree();
-        Debug.Log("Create Mainframe Tree");
-
-        AudioListener audioListener = FindObjectOfType<AudioListener>();
-        if (audioListener == null) mainframe.gameObject.AddComponent<AudioListener>();
-
-        StandaloneInputModule inputModule = FindObjectOfType<StandaloneInputModule>();
-        if (inputModule == null) EAFrameUtil.AddChild<StandaloneInputModule>(mainframe.gameObject);
-
         EAMainFrame.onUpdate.Remove(OnUpdate);
         EAMainFrame.onUpdate.Add(OnUpdate);
 
@@ -51,6 +43,19 @@ public class EAScene : MonoBehaviour
         if (EASceneLoadingManager.IsSelfLoading())
         {
             OnSetting();
+
+            EAMainFrame.SetRefResolution(screenX, screenY);
+
+            // When the first scene runs, it creates a MainFrame.
+            EAMainFrame mainframe = EAMainframeUtil.CreateMainFrameTree();
+           
+            Debug.Log("Create Mainframe Tree");
+
+            AudioListener audioListener = FindObjectOfType<AudioListener>();
+            if (audioListener == null) mainframe.gameObject.AddComponent<AudioListener>();
+
+            StandaloneInputModule inputModule = FindObjectOfType<StandaloneInputModule>();
+            if (inputModule == null) EAFrameUtil.AddChild<StandaloneInputModule>(mainframe.gameObject);
         }
     }
 

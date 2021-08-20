@@ -22,10 +22,10 @@ public class EAMainFrame : Singleton<EAMainFrame>
     [Flags]
     public enum LazyUpdateType
     {
-        Every60s  = 1 << 0,
-        Every10s  = 1 << 1,
-        Every5s   = 1 << 2,
-        Every1s   = 1 << 3,
+        Every60s = 1 << 0,
+        Every10s = 1 << 1,
+        Every5s = 1 << 2,
+        Every1s = 1 << 3,
         Every25ms = 1 << 4,
         Every50ms = 1 << 5,
         Every100ms = 1 << 6,
@@ -37,6 +37,10 @@ public class EAMainFrame : Singleton<EAMainFrame>
     public bool started { get; private set; }
 
     public static bool isApplicationQuit { get; private set; }
+
+    public static float screenX { get; private set; }
+
+    public static float screenY { get; private set; }
 
     MainFrameAddFlags facilityCreatedFlags = 0;
     
@@ -201,13 +205,19 @@ public class EAMainFrame : Singleton<EAMainFrame>
         if (EASceneLogic.instance != null) EASceneLogic.instance.HandleEscapeKey();
     }
 
-    public static void ApplyDeviceOption(int level,int frameRateType = 3, bool keepScreenOn = false)
+    public static void SetRefResolution(float width,float height)
     {
-        float[] resolution = new float[] { 1280, 1500, 1920 };
+        screenX = width;
+        screenY = height;
+    }
+
+    public static void ApplyDeviceOption(int level = 0,int frameRateType = 3, bool keepScreenOn = false)
+    {
+        float[] resolution = new float[] { 0 , 1280, 1500, 1920 };
 
         level = Math.Min(level, resolution.Length - 1);
 
-        if(level >= 0)
+        if(level > 0)
         {
             float windowX = resolution[level];
             float windowY = (Screen.height / (float)Screen.width) * windowX;

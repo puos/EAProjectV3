@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 
 public class IngameUI : UICtrl
 {
@@ -20,5 +21,41 @@ public class IngameUI : UICtrl
 
     public void SetMoveEndEvent(Action action) { moveJoystick.onEndEvent = action; }
     public void SetAttackEndEvent(Action action) { attackJoystick.onEndEvent = action; }
- 
+
+    public void OnPointerMoveDown(BaseEventData eventData)
+    {
+        if (moveJoystick.gameObject.activeSelf == false) moveJoystick.gameObject.SetActive(true);
+        moveJoystick.GetRectTransform().position = ((PointerEventData)eventData).position;
+        moveJoystick.Down((PointerEventData)eventData);
+    }
+
+    public void OnPointerMoveUp(BaseEventData eventData)
+    {
+        moveJoystick.Up((PointerEventData)eventData);
+        moveJoystick.GetRectTransform().localPosition = Vector3.zero;
+    }
+
+    public void OnMoveDrag(BaseEventData eventData)
+    {
+        moveJoystick.Drag((PointerEventData)eventData);
+    }
+
+    public void OnPointerAttackDown(BaseEventData eventData)
+    {
+        if (attackJoystick.gameObject.activeSelf == false) attackJoystick.gameObject.SetActive(true);
+        attackJoystick.GetRectTransform().position = ((PointerEventData)eventData).position;
+        attackJoystick.Down((PointerEventData)eventData);
+    }
+
+    public void OnPointerAttackUp(BaseEventData eventData)
+    {
+        attackJoystick.Up((PointerEventData)eventData);
+        attackJoystick.GetRectTransform().localPosition = Vector3.zero;
+    }
+
+    public void OnAttackDrag(BaseEventData eventData)
+    {
+        attackJoystick.Drag((PointerEventData)eventData);
+    }
+
 }
