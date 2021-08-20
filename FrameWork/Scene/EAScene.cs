@@ -16,7 +16,7 @@ public class EAScene : MonoBehaviour
     public float screenX = 1280f;
     public float screenY = 720f;
     public string controllerClassType;
-    
+        
     public static EAScene instance { get; private set; }
 
     protected static Dictionary<string, System.Type> sceneInfo = new Dictionary<string, System.Type>();
@@ -92,6 +92,11 @@ public class EAScene : MonoBehaviour
         sceneInfo.TryGetValue(controllerClassType, out Type t);
         EASceneLogic sm = (EASceneLogic)EAFrameUtil.AddChild(EAMainFrame.instance.gameObject,t,"gameLogic") as EASceneLogic;
         sm.Initialize();
+
+        EADataAdaptor dataAdapter = GetComponent<EADataAdaptor>();
+
+        if (sm && dataAdapter) sm.dataAdapter = dataAdapter;
+
         string info = (sm == null) ? "null" : "valid";
         Debug.Log($"EA SceneConfig.CreateSceneLogic sm is {info} controller class type : {controllerClassType}");
     }
