@@ -128,7 +128,7 @@ public class GameResourceManager : Singleton<GameResourceManager>
         
         go = Instantiate(goPref) as GameObject;
         if(go.activeSelf == false) go.SetActive(true);
-
+        
         return go;
     }
 

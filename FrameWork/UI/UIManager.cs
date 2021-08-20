@@ -46,18 +46,33 @@ public class UIManager : Singleton<UIManager>
 
         if (goRoot == null)
         {
+            int uiLayer = LayerMask.NameToLayer("UI");
+
             goRoot = new GameObject(UI_ROOT_NAME,typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
 
             Canvas c = goRoot.GetComponent<Canvas>();
             c.renderMode = RenderMode.ScreenSpaceOverlay;
 
+            CanvasScaler cs = goRoot.GetComponent<CanvasScaler>();
+            cs.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            cs.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+            cs.referenceResolution = new Vector2(EAMainFrame.screenX, EAMainFrame.screenY);
+
+            GraphicRaycaster ray = goRoot.GetComponent<GraphicRaycaster>();
+            goRoot.layer = uiLayer;
+            
             GameObject page = new GameObject(UI_ROOT_PAGE, typeof(RectTransform) , typeof(SafeRect));
             GameObject above = new GameObject(UI_ROOT_ABOVE, typeof(RectTransform) , typeof(SafeRect));
             GameObject popup = new GameObject(UI_ROOT_POPUP, typeof(RectTransform) , typeof(SafeRect));
 
-            page.transform.SetParent(goRoot.transform);
-            above.transform.SetParent(goRoot.transform);
-            popup.transform.SetParent(goRoot.transform);
+            page.layer  = uiLayer;
+            above.layer = uiLayer;
+            popup.layer = uiLayer;
+
+            EAFrameUtil.SetParent(page.transform , goRoot.transform);
+            EAFrameUtil.SetParent(above.transform, goRoot.transform);
+            EAFrameUtil.SetParent(popup.transform, goRoot.transform);
+
         }
 
         if (null != goRoot)
@@ -84,8 +99,8 @@ public class UIManager : Singleton<UIManager>
 
         GameObject goPage = m_ResMgr.Create(EResourceGroup.UIPage, ePage.ToString());
         if (goPage == null) return null;
-        goPage.transform.SetParent(m_tRootPage);
-
+        EAFrameUtil.SetParent(goPage.transform, m_tRootPage);
+       
         var key = (int)ePage.Id;
         UICtrl uiCtrl = goPage.GetComponent<UICtrl>();
         if (uiPage.ContainsKey(key))
@@ -99,7 +114,7 @@ public class UIManager : Singleton<UIManager>
     {
         GameObject goPage = m_ResMgr.Create(EResourceGroup.UIPage, ePage.ToString());
         if (goPage == null) return null;
-        goPage.transform.SetParent(m_tRootAbove);
+        EAFrameUtil.SetParent(goPage.transform, m_tRootAbove);
 
         var key = (int)ePage.Id;
         UICtrl uiCtrl = goPage.GetComponent<UICtrl>();
@@ -114,7 +129,7 @@ public class UIManager : Singleton<UIManager>
     {
         GameObject goPopup = m_ResMgr.Create(EResourceGroup.UIPopup, ePopup.ToString());
         if (goPopup == null) return null;
-        goPopup.transform.SetParent(m_tRootPopup);
+        EAFrameUtil.SetParent(goPopup.transform, m_tRootPopup);
 
         var key = (int)ePopup.Id;
         UICtrl uiCtrl = goPopup.GetComponent<UICtrl>();
@@ -129,7 +144,7 @@ public class UIManager : Singleton<UIManager>
     {
         GameObject goComp = m_ResMgr.Create(EResourceGroup.UIComponent, eCompo.ToString());
 
-        if (goComp != null) goComp.transform.SetParent(tRoot);
+        if (goComp != null) EAFrameUtil.SetParent(goComp.transform,tRoot);
         if (goComp != null) return goComp.GetComponent<T>();
         
         return default;

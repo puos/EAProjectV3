@@ -109,6 +109,28 @@ public static class EAFrameUtil
         return null;
     }
 
+    public static void Reset(this Transform tf)
+    {
+        tf.localPosition = Vector3.zero;
+        tf.localRotation = Quaternion.identity;
+        tf.localScale = Vector3.one;
+    }
+
+    public static void Reset(this RectTransform tf)
+    {
+        tf.anchoredPosition3D = Vector3.zero;
+        tf.sizeDelta = Vector2.zero;
+        tf.localScale = Vector3.one;
+    }
+
+    public static void SetParent(Transform tf,Transform tParent)
+    {
+        tf.SetParent(tParent);
+        RectTransform tRect = tf.GetComponent<RectTransform>();
+        if (tRect == null) tf.Reset();
+        if (tRect != null) tRect.Reset();
+    }
+
     /// <summary>
     /// Used when you want to call a certain property getter without using return value.
     /// 예) Bounds bounds = scrollView.bounds; // 'unused variable' Warning triggered.

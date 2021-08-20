@@ -21,6 +21,9 @@ public class EASceneInspector : Editor
 
         if (t.script != null) t.controllerClassType = t.script.name;
 
+        t.screenX = EditorGUILayout.FloatField("screenX ", t.screenX);
+        t.screenY = EditorGUILayout.FloatField("screenY ", t.screenY);
+
         if (EditorGUI.EndChangeCheck()) EditorUtility.SetDirty(t);
 
         base.serializedObject.ApplyModifiedProperties();
