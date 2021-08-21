@@ -94,6 +94,21 @@ public class CHero : EAActor
         obj.m_ModelTypeIndex = "Player";
         obj.m_objClassType = typeof(CHero);
         mainPlayer.ResetInfo(eObjectState.CS_SETENTITY);
+
+        EAItemInfo info = new EAItemInfo();
+        info.m_eItemType = eItemType.eIT_Weapon;
+
+        EAItemAttackWeaponInfo weaponinfo = new EAItemAttackWeaponInfo();
+
+        weaponinfo.id = "Barrel";
+        weaponinfo.attachType = eAttachType.eWT_Turret;
+        weaponinfo.bAutoMode = false;
+
+        EA_CItemUnit unit = EA_ItemManager.instance.CreateItemUnit(info);
+        unit.SetAttackWeaponInfo(weaponinfo);
+        EA_ItemManager.instance.InsertEquip(mainPlayer.GetObjID(), 0 , unit);
+        EA_ItemManager.instance.EquipmentItem(mainPlayer.GetObjID(), 0);
+
         return mainPlayer.GetLinkIActor() as CHero;
     }
 }

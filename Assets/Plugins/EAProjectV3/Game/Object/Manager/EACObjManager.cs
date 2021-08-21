@@ -38,7 +38,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         CharInfo emptyCharInfo = new CharInfo();
         m_MainPlayer.SetCharInfo(emptyCharInfo);
 
-        EAIDGenerator m_IDGenerater = new EAIDGenerator(50000);
+        m_IDGenerater = new EAIDGenerator(50000);
     }
 
     public void Destroy() 
