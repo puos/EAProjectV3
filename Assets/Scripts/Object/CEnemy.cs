@@ -85,4 +85,80 @@ public class CEnemy : EAActor
 
         if(value != null) value();
     }
+
+    private void Chasing(CEnemy enemy)
+    {
+        enemy.StateAdd(CEnemy.EFSMState.Chasing, () =>
+        {
+            if (enemy.target == null)
+            {
+                enemy.ChangeFSMState((int)CEnemy.EFSMState.Move);
+                return;
+            }
+
+            Debug.Log("enemy chase :" + enemy + " -> " + enemy.target.Id);
+
+            Vector3 targetPos = enemy.target.GetPos();
+            enemy.Stop();
+            enemy.SetRotation(Quaternion.LookRotation((targetPos - enemy.GetPos()).normalized, Vector3.up));
+
+            Debug.Log("before enemy pos : " + enemy.GetPos() + " target pos : " + targetPos);
+
+            enemy.MoveTo(targetPos);
+        });
+
+        float updateTime = Time.time;
+
+        enemy.StateAdd(CEnemy.EFSMState.Chasing, () =>
+        {
+            if (Time.time - updateTime <= 0) return;
+
+            updateTime = Time.time + 2f;
+
+            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.black, 10f, 2f);
+
+            if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) > 12.0f)
+            {
+                enemy.ChangeFSMState(CEnemy.EFSMState.Move);
+                return;
+            }
+
+            if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) > 10.0f)
+            {
+                return;
+            }
+
+            enemy.ChangeFSMState(CEnemy.EFSMState.Attack);
+        });
+    }
+
+    private void Attack(CEnemy enemy)
+    {
+        float updateTime = Time.time;
+
+        enemy.StateAdd(CEnemy.EFSMState.Attack, () =>
+        {
+            Vector3 dir = enemy.target.GetPos() - enemy.GetPos();
+            dir.Normalize();
+
+            enemy.Stop();
+            enemy.SetRotationSub(Quaternion.LookRotation(dir, Vector3.up));
+            enemy.StartFire();
+        });
+
+        enemy.UpdateAdd(CEnemy.EFSMState.Attack, () =>
+        {
+            if (Time.time - updateTime <= 0) return;
+            updateTime = Time.time + 3f;
+
+            if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) >= 10.0f)
+            {
+                enemy.ChangeFSMState((int)CEnemy.EFSMState.Chasing);
+                return;
+            }
+
+            enemy.CmdState(CEnemy.EFSMState.Attack);
+
+        });
+    }
 }

@@ -20,7 +20,7 @@ public class CHero : EAActor
         Input.multiTouchEnabled = true;
 
         rb.useGravity = true;
-        actorMover.SetSpeed(400);
+        actorMover.SetSpeed(2f);
         if (turret != null) turret_rotation = turret.rotation;
         collisionEvent = (Collision c, EAObject myObj) => 
         {

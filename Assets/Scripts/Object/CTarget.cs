@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class CTarget : EAActor
 {
-   
+    public static CTarget Clone()
+    {
+        return null;
+    }
 }

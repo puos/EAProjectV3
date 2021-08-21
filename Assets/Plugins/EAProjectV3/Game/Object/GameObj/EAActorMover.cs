@@ -8,7 +8,7 @@ using UnityEngine;
 public class EAActorMover : MonoBehaviour
 {
     private EAActor actor = null;
-    private float arriveEpsilon = 0.01f;
+    [SerializeField] private float arriveEpsilon = 0.01f;
     private bool isMove = false;
     protected Vector3 targetPosition = Vector3.zero;
     protected System.Action onMoveComplete = null;

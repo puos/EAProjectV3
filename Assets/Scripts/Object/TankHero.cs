@@ -25,9 +25,11 @@ public class TankHero : EASceneLogic
     private int enemiesCount = 0;
     private int myHeroId = 10000;
 
-    //[SerializeField] private CameraFollow cameraFollow = null;
-    //[SerializeField] private CubeManager cubeManager = null;
-    private Transform cubeParent = null;
+    public State state { get; private set; }
+
+    private CameraFollow cameraFollow = null;
+    private CubeManager cubeManager = null;
+    private Transform cubeParent    = null;
 
     private IngameUI inGameUi = null;
 
@@ -36,7 +38,6 @@ public class TankHero : EASceneLogic
 
     protected override void OnInit()
     {
-
         hero = CHero.MainPlayerCreate();
 
         inGameUi = UIManager.instance.OpenPage<IngameUI>(TankUIPage.ingameUi);
@@ -55,195 +56,146 @@ public class TankHero : EASceneLogic
         enemies.Clear();
         users.Clear();
 
-        GameObject obj = GetData("CubeParent");
-        if (obj != null) cubeParent = obj.transform;
+        {
+            GameObject obj = GetData("CubeParent");
+            if (obj != null) cubeParent = obj.transform;
+        }
+
+        {
+            GameObject obj = GetData("CameraFollow");
+            if (obj != null) cameraFollow = obj.GetComponent<CameraFollow>();
+        }
+        
     }
 
     protected override IEnumerator OnPostInit()
     {
+        ChangeState(State.Init);
         yield return null;
     }
 
     protected override void OnUpdate()
     {
-
+        RunState();
     }
 
     protected override void OnClose()
     {
     }
 
-    //protected override bool ChangeState(State newState)
-    //{
-    //    bool changed = base.ChangeState(newState);
+    protected bool ChangeState(State newState)
+    {
+        if (newState != State.Start && newState <= state)
+            return false;
 
-    //    if (changed == false)
-    //        return false;
+        state = newState;
 
-    //    switch(state)
-    //    {
-    //        case State.Init:
-    //            {
-    //                unitList.Clear();
+        Debug.Log("ChangeState: " + state);
 
-    //                GameObject obj = null;
+        switch (state)
+        {
+            case State.Init:
+                {
+                    unitList.Clear();
+                                                        
+                    unitList.Add(hero);
+                    users.Add(hero);
 
-    //                //EACObjManager.instance
+                    //target = CTarget.Clone();
+                    //unitList.Add(target);
+                    //users.Add(target);
 
-    //                //hero = 
+                    if(cameraFollow != null) cameraFollow.Initialize(hero.transform);
 
-    //                //hero.triggerEvent = (Collider c, EAObject myObj) =>
-    //                //{
-    //                //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
+                    //MakeMaze(_TileX, _TileY);
 
-    //                //    if (bullet == null) return;
-    //                //    if (bullet.ownerId == hero.Id) return;
+                    //MazeGen.CTileAttrib tile = SpawnUnit(target, false);
+                    //if (tile != null) tile.cubeObject.DoorAllClose();
 
-    //                //    bullet.Release();
-    //                //    myObj.Release();
+                    //SpawnUnit(hero);
+                    ChangeState(State.Start);
 
-    //                //    //CFx fx = fxManager.StartFx(EFxTag.HitTankFx);
-    //                //    //fx.SetPos(hero.GetPos());
+                }
+                break;
 
-    //                //    myObj.Release();
-
-    //                //    ChangeState(State.Result);
-    //                //};
-
-    //                //hero.collisionEvent = (Collision c, EAObject myObj) => 
-    //                //{
-    //                //    EAActor unit = c.gameObject.GetComponent<EAActor>();
-
-    //                //    if (unit == null) return;
-
-    //                //    hero.Stop();
-    //                //};
-
-    //                //unitList.Add(hero);
-    //                //users.Add(hero);
-
-    //                //obj = Instantiate(hqTemplate);
-    //                //target = obj.GetComponent<CTarget>();
-    //                //target.Initialize();
-
-    //                //target.triggerEvent = (Collider c, EAObject myObj) => 
-    //                //{
-    //                //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
-
-    //                //    if (bullet == null) return;
-
-    //                //    bullet.Release();
-    //                //    myObj.Release();
-
-    //                //    //CFx fx = fxManager.StartFx(EFxTag.HitTankFx);
-    //                //    //fx.SetPos(hero.GetPos());
-
-    //                //    myObj.SetObjState(eObjectState.CS_DEAD);
-
-    //                //    users.Remove(target);
-    //                //    unitList.Remove(target);
-
-    //                //    ChangeState(State.Result);
-    //                //};
+            case State.Start:
+                {
+                    tankSpawnCount = 1;
+                    updateWaveWaitTime = 0;
+                    enemiesCount = 0;
+                    enemies.Clear();
+                }
+                break;
 
 
-    //                //unitList.Add(target);
-    //                //users.Add(target);
+            case State.Result:
+                {
+                    for (int i = 0; i < enemies.Count; ++i)
+                    {
+                        enemies[i].Release();
+                        Destroy(enemies[i].gameObject);
+                    }
 
-    //                //if(cameraFollow != null) cameraFollow.Initialize(hero.transform);
+                    for (int i = 0; i < users.Count; ++i)
+                    {
+                        users[i].Release();
+                    }
 
-    //                //MakeMaze(_TileX, _TileY);
+                    enemies.Clear();
+                    users.Clear();
 
-    //                //MazeGen.CTileAttrib tile = SpawnUnit(target, false);
-    //                //if (tile != null) tile.cubeObject.DoorAllClose();
+                    hero.Release();
+                    hero.SetActive(false);
 
-    //                //SpawnUnit(hero);
-    //                //ChangeState(State.Start);
+                    target.Release();
+                    target.SetActive(false);
+                }
+                break;
+        }
 
-    //            }
-    //            break;
+        return true;
+    }
 
-    //        case State.Start:
-    //            {
-    //                tankSpawnCount = 1;
-    //                updateWaveWaitTime = 0;
-    //                enemiesCount = 0;
-    //                enemies.Clear();
-    //            }
-    //            break;
+    protected void RunState()
+    {
+        switch (state)
+        {
+            case State.Start:
+                {
+                    HeroMove();
+                    HeroAttack();
+                    SpawnEnemies();
+                }
+                break;
+        }
+    }
 
+    private void HeroMove()
+    {
+        Vector3 direction = inGameUi.GetMoveDirection();
+        direction.z = direction.y;
+        direction.y = 0;
+        direction.Normalize();
 
-    //        case State.Result:
-    //            {
-    //                for(int i = 0; i < enemies.Count; ++i)
-    //                {
-    //                    enemies[i].Release();
-    //                    Destroy(enemies[i].gameObject);
-    //                }
+        Vector3 pos = hero.GetPos() + direction * 3.0f;
 
-    //                for(int i = 0; i < users.Count; ++i)
-    //                {
-    //                    users[i].Release();
-    //                }
+        bool changed = Vector3.Dot(hero.rb.velocity, direction) < 0 ? true : false;
 
-    //                enemies.Clear();
-    //                users.Clear();
+        if (direction.magnitude > 0) Debug.DrawLine(hero.GetPos(), pos, Color.red);
 
-    //                hero.Release();
-    //                hero.SetActive(false);
+        if (changed == true) hero.Stop();
+        if (direction.magnitude > 0) hero.MoveTo(pos);
+    }
 
-    //                target.Release();
-    //                target.SetActive(false);
-    //            }
-    //            break;
-    //    }
+    private void HeroAttack()
+    {
+        Vector3 direction = inGameUi.GetAttackDirection();
+        direction.z = direction.y;
+        direction.y = 0;
+        direction.Normalize();
 
-    //    return true;
-    //}
-
-    //protected override void RunState()
-    //{
-    //    base.RunState();
-
-    //    switch (state)
-    //    {
-    //        case State.Start:
-    //            {
-    //                if (moveJoystick != null) HeroMove();
-    //                if (attackJoystick != null) HeroAttack();
-
-    //                SpawnEnemies();
-    //            }
-    //            break;
-    //    }
-    //}
-
-    //private void HeroMove()
-    //{
-    //    Vector3 direction = moveJoystick.GetInputDirection();
-    //    direction.z = direction.y;
-    //    direction.y = 0;
-    //    direction.Normalize();
-
-    //    Vector3 pos = hero.GetPos() + direction * 3.0f;
-
-    //    bool changed = Vector3.Dot(hero.rb.velocity, direction) < 0 ? true : false;
-
-    //    if (direction.magnitude > 0) Debug.DrawLine(hero.GetPos(), pos, Color.red);
-
-    //    if (changed == true) hero.Stop();
-    //    if (direction.magnitude > 0) hero.MoveTo(pos);
-    //}
-
-    //private void HeroAttack()
-    //{
-    //    Vector3 direction = attackJoystick.GetInputDirection();
-    //    direction.z = direction.y;
-    //    direction.y = 0;
-    //    direction.Normalize();
-
-    //    if (direction.magnitude > 0) hero.SetRotationSub(Quaternion.LookRotation(direction , Vector3.up));
-    //}
+        if (direction.magnitude > 0) hero.SetRotationSub(Quaternion.LookRotation(direction, Vector3.up));
+    }
 
     //private void MakeMaze(int tileX,int tileZ)
     //{
@@ -418,10 +370,30 @@ public class TankHero : EASceneLogic
             enemiesCount = enemiesCount + 1;
         }
     }
+        
+    public List<EAActor> WithinViewRange(List<EAActor> list, EAActor unit , float closetRadius = 0f)
+    {
+        List<EAActor> units = new List<EAActor>();
+        IEnumerator<EAActor> it = list.GetEnumerator();
+
+        while(it.MoveNext())
+        {
+            EAActor curUnit = it.Current;
+            float dist  = Vector3.Distance(unit.GetPos(), curUnit.GetPos());
+            float range = closetRadius + curUnit.GetBRadius();
+
+            if (object.ReferenceEquals(unit, curUnit)) continue;
+            if (dist > range) continue;
+
+            units.Add(curUnit);
+        }
+
+        return units;
+    }
 
     private void Move(CEnemy enemy)
     {
-        enemy.StateAdd(CEnemy.EFSMState.Move, () => 
+        enemy.StateAdd(CEnemy.EFSMState.Move, () =>
         {
             enemy.SetTarget(null);
 
@@ -429,8 +401,8 @@ public class TankHero : EASceneLogic
             {
                 return x.cubeObject.col.bounds.Contains(enemy.GetPos());
             });
-            
-            if(m == null)
+
+            if (m == null)
             {
                 enemy.ChangeFSMState(CEnemy.EFSMState.None);
                 return;
@@ -490,103 +462,5 @@ public class TankHero : EASceneLogic
         });
     }
 
-    private void Chasing(CEnemy enemy)
-    {
-        enemy.StateAdd(CEnemy.EFSMState.Chasing, () =>
-        {
-            if(enemy.target == null)
-            {
-                enemy.ChangeFSMState((int)CEnemy.EFSMState.Move);
-                return;
-            }
-
-            Debug.Log("enemy chase :" + enemy + " -> " + enemy.target.Id);
-
-            Vector3 targetPos = enemy.target.GetPos();
-            enemy.Stop();
-            enemy.SetRotation(Quaternion.LookRotation((targetPos - enemy.GetPos()).normalized, Vector3.up));
-
-            Debug.Log("before enemy pos : " + enemy.GetPos() + " target pos : " + targetPos);
-
-            enemy.MoveTo(targetPos);
-        });
-
-        float updateTime = Time.time;
-
-        enemy.StateAdd(CEnemy.EFSMState.Chasing, () =>
-        {
-            if (Time.time - updateTime <= 0) return;
-
-            updateTime = Time.time + 2f;
-
-            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.black , 10f, 2f);
-
-            if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) > 12.0f)
-            {
-                enemy.ChangeFSMState(CEnemy.EFSMState.Move);
-                return;
-            }
-
-            if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) > 10.0f)
-            {
-                return;
-            }
-
-            
-            enemy.ChangeFSMState(CEnemy.EFSMState.Attack);
-
-        });
-    }
    
-    private void Attack(CEnemy enemy)
-    {
-        float updateTime = Time.time;
-
-        enemy.StateAdd(CEnemy.EFSMState.Attack, () =>
-        {
-             Vector3 dir = enemy.target.GetPos() - enemy.GetPos();
-            dir.Normalize();
-
-            enemy.Stop();
-            enemy.SetRotationSub(Quaternion.LookRotation(dir, Vector3.up));
-            enemy.StartFire();
-        });
-
-        enemy.UpdateAdd(CEnemy.EFSMState.Attack, () => 
-        {
-            if (Time.time - updateTime <= 0) return;
-            updateTime = Time.time + 3f;
-
-            if (Vector3.Distance(enemy.target.GetPos(), enemy.GetPos()) >= 10.0f)
-            {
-                enemy.ChangeFSMState((int)CEnemy.EFSMState.Chasing);
-                return;
-            }
-                       
-            enemy.CmdState(CEnemy.EFSMState.Attack);
-
-        });
-    }
-    
-    public List<EAActor> WithinViewRange(List<EAActor> list, EAActor unit , float closetRadius = 0f)
-    {
-        List<EAActor> units = new List<EAActor>();
-        IEnumerator<EAActor> it = list.GetEnumerator();
-
-        while(it.MoveNext())
-        {
-            EAActor curUnit = it.Current;
-            float dist  = Vector3.Distance(unit.GetPos(), curUnit.GetPos());
-            float range = closetRadius + curUnit.GetBRadius();
-
-            if (object.ReferenceEquals(unit, curUnit)) continue;
-            if (dist > range) continue;
-
-            units.Add(curUnit);
-        }
-
-        return units;
-    }
-
-  
 }

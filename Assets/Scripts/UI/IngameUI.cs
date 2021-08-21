@@ -22,6 +22,9 @@ public class IngameUI : UICtrl
     public void SetMoveEndEvent(Action action) { moveJoystick.onEndEvent = action; }
     public void SetAttackEndEvent(Action action) { attackJoystick.onEndEvent = action; }
 
+    public Vector3 GetMoveDirection() { return moveJoystick.GetInputDirection(); }
+    public Vector3 GetAttackDirection() { return attackJoystick.GetInputDirection(); }
+
     public void OnPointerMoveDown(BaseEventData eventData)
     {
         if (moveJoystick.gameObject.activeSelf == false) moveJoystick.gameObject.SetActive(true);
