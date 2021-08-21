@@ -18,9 +18,15 @@ static class EA_ObjectFactory
 
         string prefabName = setObjInfo.m_ModelTypeIndex;
         EAObject eaObj = GameResourceManager.instance.CreateEAObject(EResourceGroup.Object, setObjInfo.m_objClassType, prefabName);
-        pSetObject.SetLinkEntity(eaObj);
 
-        if (eaObj == null) return false;
+        if (eaObj == null)
+        {
+            GameObject obj = new GameObject(prefabName, setObjInfo.m_objClassType);
+            eaObj = obj.GetComponent<EAObject>();
+            eaObj.Initialize();
+        }
+
+        pSetObject.SetLinkEntity(eaObj);
 
         //	Create around object table
         switch (setObjInfo.m_eObjType)

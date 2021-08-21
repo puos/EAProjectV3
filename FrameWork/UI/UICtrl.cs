@@ -10,8 +10,6 @@ public class UICtrl : MonoBehaviour
     private bool m_bInitialized = false;
     private bool m_bActive = false;
 
-    protected UIManager m_UiMgr = null;
-
     private void Awake()
     {
         Initialize();
@@ -33,8 +31,6 @@ public class UICtrl : MonoBehaviour
 
         m_CachedObject = gameObject;
         m_CachedTransform = GetComponent<RectTransform>();
-
-        if (null == m_UiMgr) m_UiMgr = UIManager.instance;
     }
 
     public virtual void Open()
