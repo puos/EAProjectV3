@@ -139,7 +139,7 @@ public class EAActor : EAObject
 
         if (charBase == null) return;
 
-        EA_Equipment equipment = EA_ItemManager.instance.GetEquipment(charBase.GetObjID());
+        EA_Equipment equipment = EA_ItemManager.instance.GetPCEquipItem(charBase.GetObjID());
 
         if (equipment == null) return;
 
