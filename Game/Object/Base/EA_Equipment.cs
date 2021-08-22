@@ -127,6 +127,6 @@ public class EA_Equipment
         if (pItem == null) return objID;
 
         user.SetItemAttachment(itemUnit.GetAttachType(), pItem.GetLinkEntity());
-        return objID;
+        return pItem.GetObjID();
     }
 }

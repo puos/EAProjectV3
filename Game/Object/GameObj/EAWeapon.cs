@@ -61,7 +61,7 @@ public class EAWeapon : EAItem
         EA_CItem item = EACObjManager.instance.CreateItem(objInfo, itemInfo);
         EAProjectile projectile = item.GetLinkItem() as EAProjectile;
         projectile.SetWeaponInfo(weaponInfo);
-        projectile.Use();
+        projectile.Move(muzzleTransform.forward, weaponInfo.fProjectileSpeed, muzzleTransform, 0, weaponInfo.fKillDistance);
     }
 
     public EAItemAttackWeaponInfo GetWeaponInfo() { return weaponInfo; }
