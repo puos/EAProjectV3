@@ -18,12 +18,6 @@ public class MazeTest : MonoBehaviour
         MakeMaze();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void MakeMaze()
     {
         float widthX = 10f;

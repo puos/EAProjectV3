@@ -78,7 +78,7 @@ public class EAMainFrame : Singleton<EAMainFrame>
         onUpdate.Clear();
         onLazyUpdate.Clear();
 
-        Debug.Assert(instance != null);
+        Debug.Assert(m_instance != null);
     }
 
     // Update is called once per frame

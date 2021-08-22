@@ -8,6 +8,8 @@ public class EAMapObject : EAObject
 {
     EA_CMapObject m_pDiaObjectBase = null;
 
+    public uint Id { get { return (m_pDiaObjectBase != null) ? m_pDiaObjectBase.GetObjID() : CObjGlobal.InvalidObjID; } }
+
     public void SetMapBase(EA_CMapObject pDiaMapBase)
     {
         m_pDiaObjectBase = pDiaMapBase;
@@ -16,6 +18,13 @@ public class EAMapObject : EAObject
     public EA_CMapObject GetMapBase()
     {
         return m_pDiaObjectBase;
+    }
+
+    public override void Release()
+    {
+        base.Release();
+
+        EACObjManager.instance.DeleteGameObject(eObjectType.CT_MAPOBJECT , Id);
     }
 
 }

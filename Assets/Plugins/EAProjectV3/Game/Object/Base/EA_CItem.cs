@@ -62,7 +62,7 @@ public class EA_CItem : EA_CObjectBase
     public void SetLinkItem(EAItem item)
     {
         if (item == null) return;
-        if (m_pLinkItem == null) return;
+        if (m_pLinkItem == item) return;
 
         m_pLinkItem = item;
         m_pLinkItem.SetItemBase(this);

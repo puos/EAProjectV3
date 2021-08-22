@@ -17,8 +17,6 @@ public class CHero : EAActor
 
         actorMover.isReachedSetPos = false;
 
-        Input.multiTouchEnabled = true;
-
         rb.useGravity = true;
         actorMover.SetSpeed(2f);
         if (turret != null) turret_rotation = turret.rotation;
@@ -53,14 +51,13 @@ public class CHero : EAActor
 
     public void StartFire()
     {
-        //if (activeFire == false) return;
+       if (currWeapon != null) currWeapon.FireShoot();
+    }
 
-        //CBullet bullet = magazine.Get();
-
-        //bullet.ownerId = Id;
-        //bullet.SetActive(true);
-        //bullet.SetRotation(Quaternion.LookRotation(muzzle.forward, Vector3.up));
-        //bullet.Move(muzzle.forward, 5f, muzzle, 0, 23.0f);
+    public override bool SetItemAttachment(eAttachType attachType, EAObject gameObject)
+    {
+        if (attachType == eAttachType.eWT_Turret) EAFrameUtil.SetParent(gameObject.tr, turret);
+        return true;
     }
 
     public override void Release()
@@ -97,16 +94,22 @@ public class CHero : EAActor
 
         EAItemInfo info = new EAItemInfo();
         info.m_eItemType = eItemType.eIT_Weapon;
+        info.m_objClassType = typeof(EAWeapon);
+        info.m_ModelTypeIndex = "Barrel";
 
         EAItemAttackWeaponInfo weaponinfo = new EAItemAttackWeaponInfo();
 
         weaponinfo.id = "Barrel";
         weaponinfo.attachType = eAttachType.eWT_Turret;
         weaponinfo.bAutoMode = false;
+        weaponinfo.uProjectileModelType = "Bullet";
+        weaponinfo.m_objProjectileClassType = typeof(CBullet);
+        weaponinfo.fProjectileSpeed = 5f;
+        weaponinfo.fKillDistance = 23f;
 
         EA_CItemUnit unit = EA_ItemManager.instance.CreateItemUnit(info);
         unit.SetAttackWeaponInfo(weaponinfo);
-        EA_ItemManager.instance.InsertEquip(mainPlayer.GetObjID(), 0 , unit);
+        EA_ItemManager.instance.InsertEquip(mainPlayer.GetObjID(), 0, unit);
         EA_ItemManager.instance.EquipmentItem(mainPlayer.GetObjID(), 0);
 
         return mainPlayer.GetLinkIActor() as CHero;

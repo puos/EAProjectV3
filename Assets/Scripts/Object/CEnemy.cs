@@ -14,10 +14,21 @@ public class CEnemy : EAActor
     public override void Initialize()
     {
         base.Initialize();
+        
+        turret = GetTransform("TankTurret");
+
         rb.useGravity = true;
 
         target = null;
         actorMover.isReachedSetPos = false;
+        SetSpeed(3.5f);
+
+        collisionEvent = (Collision c, EAObject myObj) =>
+        {
+            EAActor unit = c.gameObject.GetComponent<EAActor>();
+            if (unit == null) return;
+            Stop();
+        };
     }
 
     public override void Release()
@@ -30,6 +41,12 @@ public class CEnemy : EAActor
         base.UpdatePerFrame();
 
         FSMUpdate();
+    }
+
+    public override bool SetItemAttachment(eAttachType attachType, EAObject gameObject)
+    {
+        if (attachType == eAttachType.eWT_Turret) EAFrameUtil.SetParent(gameObject.tr, turret);
+        return true;
     }
 
     public void StartFire()
@@ -86,7 +103,7 @@ public class CEnemy : EAActor
         if(value != null) value();
     }
 
-    private void Chasing(CEnemy enemy)
+    private static void Chasing(CEnemy enemy)
     {
         enemy.StateAdd(CEnemy.EFSMState.Chasing, () =>
         {
@@ -132,7 +149,7 @@ public class CEnemy : EAActor
         });
     }
 
-    private void Attack(CEnemy enemy)
+    private static void Attack(CEnemy enemy)
     {
         float updateTime = Time.time;
 
@@ -160,5 +177,43 @@ public class CEnemy : EAActor
             enemy.CmdState(CEnemy.EFSMState.Attack);
 
         });
+    }
+
+    public static CEnemy Clone() 
+    {
+        ObjectInfo obj = new ObjectInfo();
+
+        obj.m_ModelTypeIndex = "Enemy";
+        obj.m_objClassType = typeof(CEnemy);
+
+        MobInfo mobInfo = new MobInfo();
+        EA_CCharMob mob = EACObjManager.instance.CreateMob(obj, mobInfo);
+
+        EAItemInfo info = new EAItemInfo();
+        info.m_eItemType = eItemType.eIT_Weapon;
+        info.m_objClassType = typeof(EAWeapon);
+        info.m_ModelTypeIndex = "Barrel";
+     
+        EAItemAttackWeaponInfo weaponinfo = new EAItemAttackWeaponInfo();
+
+        weaponinfo.id = "Barrel";
+        weaponinfo.attachType = eAttachType.eWT_Turret;
+        weaponinfo.bAutoMode = false;
+        weaponinfo.uProjectileModelType = "Bullet";
+        weaponinfo.m_objProjectileClassType = typeof(CBullet);
+        weaponinfo.fProjectileSpeed = 5f;
+        weaponinfo.fKillDistance = 23f;
+
+        EA_CItemUnit unit = EA_ItemManager.instance.CreateItemUnit(info);
+        unit.SetAttackWeaponInfo(weaponinfo);
+        EA_ItemManager.instance.InsertEquip(mob.GetObjID(), 0, unit);
+        EA_ItemManager.instance.EquipmentItem(mob.GetObjID(), 0);
+
+        CEnemy enemy = mob.GetLinkIActor() as CEnemy;
+
+        Chasing(enemy);
+        Attack(enemy);
+        
+        return enemy;
     }
 }

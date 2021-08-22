@@ -298,14 +298,16 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         return item;
     }
 
-    EA_CMapObject CreateMapObject(EAObjID id)
+    public EA_CMapObject CreateMapObject(ObjectInfo GameObjInfo, MapObjInfo mapInfo)
     {
-        EA_CMapObject pMapObject = GetMapObject(id);
+        GameObjInfo.m_eObjType = eObjectType.CT_MAPOBJECT;
+        EA_CMapObject pMapObject = CreateGameObject(GameObjInfo) as EA_CMapObject;
 
-        if (pMapObject != null) return pMapObject;
+        if(pMapObject != null)
+        {
+            
+        }
 
-        pMapObject = new EA_CMapObject();
-        m_Objects.Add(id, pMapObject);
         return pMapObject;
     }
 

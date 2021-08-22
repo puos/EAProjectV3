@@ -208,14 +208,14 @@ public class ItemObjInfo
 
 public class MapObjInfo
 {
-    public int m_nDrability;
+    public int m_nDurability;
 
     public MapObjInfo() 
     {
-        m_nDrability = 0;
+        m_nDurability = 0;
     }
     public MapObjInfo(MapObjInfo mapInfo)
     {
-        m_nDrability = mapInfo.m_nDrability;
+        m_nDurability = mapInfo.m_nDurability;
     }
 }

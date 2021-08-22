@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CCube : EAObject
+public class CCube : EAMapObject
 {
     public enum DIR { UP , DOWN , LEFT , RIGHT}
 
@@ -11,12 +11,25 @@ public class CCube : EAObject
 
     MazeGen.CTileAttrib cube = new MazeGen.CTileAttrib();
 
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SetTriggerEvent((Collider c, EAObject myObj) =>
+        {
+                 CBullet bullet = c.gameObject.GetComponent<CBullet>();
+                 if (bullet == null) return;
+                 myObj.SetActive(false);
+
+        //        CFx fx = fxManager.StartFx(EFxTag.HitWallFx);
+        //        fx.SetPos(bullet.GetPos());
+        });
+    }
+
     public void Initialize(MazeGen.CTileAttrib cube , int tileX, int tileY)
     {
         this.cube = cube;
         this.cube.cubeObject = this;
-
-        Initialize();
 
         for(int i = 0; i < subCubes.Length; ++i)
         {
@@ -68,7 +81,6 @@ public class CCube : EAObject
         });
     }
 
-
     public List<CSubCube> GetRayCubes(Vector3 start, Vector3 end)
     {
         Vector3 to = (end - start).normalized;
@@ -88,5 +100,17 @@ public class CCube : EAObject
             if (check) cubeList.Add(x);
         });
         return cubeList;
+    }
+
+    public static CCube Clone() 
+    {
+        ObjectInfo objInfo = new ObjectInfo();
+        objInfo.m_ModelTypeIndex = "CCube";
+        objInfo.m_objClassType = typeof(CCube);
+
+        MapObjInfo mapInfo = new MapObjInfo();
+
+        EA_CMapObject map = EACObjManager.instance.CreateMapObject(objInfo, mapInfo);
+        return map.GetLinkEntity() as CCube;
     }
 }

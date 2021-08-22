@@ -38,6 +38,8 @@ public class TankHero : EASceneLogic
 
     protected override void OnInit()
     {
+        Input.multiTouchEnabled = true;
+
         hero = CHero.MainPlayerCreate();
 
         inGameUi = UIManager.instance.OpenPage<IngameUI>(TankUIPage.ingameUi);
@@ -107,12 +109,12 @@ public class TankHero : EASceneLogic
 
                     if(cameraFollow != null) cameraFollow.Initialize(hero.transform);
 
-                    //MakeMaze(_TileX, _TileY);
+                    MakeMaze(_TileX, _TileY);
 
                     //MazeGen.CTileAttrib tile = SpawnUnit(target, false);
                     //if (tile != null) tile.cubeObject.DoorAllClose();
 
-                    //SpawnUnit(hero);
+                    SpawnUnit(hero);
                     ChangeState(State.Start);
 
                 }
@@ -197,56 +199,41 @@ public class TankHero : EASceneLogic
         if (direction.magnitude > 0) hero.SetRotationSub(Quaternion.LookRotation(direction, Vector3.up));
     }
 
-    //private void MakeMaze(int tileX,int tileZ)
-    //{
-    //    while(0 != cubeParent.childCount)
-    //    {
-    //        Transform cubeChild = cubeParent.GetChild(0);
-    //        CCube cube = cubeChild.GetComponent<CCube>();
-    //        cube.Release();
-    //    }
+    private void MakeMaze(int tileX, int tileZ)
+    {
+        while (0 != cubeParent.childCount)
+        {
+            Transform cubeChild = cubeParent.GetChild(0);
+            CCube cube = cubeChild.GetComponent<CCube>();
+            cube.Release();
+        }
 
-    //    float widthX = 10f;
-    //    float widthZ = 10f;
+        float widthX = 10f;
+        float widthZ = 10f;
 
-    //    float hTileX = widthX * 0.5f;
-    //    float hTileZ = widthZ * 0.5f;
+        float hTileX = widthX * 0.5f;
+        float hTileZ = widthZ * 0.5f;
 
-    //    Vector3 offset = Vector3.zero;
-    //    offset.x = tileX * hTileX;
-    //    offset.z = tileZ * hTileZ;
+        Vector3 offset = Vector3.zero;
+        offset.x = tileX * hTileX;
+        offset.z = tileZ * hTileZ;
 
-    //    if (mazeGen == null) mazeGen = new MazeGen();
-    //    maze = mazeGen.CreateMap(tileX, tileZ);
+        if (mazeGen == null) mazeGen = new MazeGen();
+        maze = mazeGen.CreateMap(tileX, tileZ);
 
-    //    //for (int i = 0; i < maze.Length; ++i)
-    //    //{
-    //    //    MazeGen.CTileAttrib x = maze[i];
-    //    //    CCube cube = cubeManager.Get();
-    //    //    Vector3 pos = new Vector3(x.mX * widthX + hTileX, 0f, x.mY * widthZ + hTileZ);
-    //    //    pos -= offset;
-    //    //    cube.name = $"[{x.mX},{x.mY}]";
-    //    //    cube.SetPos(pos);
-    //    //    cube.Initialize(x, tileX, tileZ);
-    //    //    cube.SetActive(true);
-    //    //    cube.transform.SetParent(cubeParent);
-
-    //    //    cube.SetTriggerEvent((Collider c, EAObject myObj) =>
-    //    //    {
-    //    //        CBullet bullet = c.gameObject.GetComponent<CBullet>();
-
-    //    //        if (bullet == null) return;
-
-    //    //        bullet.Release();
-
-    //    //        myObj.SetActive(false);
-
-    //    //        CFx fx = fxManager.StartFx(EFxTag.HitWallFx);
-    //    //        fx.SetPos(bullet.GetPos());
-
-    //    //    });
-    //    //}
-    //}
+        for (int i = 0; i < maze.Length; ++i)
+        {
+            MazeGen.CTileAttrib x = maze[i];
+            CCube cube = CCube.Clone();
+            Vector3 pos = new Vector3(x.mX * widthX + hTileX, 0f, x.mY * widthZ + hTileZ);
+            pos -= offset;
+            cube.name = $"[{x.mX},{x.mY}]";
+            cube.SetPos(pos);
+            cube.Initialize(x, tileX, tileZ);
+            cube.SetActive(true);
+            cube.transform.SetParent(cubeParent);
+        }
+    }
 
     private MazeGen.CTileAttrib SpawnUnit(EAActor unit, bool isRandom = true)
     {
@@ -313,59 +300,13 @@ public class TankHero : EASceneLogic
 
             if (updateWaveWaitTime < Time.time) updateWaveWaitTime = Time.time;
 
-            //GameObject obj = Instantiate(enemyTemplate);
-            //CEnemy enemy = obj.GetComponent<CEnemy>();
-            //enemy.Initialize();
-            //enemy.SetSpeed(3.5f);
-            //enemy.SetObjState(eObjectState.CS_SETENTITY);
-            //enemy.SetActiveFire(true);
-
-            //enemy.triggerEvent = (Collider c, EAObject myObj) => 
-            //{
-            //    CBullet bullet = c.gameObject.GetComponent<CBullet>();
-
-            //    if (bullet == null) return;
-            //    if (bullet.ownerId == enemy.Id) return;
-
-            //    bullet.Release();
-
-            //    CFx fx = fxManager.StartFx(EFxTag.HitTankFx);
-            //    fx.SetPos(enemy.GetPos());
-
-            //    if (bullet.ownerId != myHeroId) return;
-
-            //    myObj.SetActive(false);
-            //    myObj.SetState(EAObject.eObjectState.DEAD);
-
-            //    enemies.Remove(enemy);
-            //    unitList.Remove(enemy);
-
-            //    Destroy(enemy.gameObject);
-
-            //    if (enemiesCount == tankSpawnCount)
-            //    {
-            //        if (enemies.Count == 0) ChangeState(State.Result); 
-            //    }
-            //};
-
-            //enemy.collisionEvent = (Collision c, EAObject myObj) =>
-            //{
-            //    EAActor unit = c.gameObject.GetComponent<EAActor>();
-
-            //    if (unit == null) return;
-
-            //    enemy.Stop();
-            //};
-
-            //Move(enemy);
-            //Chasing(enemy);
-            //Attack(enemy);
-
-            ////enemy.SetId(enemies.Count);
-            //SpawnUnit(enemy);
-            //enemy.ChangeFSMState(CEnemy.EFSMState.Move);
-            //enemies.Add(enemy);
-            //unitList.Add(enemy);
+            CEnemy enemy = CEnemy.Clone();
+            
+            Move(enemy);
+            SpawnUnit(enemy);
+            enemy.ChangeFSMState(CEnemy.EFSMState.Move);
+            enemies.Add(enemy);
+            unitList.Add(enemy);
 
             enemiesCount = enemiesCount + 1;
         }
@@ -462,5 +403,4 @@ public class TankHero : EASceneLogic
         });
     }
 
-   
 }
