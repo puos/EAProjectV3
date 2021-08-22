@@ -113,10 +113,8 @@ public class TankHero : EASceneLogic
 
                     //MazeGen.CTileAttrib tile = SpawnUnit(target, false);
                     //if (tile != null) tile.cubeObject.DoorAllClose();
-
                     SpawnUnit(hero);
                     ChangeState(State.Start);
-
                 }
                 break;
 
@@ -132,16 +130,8 @@ public class TankHero : EASceneLogic
 
             case State.Result:
                 {
-                    for (int i = 0; i < enemies.Count; ++i)
-                    {
-                        enemies[i].Release();
-                        Destroy(enemies[i].gameObject);
-                    }
-
-                    for (int i = 0; i < users.Count; ++i)
-                    {
-                        users[i].Release();
-                    }
+                    for (int i = 0; i < enemies.Count; ++i) { enemies[i].Release(); }
+                    for (int i = 0; i < users.Count; ++i) { users[i].Release(); }
 
                     enemies.Clear();
                     users.Clear();
