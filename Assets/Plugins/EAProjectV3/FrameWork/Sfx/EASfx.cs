@@ -105,9 +105,9 @@ public class EASfx : MonoBehaviour
     {
         switch(m_sfxType)
         {
-            case SfxType.sfxTypeTimeLine: break;
-            case SfxType.sfxTypeParticles: break;
-            case SfxType.sfxTypeAnimator: break;
+            case SfxType.sfxTypeTimeLine: SkipTimeLine(); break;
+            case SfxType.sfxTypeParticles: SkipParticles(); break;
+            case SfxType.sfxTypeAnimator: SkipAnimator(); break;
         }
     }
 
@@ -175,5 +175,28 @@ public class EASfx : MonoBehaviour
             slot.callback = cb;
             if (slot.innerObj != null) cb(slot.innerObj);
         }
+    }
+    public void SetParam(string slotName,SfxParamSlotCallback cb)
+    {
+        int slotIdx = FindParamSlotIdxByName(slotName);
+        if (slotIdx < 0) return;
+        SetParam(slotIdx, cb);
+    }
+    private int FindParamSlotIdxByName(string name)
+    {
+        for (int i = 0; i < m_paramSlots.Length; ++i)
+            if (m_paramSlots[i].name.Equals(name, StringComparison.Ordinal))
+                return i;
+        return -1;
+    }
+    private void SkipTimeLine() 
+    {
+    }
+    private void SkipParticles() 
+    {
+    }
+    private void SkipAnimator() 
+    {
+        if (m_anim != null) m_anim.speed = 100f;
     }
 }
