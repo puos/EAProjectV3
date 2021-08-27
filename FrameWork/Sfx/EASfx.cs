@@ -131,7 +131,12 @@ public class EASfx : MonoBehaviour
             receiver.Initialize(this);
         }
 
-        if (m_anims.Length > index) m_anims[index].Play();
+        if (m_anims.Length > index)
+        {
+            m_anims[index].time = 0;
+            m_anims[index].Play();
+        }
+            
     }
     private void StartParticles(bool start = true)
     {
@@ -191,6 +196,8 @@ public class EASfx : MonoBehaviour
     }
     private void SkipTimeLine() 
     {
+        int index = timeLineId;
+        if (m_anims[index] != null) m_anims[index].time = m_anims[index].playableAsset.duration;
     }
     private void SkipParticles() 
     {
