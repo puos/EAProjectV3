@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
+using UnityEngine.Animations;
 
 public class SfxSignalEmit : ParameterizedEmitter<string> { }
 
@@ -27,7 +28,7 @@ public class NotiReciever : MonoBehaviour , INotificationReceiver
     {
         if(notification is ParameterizedEmitter<string> emitter)
         {
-            
+            sfx.AnimEvent_Impact(emitter.parameter);
         }
     }
 }
@@ -44,7 +45,7 @@ public delegate void SfxEventCallback(EASfx sfx, SfxEventType eventType, string 
 
 public delegate void SfxParamSlotCallback(GameObject targetObj);
 
-public class EASfx : MonoBehaviour
+public class EASfx : EAObject
 {
     public enum SfxCategory
     {
@@ -143,8 +144,6 @@ public class EASfx : MonoBehaviour
         for(int i = 0; i < m_particles.Length; ++i)
         {
             ParticleSystem s = m_particles[i];
-            if (s == null) continue;
-
             if (start == true) s.Play();
             if (start == false) s.Stop();
         }
@@ -200,10 +199,36 @@ public class EASfx : MonoBehaviour
         if (m_anims[index] != null) m_anims[index].time = m_anims[index].playableAsset.duration;
     }
     private void SkipParticles() 
-    {
+    {        
     }
     private void SkipAnimator() 
     {
         if (m_anim != null) m_anim.speed = 100f;
+    }
+
+    public bool IsAlive()
+    {
+        switch (m_sfxType)
+        {
+            case SfxType.sfxTypeTimeLine:  return IsAliveTimeLine();
+            case SfxType.sfxTypeParticles: return IsAliveParticles();
+            case SfxType.sfxTypeAnimator:  return IsAliveAnimator();
+            default: return false; 
+        }
+    }
+
+    private bool IsAliveAnimator() => m_anim.GetCurrentAnimatorStateInfo(0).IsName(animationName);
+
+    private bool IsAliveParticles() 
+    {
+        bool check = false;
+        for (int i = 0; i < m_particles.Length; ++i) { check = m_particles[i].IsAlive() ? true : check; }
+        return check;
+    }
+    private bool IsAliveTimeLine() 
+    {
+        int index = timeLineId;
+        if (m_anims[index] == null) return false;
+        return (m_anims[index].time < m_anims[index].playableAsset.duration) ? true : false;
     }
 }

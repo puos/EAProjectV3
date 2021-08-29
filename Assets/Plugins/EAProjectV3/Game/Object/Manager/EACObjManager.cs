@@ -27,13 +27,13 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         //  [3/6/2014 puos] MainPlayer create
         m_MainPlayer = new EA_CCharUser();
 
-        ObjectInfo emptyObjInfo = new ObjectInfo();
+        ObjectInfo mainObjInfo = new ObjectInfo();
 
-        emptyObjInfo.m_eObjState = eObjectState.CS_MYENTITY;
-        emptyObjInfo.m_eObjType = eObjectType.CT_MYPLAYER;
-        emptyObjInfo.m_ObjId = CObjGlobal.MyPlayerID;
+        mainObjInfo.m_eObjState = eObjectState.CS_MYENTITY;
+        mainObjInfo.m_eObjType = eObjectType.CT_MYPLAYER;
+        mainObjInfo.m_ObjId = CObjGlobal.MyPlayerID;
 
-        m_MainPlayer.SetObjInfo(emptyObjInfo);
+        m_MainPlayer.SetObjInfo(mainObjInfo);
 
         CharInfo emptyCharInfo = new CharInfo();
         m_MainPlayer.SetCharInfo(emptyCharInfo);
@@ -305,7 +305,8 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
 
         if(pMapObject != null)
         {
-            
+            pMapObject.SetMapInfo(mapInfo);
+            pMapObject.Initialize();
         }
 
         return pMapObject;

@@ -26,6 +26,7 @@ public class EA_CObjectBase
                     
             case eObjectState.CS_UNENTITY:
                 {
+                    Release();
                     if (m_pEntity != null) EA_ObjectFactory.EntityUnSetting(this);
                 }
                 break;
@@ -65,7 +66,11 @@ public class EA_CObjectBase
 
     public EAObject GetLinkEntity() { return m_pEntity; }
     public virtual bool Initialize() { return true; }
-    public virtual bool Release() { return true; }
+    protected virtual bool Release() 
+    {
+        m_ObjInfo.m_ObjId = CObjGlobal.InvalidObjID;
+        return true; 
+    }
     public virtual bool ChangeModel(string modelType)  { return true; }
     public virtual bool ChangeParts() { return true;  }
     public virtual bool ChangeAnimation(EATblID _iAniType)  {  return true; }
