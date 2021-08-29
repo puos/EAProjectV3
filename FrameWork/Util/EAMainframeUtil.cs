@@ -18,6 +18,7 @@ public class EAMainframeUtil
         EAFrameUtil.Call<EASoundManager>(EASoundManager.instance);
         EAFrameUtil.Call<EACObjManager>(EACObjManager.instance);
         EAFrameUtil.Call<EA_ItemManager>(EA_ItemManager.instance);
+        EAFrameUtil.Call<EASfxManager>(EASfxManager.instance);
 
         return mainFrame;
     }
