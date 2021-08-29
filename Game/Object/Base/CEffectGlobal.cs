@@ -32,8 +32,9 @@ public enum eEffectState
 
 public class EACEffectInfo
 {
-    public EAEffectID m_EAEffectId;
+    public EAEffectID m_EffectId;
     public EAObjID    m_AttachObjectId;
+    public float      m_lifeTime;
     public string     m_AttachBoneName;
     public string     m_EffectTableIndex;
     public Vector3    m_EmitPos;
@@ -45,7 +46,7 @@ public class EACEffectInfo
 
     public EACEffectInfo(EACEffectInfo info)
     {
-        m_EAEffectId = info.m_EAEffectId;
+        m_EffectId = info.m_EffectId;
         m_AttachObjectId = info.m_AttachObjectId;
         m_AttachBoneName = info.m_AttachBoneName;
         m_EffectTableIndex = info.m_EffectTableIndex;
@@ -53,5 +54,6 @@ public class EACEffectInfo
         m_EmitAngle = info.m_EmitAngle;
         m_eEffectState = info.m_eEffectState;
         m_eAttachType = info.m_eAttachType;
+        m_lifeTime = info.m_lifeTime;
     }
 }

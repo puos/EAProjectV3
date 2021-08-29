@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using UnityEngine.Animations;
+using EAEffectID = System.UInt32;
 
 public class SfxSignalEmit : ParameterizedEmitter<string> { }
 
@@ -74,7 +75,8 @@ public class EASfx : EAObject
     [SerializeField] private SfxParamSlot[] m_paramSlots;
     [SerializeField] private PlayableDirector[] m_anims = null;
 
-    private int timeLineId = 0;
+    public int timeLineId = 0;
+    public EAEffectID effectId = CObjGlobal.InvalidEffectID;
 
     [SerializeField] private Animator m_anim = null;
     [SerializeField] private string animationName = string.Empty;
@@ -82,6 +84,11 @@ public class EASfx : EAObject
     [SerializeField] SfxType m_sfxType = SfxType.sfxTypeParticles;
     [System.NonSerialized] public SfxEventCallback eventCallback;
 
+    public override void Release()
+    {
+        base.Release();
+        EASfxManager.instance.DeleteSfx(effectId);
+    }
     public void StartFx()
     {
         switch(m_sfxType)
@@ -231,4 +238,5 @@ public class EASfx : EAObject
         if (m_anims[index] == null) return false;
         return (m_anims[index].time < m_anims[index].playableAsset.duration) ? true : false;
     }
+    
 }
