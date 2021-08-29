@@ -26,8 +26,11 @@ public class EAObject : MonoBehaviour
 
         if (rigidBody != null) rigidBody.velocity = Vector3.zero;
         if (rigidBody != null) rigidBody.angularVelocity = Vector3.zero;
+        
+        if (cachedTransform != null) cachedTransform.localPosition = Vector3.zero;
+        if (cachedTransform != null) cachedTransform.localRotation = Quaternion.identity;
 
-        EAMainFrame.onUpdate.Remove(OnUpdate);
+            EAMainFrame.onUpdate.Remove(OnUpdate);
         EAMainFrame.onUpdate.Add(OnUpdate);
     }
 

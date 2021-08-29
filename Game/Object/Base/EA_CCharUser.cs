@@ -23,6 +23,7 @@ public class EA_CCharUser : EA_CCharBPlayer
         SetCharInfo(m_ActorInfo);
         return true;
     }
+
     /// <summary>
     /// Change if there are set parts
     /// </summary>

@@ -36,7 +36,7 @@ public class EA_CCharBPlayer : EA_CObjectBase
         return true;
     }
 
-    public override bool Release()
+    protected override bool Release()
     {
         base.Release();
 
@@ -44,7 +44,6 @@ public class EA_CCharBPlayer : EA_CObjectBase
         if (m_pLinkActor != null) m_pLinkActor.SetCharBase(null);
         m_pLinkActor = null;
 
-        EACObjManager.instance.DeleteGameObject(GetObjInfo().m_eObjType, GetObjInfo().m_ObjId);
         return true;
     }
 

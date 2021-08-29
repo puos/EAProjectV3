@@ -21,7 +21,7 @@ public class EA_CItem : EA_CObjectBase
         return true;
     }
 
-    public override bool Release()
+    protected override bool Release()
     {
         base.Release();
 

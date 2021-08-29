@@ -9,6 +9,8 @@ public class EAItem : EAObject
 {
     protected EA_CItem m_ItemBase = null;
 
+    public uint Id { get { return (m_ItemBase != null) ? m_ItemBase.GetObjID() : CObjGlobal.InvalidObjID; } }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -17,6 +19,7 @@ public class EAItem : EAObject
     public override void Release()
     {
         base.Release();
+        EACObjManager.instance.DeleteGameObject(eObjectType.CT_ITEMOBJECT, Id);
     }
 
     public virtual bool Use()
@@ -40,21 +43,21 @@ public class EAItem : EAObject
     {
     }
 
-    public GameObject GetObjectInItem(string strObjectName)
+    public Transform GetObjectInItem(string strObjectName)
     {
         return GetObjectInItem(tr, strObjectName);
     }
-    protected GameObject GetObjectInItem(Transform tr, string strObjectNanme)
+    protected Transform GetObjectInItem(Transform tr, string strObjectNanme)
     {
         for(int i = 0; i < tr.childCount; ++i)
         {
             Transform child = tr.GetChild(i);
 
             if (strObjectNanme.Equals(child.gameObject.name,StringComparison.Ordinal))
-                return child.gameObject;
+                return child;
 
-            GameObject pFindObject = GetObjectInItem(child.gameObject.transform , strObjectNanme);
-            if (pFindObject != null) return pFindObject;
+            Transform pFindTr = GetObjectInItem(child.gameObject.transform , strObjectNanme);
+            if (pFindTr != null) return pFindTr;
         }
         return null;
     }
