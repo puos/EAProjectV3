@@ -28,8 +28,8 @@ public class TankHero : EASceneLogic
     public State state { get; private set; }
 
     private CameraFollow cameraFollow = null;
-    private CubeManager cubeManager = null;
     private Transform cubeParent    = null;
+    private EASfxManager fxManager = null;
 
     private IngameUI inGameUi = null;
 
@@ -43,6 +43,7 @@ public class TankHero : EASceneLogic
         hero = CHero.MainPlayerCreate();
 
         inGameUi = UIManager.instance.OpenPage<IngameUI>(TankUIPage.ingameUi);
+        fxManager = EASfxManager.instance;
 
         inGameUi.SetMoveEndEvent(() =>
         {
@@ -67,7 +68,20 @@ public class TankHero : EASceneLogic
             GameObject obj = GetData("CameraFollow");
             if (obj != null) cameraFollow = obj.GetComponent<CameraFollow>();
         }
-        
+
+        EA_GameEvents.onAttackMsg -= OnAttackMsg;
+        EA_GameEvents.onAttackMsg += OnAttackMsg;
+    }
+
+    protected override void OnClose()
+    {
+        EA_GameEvents.onAttackMsg -= OnAttackMsg;
+    }
+
+    public void OnAttackMsg(EAActor attacker, EAActor victim, EAItemAttackWeaponInfo weaponInfo, EAItem item)
+    {
+        EASfx fx = fxManager.StartFx(TankEFxTag.HitTankFx, 1f);
+        fx.SetPos(victim.GetPos());
     }
 
     protected override IEnumerator OnPostInit()
@@ -79,10 +93,6 @@ public class TankHero : EASceneLogic
     protected override void OnUpdate()
     {
         RunState();
-    }
-
-    protected override void OnClose()
-    {
     }
 
     protected bool ChangeState(State newState)

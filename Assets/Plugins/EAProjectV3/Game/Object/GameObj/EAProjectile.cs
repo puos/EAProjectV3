@@ -39,9 +39,8 @@ public class EAProjectile : EAItem
                 //  [12/2/2019 puos] If attacker and attacked are the same, passing
                 if (owner.GetCharBase().GetObjID() == actor.GetCharBase().GetObjID()) return;
              }
-                         
-            EA_GameEvents.onAttackMsg((owner != null) ? owner.GetCharBase() : null,
-                actor.GetCharBase(), WeaponInfo , GetItemBase().GetObjID());
+
+             EA_GameEvents.onAttackMsg(owner , actor , WeaponInfo , this );
         };
     }
 

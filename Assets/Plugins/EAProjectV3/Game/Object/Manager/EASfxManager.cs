@@ -5,6 +5,36 @@ using System.Text;
 using System.Threading.Tasks;
 using EAEffectID = System.UInt32;
 
+public struct EFxTag
+{
+    private int id;
+    private string name;
+
+    public EFxTag(EFxTag e)
+    {
+        id = e.id;
+        name = e.name;
+    }
+
+    public EFxTag(int id, string name)
+    {
+        this.id = id;
+        this.name = name;
+    }
+    public int Id { get { return id; } }
+    public override string ToString() { return name; }
+    public static bool operator !=(EFxTag lhs, EFxTag rhs) { return lhs.id != rhs.id; }
+    public static bool operator ==(EFxTag lhs, EFxTag rhs) { return lhs.id == rhs.id; }
+
+    public override bool Equals(object obj)
+    {
+        EFxTag rhs = (EFxTag)obj;
+        if (rhs == null) return false;
+        return id == rhs.id;
+    }
+    public override int GetHashCode() { return base.GetHashCode(); }
+}
+
 public class EASfxManager : EAGenericSingleton<EASfxManager>
 {
     Dictionary<EAEffectID, EA_CEffectModule> m_effects = new Dictionary<EAEffectID, EA_CEffectModule>();
@@ -30,11 +60,12 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         m_IDGenerator.ReGenerate();
     }
 
-    public EASfx CreateSfx(string effectName,float lifeTime = 0f)
+    public EASfx StartFx(EFxTag fxtag,float lifeTime = 0f)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
-        info.m_EffectTableIndex = effectName;
+        info.m_eAttachType = eEffectAttachType.eWorld;
+        info.m_EffectTableIndex = fxtag.ToString();
         info.m_lifeTime = lifeTime;
         
         if (info.m_EffectId == CObjGlobal.InvalidEffectID) info.m_EffectId = m_IDGenerator.GenerateID();

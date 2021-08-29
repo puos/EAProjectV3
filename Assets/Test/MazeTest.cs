@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MazeTest : MonoBehaviour
 {
-    [SerializeField] private CubeManager cubeManager = null;
     [SerializeField] private Transform cubeParent = null;
 
     [SerializeField] private int tileX = 10;

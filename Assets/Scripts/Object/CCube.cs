@@ -20,9 +20,10 @@ public class CCube : EAMapObject
                  CBullet bullet = c.gameObject.GetComponent<CBullet>();
                  if (bullet == null) return;
                  myObj.SetActive(false);
+                 bullet.Release();
 
-        //        CFx fx = fxManager.StartFx(EFxTag.HitWallFx);
-        //        fx.SetPos(bullet.GetPos());
+                 EASfx fx = EASfxManager.instance.StartFx(TankEFxTag.HitWallFx,1f);
+                 fx.SetPos(bullet.GetPos());
         });
     }
 

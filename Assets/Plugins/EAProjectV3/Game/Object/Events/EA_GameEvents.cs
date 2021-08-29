@@ -8,13 +8,10 @@ using UnityEngine;
 public class EA_GameEvents
 {
     public static bool showLog;
-    public delegate void OnAttackMsg(EA_CCharBPlayer attacker, EA_CCharBPlayer victim, EAItemAttackWeaponInfo weaponInfo, uint projectileId);
-    public static OnAttackMsg onAttackMsg = (EA_CCharBPlayer attacker, EA_CCharBPlayer victim, EAItemAttackWeaponInfo weaponInfo, uint projectileId) =>
+    public delegate void OnAttackMsg(EAActor attacker, EAActor victim, EAItemAttackWeaponInfo weaponInfo, EAItem item);
+    public static OnAttackMsg onAttackMsg = (EAActor attacker, EAActor victim , EAItemAttackWeaponInfo weaponInfo, EAItem item) =>
     {
-        uint attackerId = (attacker != null) ? attacker.GetObjID() : CObjGlobal.InvalidObjID;
-        uint victimId = (victim != null) ? victim.GetObjID() : CObjGlobal.InvalidObjID;
-
-        if (showLog) Debug.Log("LogicEvent - onAttackMsg attacker : " + attackerId + " victim : " + victimId +
-             " weapon Type : " + weaponInfo.attachType + " projectile id : " + projectileId);
+        if (showLog) Debug.Log("LogicEvent - onAttackMsg attacker : " + attacker.Id + " victim : " + victim.Id +
+             " weapon Type : " + weaponInfo.attachType + " item id : " + item.Id);
     };
 }
