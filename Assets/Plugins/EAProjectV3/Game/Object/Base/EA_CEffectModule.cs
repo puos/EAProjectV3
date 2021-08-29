@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-
-public class EAEffectModule
+public class EA_CEffectModule
 {
     private EASfx m_pSfx = null;
 
     private EACEffectInfo m_effectInfo = new EACEffectInfo();
 
     private bool m_bAutoDelete = false;
+
+    private float updateCheckTime = 0f;
 
     public EACEffectInfo GetEffectInfo() { return m_effectInfo;  }
 
@@ -21,10 +23,13 @@ public class EAEffectModule
     {
         if (sfx == m_pSfx) return;
         m_pSfx = sfx;
+        m_pSfx.effectId = m_effectInfo.m_EffectId;
     }
 
     public void Initialize() 
     {
+        updateCheckTime = Time.time + m_effectInfo.m_lifeTime;
+
         EAMainFrame.onUpdate.Remove(OnUpdate);
         EAMainFrame.onUpdate.Add(OnUpdate);
     }
@@ -32,14 +37,27 @@ public class EAEffectModule
     {
         if (m_bAutoDelete == false) return;
         if (m_pSfx == null) return;
-        if (m_pSfx.IsAlive() == true) return;
-
-        
+        if (m_effectInfo.m_eEffectState != eEffectState.ES_Start) return;
+        if (m_effectInfo.m_lifeTime > 0)
+        {
+            if (updateCheckTime <= Time.time)
+            {
+                EASfxManager.instance.DeleteSfx(m_effectInfo.m_EffectId);
+                m_bAutoDelete = false;
+            }
+            return;
+        }
+        if (m_pSfx.IsAlive() == false)
+        {
+            EASfxManager.instance.DeleteSfx(m_effectInfo.m_EffectId);
+            m_bAutoDelete = false;
+            return;
+        }
     }
     public void Release() 
     {
-        m_effectInfo.m_EAEffectId = CObjGlobal.InvalidEffectID;
-        m_pSfx = null;
+        m_effectInfo.m_EffectId = CObjGlobal.InvalidEffectID;
+        if (m_pSfx != null) SetLinkEffect(null);
         EAMainFrame.onUpdate.Remove(OnUpdate);
     }
     
@@ -49,7 +67,7 @@ public class EAEffectModule
 
         switch(m_effectInfo.m_eEffectState)
         {
-            case eEffectState.ES_Load: { if (m_pSfx == null) EffectSetting(this); } break;
+            case eEffectState.ES_Load: { Initialize();  if (m_pSfx == null) EffectSetting(this); } break;
             case eEffectState.ES_UnLoad: { Release(); if (m_pSfx != null) EffectUnSetting(this);  } break;
             case eEffectState.ES_Start: { if (m_pSfx != null) m_pSfx.StartFx(); } break;
             case eEffectState.ES_Stop: { if (m_pSfx != null) m_pSfx.StopFx(); } break;
@@ -64,7 +82,12 @@ public class EAEffectModule
         return true;
     }
 
-    public static bool EffectSetting(EAEffectModule pEffectNode)
+    public void AutoDelete()
+    {
+        m_bAutoDelete = true;
+    } 
+
+    public static bool EffectSetting(EA_CEffectModule pEffectNode)
     {
         EACEffectInfo effectInfo = pEffectNode.GetEffectInfo();
 
@@ -108,7 +131,7 @@ public class EAEffectModule
         return true;
     }
 
-    public static bool EffectUnSetting(EAEffectModule pDelEffectNode)
+    public static bool EffectUnSetting(EA_CEffectModule pDelEffectNode)
     {
         if (pDelEffectNode == null) return false;
 
