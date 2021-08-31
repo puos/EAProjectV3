@@ -23,7 +23,7 @@ public class EA_CEffectModule
     {
         if (sfx == m_pSfx) return;
         m_pSfx = sfx;
-        m_pSfx.effectId = m_effectInfo.m_EffectId;
+        if (m_pSfx != null) m_pSfx.effectId = m_effectInfo.m_EffectId;
     }
 
     public void Initialize() 
@@ -73,11 +73,35 @@ public class EA_CEffectModule
             case eEffectState.ES_Stop: { if (m_pSfx != null) m_pSfx.StopFx(); } break;
             case eEffectState.ES_Skip: { if (m_pSfx != null) m_pSfx.SkipFx(); } break;
         }
+
+        if(m_effectInfo.isSpawn == true)
+        {
+            ResetWorldTransform(m_effectInfo.m_EmitPos, m_effectInfo.m_EmitAngle);
+        }
+        
+        if (m_pSfx != null)
+        {
+            if (!string.IsNullOrEmpty(m_effectInfo.m_strGameName)) m_pSfx.Name = m_effectInfo.m_strGameName;
+        }
+
         return true;
     }
+
+    // Change the object's transform
+    public bool ResetWorldTransform(Vector3 pos,Vector3 angle)
+    {
+        if (m_pSfx == null) return false;
+
+        m_pSfx.SetPos(pos);
+        m_pSfx.SetRotation(Quaternion.Euler(angle));
+        
+        return true;
+    }
+
     public virtual bool ResetInfo(eEffectState eChangeState)
     {
         m_effectInfo.m_eEffectState = eChangeState;
+        m_effectInfo.isSpawn = false;
         SetObjInfo(m_effectInfo);
         return true;
     }

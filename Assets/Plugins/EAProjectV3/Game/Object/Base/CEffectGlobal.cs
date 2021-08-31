@@ -41,8 +41,10 @@ public class EACEffectInfo
     public Vector3    m_EmitAngle;
     public eEffectState m_eEffectState;
     public eEffectAttachType m_eAttachType;
+    public string m_strGameName;
+    public bool isSpawn { get; set; }
 
-    public EACEffectInfo() { }
+    public EACEffectInfo() {  isSpawn = false;  }
 
     public EACEffectInfo(EACEffectInfo info)
     {
@@ -55,5 +57,7 @@ public class EACEffectInfo
         m_eEffectState = info.m_eEffectState;
         m_eAttachType = info.m_eAttachType;
         m_lifeTime = info.m_lifeTime;
+        m_strGameName = info.m_strGameName;
+        isSpawn = info.isSpawn;
     }
 }

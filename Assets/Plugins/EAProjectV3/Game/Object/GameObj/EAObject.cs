@@ -17,6 +17,8 @@ public class EAObject : MonoBehaviour
     public System.Action<Collider, EAObject> triggerEvent = null;
     public System.Action<Collision, EAObject> collisionEvent = null;
 
+    public string Name { get; set; }
+
     public virtual void Initialize()
     {
         initialized = true;

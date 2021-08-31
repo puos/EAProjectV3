@@ -80,8 +80,7 @@ public class TankHero : EASceneLogic
 
     public void OnAttackMsg(EAActor attacker, EAActor victim, EAItemAttackWeaponInfo weaponInfo, EAItem item)
     {
-        EASfx fx = fxManager.StartFx(TankEFxTag.HitTankFx, 1f);
-        fx.SetPos(victim.GetPos());
+        fxManager.StartFxWorld(TankEFxTag.HitTankFx, victim.GetPos(), Vector3.zero , 1f);
     }
 
     protected override IEnumerator OnPostInit()

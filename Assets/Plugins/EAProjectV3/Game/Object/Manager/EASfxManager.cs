@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using EAEffectID = System.UInt32;
 
 public struct EFxTag
@@ -60,14 +61,17 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         m_IDGenerator.ReGenerate();
     }
 
-    public EASfx StartFx(EFxTag fxtag,float lifeTime = 0f)
+    public EASfx StartFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
         info.m_eAttachType = eEffectAttachType.eWorld;
         info.m_EffectTableIndex = fxtag.ToString();
         info.m_lifeTime = lifeTime;
-        
+        info.m_EmitPos = emitPos;
+        info.m_EmitAngle = emitAngle;
+        info.isSpawn = true;
+
         if (info.m_EffectId == CObjGlobal.InvalidEffectID) info.m_EffectId = m_IDGenerator.GenerateID();
         if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module)) 
         {
@@ -80,6 +84,7 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         m_effects.Add(info.m_EffectId, module);
         module.SetObjInfo(info);
         if (lifeTime > 0) module.AutoDelete();
+        module.ResetInfo(eEffectState.ES_Start);
 
         return module.GetSfx();
     }

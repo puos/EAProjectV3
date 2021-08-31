@@ -32,7 +32,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         mainObjInfo.m_eObjState = eObjectState.CS_MYENTITY;
         mainObjInfo.m_eObjType = eObjectType.CT_MYPLAYER;
         mainObjInfo.m_ObjId = CObjGlobal.MyPlayerID;
-
+        mainObjInfo.isSpawn = false;
         m_MainPlayer.SetObjInfo(mainObjInfo);
 
         CharInfo emptyCharInfo = new CharInfo();
@@ -107,6 +107,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         EA_CObjectBase returnObject = null;
 
         gameObjInfo.m_eObjState = eObjectState.CS_SETENTITY;
+        gameObjInfo.isSpawn = true;
 
         //	Temporarily specify ObjId (sometimes temporary use by external system)
         //	Apply the information to the generated number
@@ -128,8 +129,8 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
                     {
                         pCharPlayer = new EA_CCharUser();
                         m_Players.Add(gameObjInfo.m_ObjId, pCharPlayer);
-                    }  
-                   
+                    }
+
                     pCharPlayer.SetObjInfo(gameObjInfo);
                     returnObject = pCharPlayer;
                 }
@@ -143,7 +144,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
                         pCharNPC = new EA_CCharNPC();
                         m_NPCs.Add(gameObjInfo.m_ObjId, pCharNPC);
                     }
-
+              
                     pCharNPC.SetObjInfo(gameObjInfo);
                     returnObject = pCharNPC;
                 }
@@ -173,7 +174,6 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
                         pItem = new EA_CItem();
                         m_Items.Add(gameObjInfo.m_ObjId, pItem);
                     }
-
                     pItem.SetObjInfo(gameObjInfo);
                     returnObject = pItem;
                 }
@@ -187,7 +187,6 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
                         pMap = new EA_CMapObject();
                         m_Objects.Add(gameObjInfo.m_ObjId, pMap);
                     }
-
                     pMap.SetObjInfo(gameObjInfo);
                     returnObject = pMap;
                 }

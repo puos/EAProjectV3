@@ -19,6 +19,7 @@ public class EA_CCharUser : EA_CCharBPlayer
     public override bool ResetInfo(eObjectState eChangeState)
     {
         m_ObjInfo.m_eObjState = eChangeState;
+        m_ObjInfo.isSpawn = false;
         SetObjInfo(m_ObjInfo);
         SetCharInfo(m_ActorInfo);
         return true;

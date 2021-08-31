@@ -22,8 +22,7 @@ public class CCube : EAMapObject
                  myObj.SetActive(false);
                  bullet.Release();
 
-                 EASfx fx = EASfxManager.instance.StartFx(TankEFxTag.HitWallFx,1f);
-                 fx.SetPos(bullet.GetPos());
+                 EASfxManager.instance.StartFxWorld(TankEFxTag.HitWallFx, bullet.GetPos(), Vector3.zero , 1f);
         });
     }
 
