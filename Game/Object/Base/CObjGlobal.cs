@@ -90,10 +90,12 @@ public class ObjectInfo
     
     public Vector3 spawnPos;
     public Vector3 spawnAngle;
+    public bool isSpawn { get; set; }
 
     public ObjectInfo() 
     {
         m_objClassType = typeof(EAObject);
+        isSpawn = false;
     }
 
     public ObjectInfo(ObjectInfo obj) 
@@ -106,6 +108,7 @@ public class ObjectInfo
         spawnPos = obj.spawnPos;
         spawnAngle = obj.spawnAngle;
         m_objClassType = obj.m_objClassType;
+        isSpawn = obj.isSpawn;
     }
     public void SetObjName(string szNewName)
     {

@@ -47,11 +47,14 @@ public class EA_CObjectBase
                 break;
         }
 
-        ResetWorldTransform(m_ObjInfo.spawnPos, m_ObjInfo.spawnAngle);
+        if(m_ObjInfo.isSpawn == true) 
+        {
+            ResetWorldTransform(m_ObjInfo.spawnPos, m_ObjInfo.spawnAngle);
+        }
 
         if(m_pEntity != null)
         {
-            if (!string.IsNullOrEmpty(m_ObjInfo.m_strGameName)) m_pEntity.name = m_ObjInfo.m_strGameName;
+            if (!string.IsNullOrEmpty(m_ObjInfo.m_strGameName)) m_pEntity.Name = m_ObjInfo.m_strGameName;
         }
 
         return true;
@@ -78,6 +81,7 @@ public class EA_CObjectBase
     public virtual bool ResetInfo(eObjectState eChangeState)
     {
         m_ObjInfo.m_eObjState = eChangeState;
+        m_ObjInfo.isSpawn = false;
         SetObjInfo(m_ObjInfo);
         return true;
     }
