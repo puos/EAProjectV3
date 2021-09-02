@@ -9,29 +9,9 @@ using UnityEngine.Timeline;
 using UnityEngine.Animations;
 using EAEffectID = System.UInt32;
 
-public class SfxSignalEmit : ParameterizedEmitter<string> { }
-
-public class ParameterizedEmitter<T> : SignalEmitter
-{ public T parameter; }
-
 public interface SfxParamSlotListener
 {
     void OnSfxParamSlotAssigned(int slotIdx, EASfx.SfxParamSlot slot);
-}
-
-public class NotiReciever : MonoBehaviour , INotificationReceiver
-{
-    private EASfx sfx = null;
-    public void Initialize(EASfx sfx)
-    { this.sfx = sfx; }
-
-    public void OnNotify(Playable origin, INotification notification, object context)
-    {
-        if(notification is ParameterizedEmitter<string> emitter)
-        {
-            sfx.AnimEvent_Impact(emitter.parameter);
-        }
-    }
 }
 
 public enum SfxEventType
@@ -132,15 +112,11 @@ public class EASfx : EAObject
             return;
         }
 
-        for(int i = 0; i < m_anims.Length; ++i)
-        {
-            NotiReciever receiver = m_anims[i].GetComponent<NotiReciever>();
-            if (receiver == null) receiver = m_anims[i].gameObject.AddComponent<NotiReciever>();
-            receiver.Initialize(this);
-        }
-
         if (m_anims.Length > index)
         {
+            SfxNotiReceiver receiver = m_anims[index].GetComponent<SfxNotiReceiver>();
+            if(receiver != null) receiver.Initialize(this);
+
             m_anims[index].time = 0;
             m_anims[index].Play();
         }
