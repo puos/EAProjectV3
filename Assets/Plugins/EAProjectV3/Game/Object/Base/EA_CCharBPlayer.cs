@@ -40,7 +40,7 @@ public class EA_CCharBPlayer : EA_CObjectBase
     {
         base.Release();
 
-        if (m_pLinkActor != null) m_pLinkActor.Release();
+        if (m_pLinkActor != null && m_pLinkActor.Initialized) m_pLinkActor.Release();
         if (m_pLinkActor != null) m_pLinkActor.SetCharBase(null);
         m_pLinkActor = null;
 

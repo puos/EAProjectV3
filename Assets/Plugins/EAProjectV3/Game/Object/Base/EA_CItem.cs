@@ -25,7 +25,7 @@ public class EA_CItem : EA_CObjectBase
     {
         base.Release();
 
-        if (m_pLinkItem != null) m_pLinkItem.Release();
+        if (m_pLinkItem != null && m_pLinkItem.Initialized) m_pLinkItem.Release();
         if (m_pLinkItem != null) m_pLinkItem.SetItemBase(null);
         m_pLinkItem = null;
 

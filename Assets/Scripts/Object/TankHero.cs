@@ -81,6 +81,7 @@ public class TankHero : EASceneLogic
     public void OnAttackMsg(EAActor attacker, EAActor victim, EAItemAttackWeaponInfo weaponInfo, EAItem item)
     {
         fxManager.StartFxWorld(TankEFxTag.HitTankFx, victim.GetPos(), Vector3.zero , 1f);
+        item.Release();
     }
 
     protected override IEnumerator OnPostInit()
@@ -226,11 +227,10 @@ public class TankHero : EASceneLogic
             CCube cube = CCube.Clone();
             Vector3 pos = new Vector3(x.mX * widthX + hTileX, 0f, x.mY * widthZ + hTileZ);
             pos -= offset;
-            cube.name = $"[{x.mX},{x.mY}]";
+            cube.Name = $"[{x.mX},{x.mY}]";
             cube.SetPos(pos);
             cube.Initialize(x, tileX, tileZ);
-            cube.SetActive(true);
-            cube.transform.SetParent(cubeParent);
+            cube.tr.SetParent(cubeParent);
         }
     }
 
@@ -261,7 +261,7 @@ public class TankHero : EASceneLogic
                 return (to.magnitude < range);
             });
 
-            float time = Time.time;
+            float time = Time.realtimeSinceStartup;
 
             while(overUnit != null)
             {
@@ -279,7 +279,7 @@ public class TankHero : EASceneLogic
                     return (to.magnitude < range);
                 });
 
-                if (Time.time - time > 1.0f) break;
+                if (Time.realtimeSinceStartup - time > 1.0f) break;
             }
 
             offsetPos.y = unit.GetPos().y;

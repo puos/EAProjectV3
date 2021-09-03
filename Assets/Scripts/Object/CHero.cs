@@ -51,7 +51,9 @@ public class CHero : EAActor
 
     public void StartFire()
     {
-       if (currWeapon != null) currWeapon.FireShoot();
+        EASfxManager.instance.StartFxWorld(TankEFxTag.FireFx, GetPos(), Vector3.zero, 1f);
+
+        if (currWeapon != null) currWeapon.FireShoot();
     }
 
     public override bool SetItemAttachment(eAttachType attachType, EAObject gameObject)

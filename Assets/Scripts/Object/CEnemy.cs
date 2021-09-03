@@ -51,12 +51,8 @@ public class CEnemy : EAActor
 
     public void StartFire()
     {
-        //if (activeFire == false) return;
-        //CBullet bullet = magazine.Get();
-        //bullet.ownerId = Id;
-        //bullet.SetActive(true);
-        //bullet.SetRotation(Quaternion.LookRotation(muzzle.forward, Vector3.up));
-        //bullet.Move(muzzle.forward, 5f, muzzle, 0, 23.0f);
+        EASfxManager.instance.StartFxWorld(TankEFxTag.FireFx, GetPos(), Vector3.zero, 1f);
+        if (currWeapon != null) currWeapon.FireShoot();
     }
 
     public void SetRotationSub(Quaternion rot)

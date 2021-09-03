@@ -17,9 +17,15 @@ public class CSubCube : EAObject
 
     public void Initialize(int mX, int mY)
     {
+        Vector3 Pos    = transform.localPosition;
+        Quaternion rot = transform.localRotation;
+
         base.Initialize();
 
         this.mX = mX;
         this.mY = mY;
+
+        tr.localPosition = Pos;
+        tr.localRotation = rot;
     }
 }
