@@ -39,12 +39,18 @@ public class EAWeapon : EAItem
         updateCheckTime = 0;
     }
 
+    protected virtual void FireEvent() 
+    {
+    }
+
     public void FireShoot()
     {
         EAActor actor = GetOwner();
 
         if (actor == null) return;
         if (muzzleTransform == null) return;
+
+        FireEvent();
 
         ObjectInfo objInfo = new ObjectInfo();
 
@@ -62,6 +68,7 @@ public class EAWeapon : EAItem
         EAProjectile projectile = item.GetLinkItem() as EAProjectile;
         projectile.SetWeaponInfo(weaponInfo);
         projectile.SetRotation(Quaternion.LookRotation(muzzleTransform.forward, Vector3.up));
+        projectile.FireEvent();
         projectile.Move(muzzleTransform.forward, weaponInfo.fProjectileSpeed, muzzleTransform, 0, weaponInfo.fKillDistance);
     }
 

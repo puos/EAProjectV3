@@ -44,6 +44,11 @@ public class EAProjectile : EAItem
         };
     }
 
+    public virtual void FireEvent()
+    {
+
+    }
+
     public void Move(Vector3 targetDir, float speed = 1f, Transform offset = null, float lifeTime = 0f, float killDistance = 0f)
     {
         vStartPos = (offset == null) ? tr.position : offset.position;

@@ -23,6 +23,17 @@ public class EA_CMapObject : EA_CObjectBase
         return true;
     }
 
+    protected override bool Release()
+    {
+        base.Release();
+
+        if (m_pLinkMapObject != null && m_pLinkMapObject.Initialized) m_pLinkMapObject.Release();
+        if (m_pLinkMapObject != null) m_pLinkMapObject.SetMapBase(null);
+        m_pLinkMapObject = null;
+
+        return true;
+    }
+
     public void SetMapInfo(MapObjInfo mapInfo)
     {
         m_mapObjInfo = new MapObjInfo(mapInfo);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EAObject : MonoBehaviour
 {
-    protected bool initialized = false;
+    private bool initialized = false;
     
     private Rigidbody rigidBody = null;
     private Transform cachedTransform = null;
@@ -14,10 +14,12 @@ public class EAObject : MonoBehaviour
     public Collider col { get { return cachedCollider;  } }
     public Transform tr { get { return cachedTransform; } }
 
+    public bool Initialized { get { return initialized; } }
+
     public System.Action<Collider, EAObject> triggerEvent = null;
     public System.Action<Collision, EAObject> collisionEvent = null;
 
-    public string Name { get; set; }
+    public string Name;
 
     public virtual void Initialize()
     {
@@ -32,12 +34,13 @@ public class EAObject : MonoBehaviour
         if (cachedTransform != null) cachedTransform.localPosition = Vector3.zero;
         if (cachedTransform != null) cachedTransform.localRotation = Quaternion.identity;
 
-            EAMainFrame.onUpdate.Remove(OnUpdate);
+        EAMainFrame.onUpdate.Remove(OnUpdate);
         EAMainFrame.onUpdate.Add(OnUpdate);
     }
 
     public virtual void Release()
     {
+        initialized = false;
         EAMainFrame.onUpdate.Remove(OnUpdate);
     }
 
