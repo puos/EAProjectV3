@@ -140,5 +140,12 @@ public static class EAFrameUtil
     {
         return t;
     }
+
+    // Significant Digits Rounding in Vector
+    public static Vector3 Round(this Vector3 vector3, int decimalPlaces)
+    {
+        float multiplier = Mathf.Pow(10f, decimalPlaces);
+        return new Vector3(Mathf.Round(vector3.x * multiplier) / multiplier, Mathf.Round(vector3.y * multiplier) / multiplier, Mathf.Round(vector3.z * multiplier) / multiplier);
+    }
 }
 

@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class EADataAdaptor : MonoBehaviour
 {
+    public enum DataType { OBJ , INT , FLOAT , STRING };
     [Serializable]
     public class EADataSlot
     {
@@ -14,7 +15,15 @@ public class EADataAdaptor : MonoBehaviour
         public GameObject dataObj;
     }
 
+    [Serializable]
+    public class EAValueSlot
+    {
+        public string name;
+        public string value;
+    }
+
     [SerializeField] private EADataSlot[] datas;
+    [SerializeField] private EAValueSlot[] values;
 
     public GameObject GetData(string name)
     {
@@ -24,4 +33,42 @@ public class EADataAdaptor : MonoBehaviour
         }
         return null;
     }
+    public float GetFloat(string name)
+    {
+        float value = 0f;
+
+        for (int i = 0; i < values.Length; ++i)
+        {
+            if (values[i].name.Equals(name, StringComparison.Ordinal))
+            {
+                if (float.TryParse(values[i].value, out value)) return value;
+            }
+        }
+        return value;
+    }
+    public int GetInt(string name)
+    {
+        int value = 0;
+
+        for (int i = 0; i < values.Length; ++i)
+        {
+            if (values[i].name.Equals(name, StringComparison.Ordinal))
+            {
+                if (int.TryParse(values[i].value, out value)) return value;
+            }
+        }
+        return value;
+    }
+    public string GetString(string name)
+    {
+        for (int i = 0; i < values.Length; ++i)
+        {
+            if (values[i].name.Equals(name, StringComparison.Ordinal))
+            {
+                return values[i].value;
+            }
+        }
+        return string.Empty;
+    }
+
 }

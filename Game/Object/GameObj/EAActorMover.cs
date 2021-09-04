@@ -8,7 +8,7 @@ using UnityEngine;
 public class EAActorMover : MonoBehaviour
 {
     private EAActor actor = null;
-    [SerializeField] private float arriveEpsilon = 0.01f;
+    private float arriveEpsilon = 0.01f;
     private bool isMove = false;
     protected Vector3 targetPosition = Vector3.zero;
     protected System.Action onMoveComplete = null;
@@ -27,7 +27,6 @@ public class EAActorMover : MonoBehaviour
         if (isMove == false) return;
 
         Vector3 changedVelocity = Arrive(targetPosition, arriveEpsilon);
-
         Vector3 curDir = targetPosition - actor.GetPos();
         curDir.Normalize();
 
@@ -77,9 +76,10 @@ public class EAActorMover : MonoBehaviour
         isMove = true;
     }
 
-    public void SetSpeed(float speed)
+    public void SetSpeed(float speed , float epsilon = 0.01f)
     {
         maxSpeed = speed;
+        arriveEpsilon = epsilon;
     }
 
     public void Stop()

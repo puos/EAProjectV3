@@ -21,6 +21,8 @@ public class EAActor : EAObject
    
     public uint Id { get { return (m_CharBase != null) ? m_CharBase.GetObjID() : CObjGlobal.InvalidObjID; } }
 
+    public eObjectType objType { get { return (m_CharBase != null) ? m_CharBase.GetObjInfo().m_eObjType : eObjectType.CT_MAXNUM; } }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -52,7 +54,6 @@ public class EAActor : EAObject
     public virtual void OnAction(params object[] parms)
     {
     }
-
     // Works before DoSwitchWeapon
     public virtual bool SetItemAttachment(eAttachType attachType , EAObject gameObject)
     {
@@ -76,20 +77,16 @@ public class EAActor : EAObject
 
         if (states.TryGetValue(curState, out Action value)) value();
     }
-    public void SetCharBase(EA_CCharBPlayer CharBase)
+    public void SetCharBase(EA_CCharBPlayer CharBase) 
     {
         m_CharBase = CharBase;
     }
-
     public EA_CCharBPlayer GetCharBase()  { return m_CharBase; }
-
     public override void SetObjState(eObjectState state)
     {
         m_CharBase.GetObjInfo().m_eObjState = state;
     }
-
     public override uint GetObjId() { return Id; }
-
     public Transform GetObjectInActor(string strObjectName)
     {
         Transform t = GetTransform(strObjectName);
