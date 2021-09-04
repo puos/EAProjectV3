@@ -121,12 +121,17 @@ public class GameResourceManager : Singleton<GameResourceManager>
             if (go != null) go.transform.SetParent(null);
         }
 
-        if (go != null) return go;
-        
+        if (go != null)
+        {
+            go.SetActive(true);
+            return go;
+        }
+              
         GameObject goPref = LoadPrefabs(eType, strPrefName);
         if (goPref == null) return null;
         
         go = Instantiate(goPref) as GameObject;
+        go.name = strPrefName;
         if(go.activeSelf == false) go.SetActive(true);
         
         return go;

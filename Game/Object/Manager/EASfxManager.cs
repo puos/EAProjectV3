@@ -89,6 +89,37 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         return module.GetSfx();
     }
 
+    public EASfx StartFxOffset(EFxTag fxtag,EAObject obj,string attachBoneName , Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
+    {
+        EACEffectInfo info = new EACEffectInfo();
+        info.m_eEffectState = eEffectState.ES_Load;
+        info.m_eAttachType = eEffectAttachType.eLinkOffset;
+        info.m_EffectTableIndex = fxtag.ToString();
+        info.m_AttachObjectId = obj.GetObjId();
+        info.m_AttachBoneName = attachBoneName;
+        info.m_lifeTime = lifeTime;
+        info.m_EmitPos = emitPos;
+        info.m_EmitAngle = emitAngle;
+        info.isSpawn = true;
+
+        if (info.m_EffectId == CObjGlobal.InvalidEffectID) info.m_EffectId = m_IDGenerator.GenerateID();
+        if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module))
+        {
+            module.SetObjInfo(info);
+            if (lifeTime > 0) module.AutoDelete();
+            return module.GetSfx();
+        }
+
+        module = new EA_CEffectModule();
+        m_effects.Add(info.m_EffectId, module);
+        module.SetObjInfo(info);
+        if (lifeTime > 0) module.AutoDelete();
+        module.ResetInfo(eEffectState.ES_Start);
+
+        return module.GetSfx();
+    }
+        
+
     public void DeleteSfx(EAEffectID id)
     {
         if (!m_effects.TryGetValue(id, out EA_CEffectModule module)) return;
