@@ -20,6 +20,8 @@ public class EAMapObject : EAObject
         return m_pDiaObjectBase;
     }
 
+    public override uint GetObjId() { return Id; }
+
     public override void Release()
     {
         base.Release();

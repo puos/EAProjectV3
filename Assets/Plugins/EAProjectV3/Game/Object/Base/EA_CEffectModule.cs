@@ -67,16 +67,32 @@ public class EA_CEffectModule
 
         switch(m_effectInfo.m_eEffectState)
         {
-            case eEffectState.ES_Load: { Initialize();  if (m_pSfx == null) EffectSetting(this); } break;
-            case eEffectState.ES_UnLoad: { Release(); if (m_pSfx != null) EffectUnSetting(this);  } break;
-            case eEffectState.ES_Start: { if (m_pSfx != null) m_pSfx.StartFx(); } break;
-            case eEffectState.ES_Stop: { if (m_pSfx != null) m_pSfx.StopFx(); } break;
-            case eEffectState.ES_Skip: { if (m_pSfx != null) m_pSfx.SkipFx(); } break;
+            case eEffectState.ES_Load: 
+                { Initialize();  
+                  if (m_pSfx == null) EffectSetting(this); 
+                } break;
+            case eEffectState.ES_UnLoad:
+                { 
+                  if (m_pSfx != null) EffectUnSetting(this);
+                  Release();
+                } break;
+            case eEffectState.ES_Start: 
+                {
+                  if (m_pSfx != null) m_pSfx.StartFx();
+                } break;
+            case eEffectState.ES_Stop: 
+                {
+                  if (m_pSfx != null) m_pSfx.StopFx(); 
+                } break;
+            case eEffectState.ES_Skip: 
+                {
+                  if (m_pSfx != null) m_pSfx.SkipFx(); 
+                } break;
         }
 
         if(m_effectInfo.isSpawn == true)
         {
-            ResetWorldTransform(m_effectInfo.m_EmitPos, m_effectInfo.m_EmitAngle);
+            ResetWorldTransform();
         }
         
         if (m_pSfx != null)
@@ -88,12 +104,42 @@ public class EA_CEffectModule
     }
 
     // Change the object's transform
-    public bool ResetWorldTransform(Vector3 pos,Vector3 angle)
+    public bool ResetWorldTransform()
     {
         if (m_pSfx == null) return false;
 
-        m_pSfx.SetPos(pos);
-        m_pSfx.SetRotation(Quaternion.Euler(angle));
+        switch(m_effectInfo.m_eAttachType)
+        {
+            case eEffectAttachType.eWorld:
+                {
+                    m_pSfx.SetPos(m_effectInfo.m_EmitPos);
+                    m_pSfx.SetRotation(Quaternion.Euler(m_effectInfo.m_EmitAngle));
+                }
+                break;
+            case eEffectAttachType.eLinkOffset:
+                {
+                    EA_CObjectBase pObjectBase = EACObjManager.instance.GetGameObject(m_effectInfo.m_AttachObjectId);
+                    
+                    if (pObjectBase != null)
+                    {
+                        UnityEngine.Transform tr = pObjectBase.GetObjectInActor(m_effectInfo.m_AttachBoneName);
+
+                        Vector3 offset = (tr == null) ? pObjectBase.GetLinkEntity().GetPos() : tr.position;
+
+                        m_pSfx.SetPos(offset + m_effectInfo.m_EmitPos);
+                        m_pSfx.SetRotation(Quaternion.Euler(m_effectInfo.m_EmitAngle));
+                    }
+                }
+                break;
+            case eEffectAttachType.eLinkBone:
+                {
+                    m_pSfx.SetLocalPos(m_effectInfo.m_EmitPos);
+                    m_pSfx.SetLocalRotation(Quaternion.Euler(m_effectInfo.m_EmitAngle));
+                }
+                break;
+        }
+
+       
         
         return true;
     }
@@ -119,25 +165,14 @@ public class EA_CEffectModule
 
         switch(effectInfo.m_eAttachType)
         {
-            case eEffectAttachType.eWorld: 
+            case eEffectAttachType.eWorld:
+            case eEffectAttachType.eLinkOffset:
                 {
                     EAObject obj = GameResourceManager.instance.CreateEAObject(EResourceGroup.Sfx, typeof(EASfx), effectInfo.m_EffectTableIndex);
                     pEffectNode.SetLinkEffect(obj.GetComponent<EASfx>());
                 } 
                 break;
-            case eEffectAttachType.eLinkOffset: 
-                {
-                    EA_CObjectBase pObjectBase = EACObjManager.instance.GetGameObject(effectInfo.m_AttachObjectId);
-                    EAObject obj = GameResourceManager.instance.CreateEAObject(EResourceGroup.Sfx, typeof(EASfx), effectInfo.m_EffectTableIndex);
-                    if (pObjectBase != null) 
-                    {
-                        EAObject parent = pObjectBase.GetLinkEntity();
-                        EAFrameUtil.SetParent(obj.tr, parent.tr);
-                    }
-                    pEffectNode.SetLinkEffect(obj.GetComponent<EASfx>());
-                }
-                break;
-            case eEffectAttachType.eLinkBone: 
+           case eEffectAttachType.eLinkBone: 
                 {
                     //  [4/11/2014 puos]  attach to the actor bone
                     EA_CObjectBase pObjectBase = EACObjManager.instance.GetGameObject(effectInfo.m_AttachObjectId);

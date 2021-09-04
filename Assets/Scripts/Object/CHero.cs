@@ -51,7 +51,7 @@ public class CHero : EAActor
 
     public void StartFire()
     {
-        EASfxManager.instance.StartFxWorld(TankEFxTag.FireFx, GetPos(), Vector3.zero, 1f);
+        EASfxManager.instance.StartFxOffset(TankEFxTag.FireFx, this , string.Empty , Vector3.zero , Vector3.zero , 1f);
 
         if (currWeapon != null) currWeapon.FireShoot();
     }

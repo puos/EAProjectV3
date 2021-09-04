@@ -72,7 +72,23 @@ public class EAObject : MonoBehaviour
         cachedTransform.rotation = rot;
     }
 
+    public Vector3 GetRotation()
+    {
+        return cachedTransform.rotation.eulerAngles;
+    }
+
+    public void SetLocalPos(Vector3 localPos)
+    {
+        cachedTransform.localPosition = localPos;
+    }
+    public void SetLocalRotation(Quaternion localRot)
+    {
+        cachedTransform.localRotation = localRot;
+    }
+
     public virtual void SetObjState(eObjectState state)  { }
+
+    public virtual uint GetObjId() { return CObjGlobal.InvalidObjID; }
 
     public void SetParent(Transform tf)
     {

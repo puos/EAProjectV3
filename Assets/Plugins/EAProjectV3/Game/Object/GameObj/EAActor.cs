@@ -87,6 +87,9 @@ public class EAActor : EAObject
     {
         m_CharBase.GetObjInfo().m_eObjState = state;
     }
+
+    public override uint GetObjId() { return Id; }
+
     public Transform GetObjectInActor(string strObjectName)
     {
         Transform t = GetTransform(strObjectName);
