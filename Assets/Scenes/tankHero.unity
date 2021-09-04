@@ -284,6 +284,7 @@ MonoBehaviour:
     dataObj: {fileID: 917159617}
   - name: CameraFollow
     dataObj: {fileID: 1467449552}
+  values: []
 --- !u!1 &917159617
 GameObject:
   m_ObjectHideFlags: 0

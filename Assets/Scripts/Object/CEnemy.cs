@@ -21,7 +21,7 @@ public class CEnemy : EAActor
 
         target = null;
         actorMover.isReachedSetPos = false;
-        SetSpeed(3.5f);
+        actorMover.SetSpeed(3.5f,0.1f);
 
         collisionEvent = (Collision c, EAObject myObj) =>
         {
@@ -66,8 +66,6 @@ public class CEnemy : EAActor
     }
 
     public void Stop() { actorMover.Stop(); }
-
-    public void SetSpeed(float speed) { actorMover.SetSpeed(speed); }
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
     {

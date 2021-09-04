@@ -82,6 +82,14 @@ public class TankHero : EASceneLogic
     {
         fxManager.StartFxWorld(TankEFxTag.HitTankFx, victim.GetPos(), Vector3.zero , 1f);
         item.Release();
+
+        if(attacker.objType == eObjectType.CT_MYPLAYER)
+        {
+            enemies.Remove(victim);
+            unitList.Remove(victim);
+            victim.Release();
+        } 
+        
     }
 
     protected override IEnumerator OnPostInit()
@@ -130,7 +138,7 @@ public class TankHero : EASceneLogic
 
             case State.Start:
                 {
-                    tankSpawnCount = 1;
+                    tankSpawnCount = 5;
                     updateWaveWaitTime = 0;
                     enemiesCount = 0;
                     enemies.Clear();
@@ -354,7 +362,7 @@ public class TankHero : EASceneLogic
             Vector3 pos = m2.cubeObject.GetPos() + UnityEngine.Random.onUnitSphere * 2f;
             pos.y = enemy.GetPos().y;
 
-            Debug.Log("enemey id :" + enemy.Id + $"cur[{m.mX},{m.mY}] => next[{m.mX},{m.mY}]");
+            Debug.Log("enemey id :" + enemy.Id + $"cur[{m.mX},{m.mY}] => next[{m2.mX},{m2.mY}]");
 
             enemy.SetRotation(Quaternion.LookRotation((pos - enemy.GetPos()).normalized, Vector3.up));
 
