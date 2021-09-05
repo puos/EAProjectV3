@@ -56,10 +56,9 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
     }
 
     // Delete the PCEquip by id.
-    public bool RemovePCEquip(EAObjID id)
+    public bool RemoveEquip(EAObjID id)
     {
         if (!m_PCEquipMap.TryGetValue(id, out EA_Equipment pEquipment)) return false;
-        
         pEquipment.RemoveAllItem();
         m_PCEquipMap.Remove(id);
         return true;
@@ -69,13 +68,6 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
     {
         m_PCEquipMap.TryGetValue(id, out EA_Equipment pEquipment);
         return pEquipment;
-    }
-    public bool RemoveEquip(EAObjID id)
-    {
-        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetActor(id);
-        if (pCharBase == null) return false;
-        RemovePCEquip(id);
-        return true;
     }
     public EA_CItemUnit CreateItemUnit(EAItemInfo info)
     {
@@ -105,7 +97,6 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
         m_mapItemUnitList.TryGetValue(id, out EA_CItemUnit itemUnit);
         return itemUnit;
     }
-    
     public bool EquipmentItem(EAObjID id,uint equip_slot)
     {
         EA_CCharBPlayer pUser = EACObjManager.instance.GetActor(id);

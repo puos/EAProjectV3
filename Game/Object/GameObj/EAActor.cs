@@ -44,7 +44,8 @@ public class EAActor : EAObject
 
         ReleaseParts();
 
-        EACObjManager.instance.DeleteGameObject(eObjectType.CT_PLAYER , Id);
+        EA_ItemManager.instance.RemoveEquip(Id);
+        EACObjManager.instance.DeleteGameObject(objType, Id);
     }
     // Works after SetItemAttachment function
     public virtual void DoAttachItem(eAttachType attachType, eItemType itemType)
