@@ -138,7 +138,7 @@ public class TankHero : EASceneLogic
 
             case State.Start:
                 {
-                    tankSpawnCount = 5;
+                    tankSpawnCount = 1;
                     updateWaveWaitTime = 0;
                     enemiesCount = 0;
                     enemies.Clear();
