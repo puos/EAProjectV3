@@ -51,7 +51,7 @@ public class CEnemy : EAActor
 
     public void StartFire()
     {
-        EASfxManager.instance.StartFxWorld(TankEFxTag.FireFx, GetPos(), Vector3.zero, 1f);
+        EASfxManager.instance.StartFxOffset(TankEFxTag.FireFx, this, string.Empty, Vector3.zero, Vector3.zero, 1f);
         if (currWeapon != null) currWeapon.FireShoot();
     }
 
@@ -120,7 +120,7 @@ public class CEnemy : EAActor
 
         float updateTime = Time.time;
 
-        enemy.StateAdd(CEnemy.EFSMState.Chasing, () =>
+        enemy.UpdateAdd(CEnemy.EFSMState.Chasing, () =>
         {
             if (Time.time - updateTime <= 0) return;
 

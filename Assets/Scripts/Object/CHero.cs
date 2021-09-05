@@ -83,7 +83,9 @@ public class CHero : EAActor
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null) 
     { 
-        actorMover.MoveTo(targetPosition, onMoveComplete); 
+        actorMover.MoveTo(targetPosition, onMoveComplete);
+
+        SetRotationSubReset();
     }
 
     public static CHero MainPlayerCreate() 

@@ -347,12 +347,13 @@ public class TankHero : EASceneLogic
 
             MazeGen.CTileAttrib m = Array.Find(maze, x =>
             {
-                return x.cubeObject.col.bounds.Contains(enemy.GetPos());
+                return x.cubeObject.col.bounds.Contains(enemy.GetCenterPos());
             });
 
             if (m == null)
             {
-                enemy.ChangeFSMState(CEnemy.EFSMState.None);
+                Debug.LogError("maze is not search : " + enemy.GetCenterPos());
+                enemy.ChangeFSMState(CEnemy.EFSMState.Move);
                 return;
             }
 
