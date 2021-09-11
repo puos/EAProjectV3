@@ -16,4 +16,6 @@ public class EA_CCharMob : EA_CCharBPlayer
         m_MobInfo = mobInfo;
         return true;
     }
+
+    MobInfo GetMobInfo() { return m_MobInfo; }
 }
