@@ -31,7 +31,6 @@ public class EASoundCue : MonoBehaviour
             case eMethod.PlayAll: break;
         }
     }
-
     private void PlayOne() 
     {
         if (curPlayIdx >= audioClip.Count) return;
@@ -41,7 +40,6 @@ public class EASoundCue : MonoBehaviour
 
         EASoundManager.instance.PlayOneShot(audioClip[curPlayIdx], volume, EASOUND_TYPE.SFX);
     }
-
     private void PlayRandom()
     {
         int randomIdx = UnityEngine.Random.Range(0, audioClip.Count);
