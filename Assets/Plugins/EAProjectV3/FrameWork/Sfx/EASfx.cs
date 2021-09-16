@@ -62,6 +62,7 @@ public class EASfx : EAObject
     [SerializeField] private string animationName = string.Empty;
     [SerializeField] private ParticleSystem[] m_particles = null;
     [SerializeField] SfxType m_sfxType = SfxType.sfxTypeParticles;
+    [SerializeField] EASoundCue m_soundCue = null;
     [System.NonSerialized] public SfxEventCallback eventCallback;
 
     public override void Release()
@@ -214,5 +215,9 @@ public class EASfx : EAObject
         if (m_anims[index] == null) return false;
         return (m_anims[index].time < m_anims[index].playableAsset.duration) ? true : false;
     }
-    
+    private void PlaySound(int clipIdx)
+    {
+        if (m_soundCue != null) m_soundCue.curPlayIdx = clipIdx;
+        if (m_soundCue != null) m_soundCue.PlaySound();
+    }
 }
