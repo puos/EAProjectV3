@@ -183,7 +183,12 @@ public class EASfx : EAObject
         if (m_anims[index] != null) m_anims[index].time = m_anims[index].playableAsset.duration;
     }
     private void SkipParticles() 
-    {        
+    {
+        for (int i = 0; i < m_particles.Length; ++i)
+        {
+            ParticleSystem s = m_particles[i];
+            s.Stop();
+        }
     }
     private void SkipAnimator() 
     {
