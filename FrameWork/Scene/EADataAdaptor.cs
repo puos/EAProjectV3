@@ -31,6 +31,7 @@ public class EADataAdaptor : MonoBehaviour
         {
             if (datas[i].name.Equals(name, StringComparison.Ordinal)) return datas[i].dataObj;
         }
+        Debug.Assert(false,$"DataAdaptor {name} is invalid");
         return null;
     }
     public float GetFloat(string name)
@@ -44,6 +45,7 @@ public class EADataAdaptor : MonoBehaviour
                 if (float.TryParse(values[i].value, out value)) return value;
             }
         }
+        Debug.Assert(false, $"DataAdaptor {name} is invalid");
         return value;
     }
     public int GetInt(string name)
@@ -57,6 +59,7 @@ public class EADataAdaptor : MonoBehaviour
                 if (int.TryParse(values[i].value, out value)) return value;
             }
         }
+        Debug.Assert(false, $"DataAdaptor {name} is invalid");
         return value;
     }
     public string GetString(string name)
@@ -68,6 +71,7 @@ public class EADataAdaptor : MonoBehaviour
                 return values[i].value;
             }
         }
+        Debug.Assert(false, $"DataAdaptor {name} is invalid");
         return string.Empty;
     }
 
