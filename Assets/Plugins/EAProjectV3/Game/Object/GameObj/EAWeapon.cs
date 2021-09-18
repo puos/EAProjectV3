@@ -53,6 +53,7 @@ public class EAWeapon : EAItem
 
         FireEvent();
 
+
         ObjectInfo objInfo = new ObjectInfo();
 
         objInfo.spawnPos = muzzleTransform.position;
