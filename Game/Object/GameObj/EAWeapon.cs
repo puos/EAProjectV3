@@ -49,6 +49,7 @@ public class EAWeapon : EAItem
 
         if (actor == null) return;
         if (muzzleTransform == null) return;
+        if (bLock == true) return;
 
         FireEvent();
 
@@ -94,7 +95,7 @@ public class EAWeapon : EAItem
     {
         base.UpdatePerFrame();
 
-        if (bLock == true) return;
+        if (weaponInfo.bAutoMode == false) return;
 
         if (updateCheckTime >= Time.time) return;
         if (updateCheckTime < Time.time) updateCheckTime = Time.time;
