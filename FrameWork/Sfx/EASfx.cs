@@ -220,7 +220,7 @@ public class EASfx : EAObject
         if (m_anims[index] == null) return false;
         return (m_anims[index].time < m_anims[index].playableAsset.duration) ? true : false;
     }
-    private void PlaySound(int clipIdx)
+    public void PlaySound(int clipIdx)
     {
         if (m_soundCue != null) m_soundCue.curPlayIdx = clipIdx;
         if (m_soundCue != null) m_soundCue.PlaySound();
