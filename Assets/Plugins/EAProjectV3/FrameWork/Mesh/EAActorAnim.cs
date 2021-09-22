@@ -8,22 +8,18 @@ using UnityEngine.Animations;
 
 public enum AnimationEventType
 {
-    None,
-    Impact,
-    Sfx,
-    PlaySound,
+    AnimationEvent,
+    StateEvent,
 }
 
 
 // animation management class
-public class EAActorAnim : StateMachineBehaviour
+public class EAActorAnim : MonoBehaviour
 {
     Dictionary<int, AnimState> dic_animStates = new Dictionary<int, AnimState>();
 
-    protected Queue<AnimState> animStateQueue = new Queue<AnimState>();
-
     //  animation event callback
-    public delegate void AnimEventCallback(EAActorAnim anim, AnimationEventType eventType, string slotName);
+    public delegate void AnimEventCallback(EAActorAnim anim, AnimationEventType eventType, string slotName , string slotValue);
 
     // animation param slot callback
     public delegate void AnimParamSlotCallback(GameObject targetObj);
@@ -32,7 +28,7 @@ public class EAActorAnim : StateMachineBehaviour
     [Serializable]
     public class PlayAnimParam
     {
-        public enum Type { Trigger, Integer }
+        public enum Type { Trigger, Integer , Boolean }
         public string aniName;
         public Type type;
         public int value;
@@ -71,7 +67,6 @@ public class EAActorAnim : StateMachineBehaviour
                 if (slot.innerObj != null) cb(slot.innerObj);
             }
         }
-
         public void SetInnerObject(string slotName, GameObject obj)
         {
             int slotIdx = FindParamSlotIdxByName(slotName);
@@ -81,7 +76,6 @@ public class EAActorAnim : StateMachineBehaviour
                 slot.innerObj = obj;
             }
         }
-
         int FindParamSlotIdxByName(string name)
         {
             for (int i = 0; i < m_paramSlots.Length; i++)
@@ -89,30 +83,109 @@ public class EAActorAnim : StateMachineBehaviour
                     return i;
             return -1;
         }
-               
+        public virtual void Init() 
+        {
+            for(int i = 0; i < playAnimParams.Count; ++i)
+            {
+                playAnimParams[i].Initialize();
+            }
+        }
     }
 
-    [SerializeField]
-    private AnimState[] animState = null;
-
+    [SerializeField] private AnimState[] animState = null;
     private Animator m_anim = null;
 
+    [System.NonSerialized] public AnimEventCallback eventCallback;
+
+    public void AnimationEvent_Impact(string iter)
+    {
+        SendEventToOwner(AnimationEventType.AnimationEvent, iter , string.Empty );
+    }
+    public void StateEvent_Impact(string iter,string state)
+    {
+        SendEventToOwner(AnimationEventType.StateEvent, iter , state);
+    }
+    public void SendEventToOwner(AnimationEventType type, string param , string param2)
+    {
+        if (eventCallback != null) eventCallback(this, type, param , param2);
+    }
     // Change animations and events
     public void ResetAnimState(AnimState[] animStates)
     {
-       
+        dic_animStates.Clear();
+        for(int i = 0; i < animStates.Length; ++i)
+        {
+            animState[i].Init();
+            int key = CRC32.GetHashForAnsi(animStates[i].key);
+            if(!dic_animStates.TryGetValue(key,out AnimState state))
+            {
+                dic_animStates.Add(key, animState[i]);
+            }
+            dic_animStates[key] = animState[i];
+        }
     }
 
-    public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
+    public  AnimState GetAnimState(string skey)
     {
-        base.OnStateMachineEnter(animator, stateMachinePathHash);
-        m_anim = animator;
+        int key = CRC32.GetHashForAnsi(skey);
+        dic_animStates.TryGetValue(key, out AnimState state);
+        return state;
+    }
+
+    // change animation state
+    protected void ChangeAnim(AnimState state)
+    {
+        if (m_anim == null) 
+        {
+            Debug.Assert(m_anim != null, "EAActorAnim ChangeAnim m_anim is null");
+            return; 
+        }
+
+        List<PlayAnimParam> animParams = state.playAnimParams;
+
+        string aniTemp = "";
+
+        for(int i = 0; i < animParams.Count; ++i)
+        {
+            PlayAnimParam.Type type = animParams[i].type;
+            string aniName = animParams[i].aniName;
+            int value = animParams[i].value;
+            if(type == PlayAnimParam.Type.Trigger)
+            {
+                m_anim.SetTrigger(animParams[i].paramId);
+                aniTemp += "/" + aniName;
+            }
+            if(type == PlayAnimParam.Type.Integer)
+            {
+                m_anim.SetInteger(animParams[i].paramId, value);
+                aniTemp += "/" + aniName + " : " + value;
+            }
+            if(type == PlayAnimParam.Type.Boolean)
+            {
+                m_anim.SetBool(animParams[i].paramId, (value > 0) ? true : false);
+            }
+        }
+
+        Debug.Log(gameObject.name + " # Play Anim # " + aniTemp);
+    }
+
+    public void Initialize()
+    {
+        m_anim = GetComponent<Animator>();
         ResetAnimState(animState);
+        EAAniStateBehaviour stateMachine = null;
+        if (m_anim != null) stateMachine = m_anim.GetBehaviour<EAAniStateBehaviour>();
+        if (stateMachine != null) stateMachine.Init(this);
     }
-
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+   
+    public void PushAnimation(string key)
     {
-        base.OnStateEnter(animator, stateInfo, layerIndex);           
+        AnimState state = GetAnimState(key);
+        ChangeAnim(state);
     }
-
+    
+    public void ClearAnimation()
+    {
+        if (m_anim != null) m_anim.Rebind();
+    }
 }
