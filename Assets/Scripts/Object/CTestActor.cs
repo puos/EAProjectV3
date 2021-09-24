@@ -11,6 +11,11 @@ public class CTestActor : EAActor
         base.Initialize();
 
         actorAnim = GetComponent<EAActorAnim>();
+        actorAnim.Initialize();
+        actorAnim.eventCallback = (EAActorAnim anim, AnimationEventType eventType, string slotName, string slotValue) =>
+        {
+            Debug.Log($"eventType : {eventType} slotName : {slotName} ");        
+        };
     }
 
     public override void Release()
@@ -21,6 +26,11 @@ public class CTestActor : EAActor
     public void PushAnimation(string aniName)
     {
         if (actorAnim != null) actorAnim.PushAnimation(aniName);
+    }
+
+    public void StopAnimation()
+    {
+        if (actorAnim != null) actorAnim.StopAnimation();
     }
 
     public static CTestActor Clone() 

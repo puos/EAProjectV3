@@ -32,12 +32,17 @@ public class AnimTest : EASceneLogic
 
         if(GUILayout.Button("run ani",w,h))
         {
-            actor.PushAnimation("run");
+            actor.PushAnimation("Move");
         }
 
         if(GUILayout.Button("idle ani",w,h))
         {
-            actor.PushAnimation("idle");
+            actor.PushAnimation("Idle");
+        }
+
+        if (GUILayout.Button("stop ani", w, h))
+        {
+            actor.StopAnimation();
         }
     }
 }

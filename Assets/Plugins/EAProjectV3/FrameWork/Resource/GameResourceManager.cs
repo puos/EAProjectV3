@@ -19,7 +19,7 @@ public struct EResourceType
         this.id = id;
         this.resourcePath = resourcePath;
     }
-    public int Id{ get{ return id; } }
+    public static explicit operator int(EResourceType e) => e.id;
     public override string ToString() { return resourcePath; }
 }
 
@@ -33,7 +33,7 @@ public struct EAtlasType
         this.id = e.id;
         this.atlasPath = e.atlasPath;
     }
-    public int Id { get { return id; } }
+    public static explicit operator int(EAtlasType e) => e.id;
     public override string ToString() { return atlasPath; }
 }
 
@@ -170,10 +170,10 @@ public class GameResourceManager : Singleton<GameResourceManager>
 
     private GameObject LoadPrefabs(EResourceType eType, string strPrefName)
     {
-        if (!m_dicCachedObject.TryGetValue(eType.Id, out Dictionary<string, Object> value))
-            m_dicCachedObject.Add(eType.Id, new Dictionary<string, Object>());
+        if (!m_dicCachedObject.TryGetValue((int)eType, out Dictionary<string, Object> value))
+            m_dicCachedObject.Add((int)eType, new Dictionary<string, Object>());
 
-        if(!m_dicCachedObject[eType.Id].TryGetValue(strPrefName,out Object goPref))
+        if(!m_dicCachedObject[(int)eType].TryGetValue(strPrefName,out Object goPref))
         {
             string strPath = $"{eType}/{strPrefName}";
             goPref = Load<GameObject>(strPath);
@@ -182,7 +182,7 @@ public class GameResourceManager : Singleton<GameResourceManager>
                 Debug.LogError("Resource Path Error == Type : " + eType + " Path : " + strPath);
                 return null; 
             }
-            m_dicCachedObject[eType.Id].Add(strPrefName, goPref);
+            m_dicCachedObject[(int)eType].Add(strPrefName, goPref);
         }
 
         return goPref as GameObject;
@@ -190,12 +190,12 @@ public class GameResourceManager : Singleton<GameResourceManager>
 
     private SpriteAtlas GetAtlas(EAtlasType eAtlas)
     {
-        if (m_dicAtlas.TryGetValue(eAtlas.Id, out SpriteAtlas value))
+        if (m_dicAtlas.TryGetValue((int)eAtlas, out SpriteAtlas value))
             return value;
 
         string strPath = $"{eAtlas}";
         SpriteAtlas atlas = Load<SpriteAtlas>(strPath);
-        if (atlas != null) m_dicAtlas.Add(eAtlas.Id, atlas);
+        if (atlas != null) m_dicAtlas.Add((int)eAtlas, atlas);
 
         return atlas;
     }
