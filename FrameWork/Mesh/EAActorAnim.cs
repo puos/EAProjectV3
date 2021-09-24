@@ -21,29 +21,18 @@ public class EAActorAnim : MonoBehaviour
     //  animation event callback
     public delegate void AnimEventCallback(EAActorAnim anim, AnimationEventType eventType, string slotName , string slotValue);
 
-    // animation param slot callback
-    public delegate void AnimParamSlotCallback(GameObject targetObj);
-
     // animation information
     [Serializable]
     public class PlayAnimParam
     {
-        public enum Type { Trigger, Integer , Boolean }
+        public enum Type { Trigger, Integer , Float , Boolean }
         public string aniName;
-        public Type type;
-        public int value;
+        public Type   type;
+        public float value;
 
         [HideInInspector] public int paramId;
 
         public void Initialize(){  this.paramId = Animator.StringToHash(aniName);   }
-    }
-
-    [Serializable]
-    public class AnimParamSlot
-    {
-        public string name;
-        public AnimParamSlotCallback callback;
-        public GameObject innerObj;
     }
 
     [Serializable]
@@ -52,37 +41,8 @@ public class EAActorAnim : MonoBehaviour
         public string key;
 
         [SerializeField]
-        public AnimParamSlot[] m_paramSlots;
-
-        [SerializeField]
         public List<PlayAnimParam> playAnimParams = new List<PlayAnimParam>();
-
-        public void SetParam(string slotName,AnimParamSlotCallback cb)
-        {
-            int slotIdx = FindParamSlotIdxByName(slotName);
-            if(slotIdx != -1)
-            {
-                AnimParamSlot slot = m_paramSlots[slotIdx];
-                slot.callback = cb;
-                if (slot.innerObj != null) cb(slot.innerObj);
-            }
-        }
-        public void SetInnerObject(string slotName, GameObject obj)
-        {
-            int slotIdx = FindParamSlotIdxByName(slotName);
-            if (slotIdx != -1)
-            {
-                AnimParamSlot slot = m_paramSlots[slotIdx];
-                slot.innerObj = obj;
-            }
-        }
-        int FindParamSlotIdxByName(string name)
-        {
-            for (int i = 0; i < m_paramSlots.Length; i++)
-                if (m_paramSlots[i].name.Equals(name))
-                    return i;
-            return -1;
-        }
+                
         public virtual void Init() 
         {
             for(int i = 0; i < playAnimParams.Count; ++i)
@@ -90,9 +50,16 @@ public class EAActorAnim : MonoBehaviour
                 playAnimParams[i].Initialize();
             }
         }
+
+        public PlayAnimParam GetAnimParams(string paramName)
+        {
+            int idx = playAnimParams.FindIndex(x => x.aniName.Equals(paramName, StringComparison.Ordinal));
+            if (idx == -1) return null;
+            return playAnimParams[idx];
+        }
     }
 
-    [SerializeField] private AnimState[] animState = null;
+    [SerializeField] public AnimState[] animState = null;
     private Animator m_anim = null;
 
     [System.NonSerialized] public AnimEventCallback eventCallback;
@@ -132,6 +99,13 @@ public class EAActorAnim : MonoBehaviour
         return state;
     }
 
+    public PlayAnimParam GetAnimParams(string sKey,string paramName)
+    {
+        AnimState currState = GetAnimState(sKey);
+        if (currState == null) return null;
+        return currState.GetAnimParams(paramName);
+    }
+
     // change animation state
     protected void ChangeAnim(AnimState state)
     {
@@ -149,7 +123,7 @@ public class EAActorAnim : MonoBehaviour
         {
             PlayAnimParam.Type type = animParams[i].type;
             string aniName = animParams[i].aniName;
-            int value = animParams[i].value;
+            float value = animParams[i].value;
             if(type == PlayAnimParam.Type.Trigger)
             {
                 m_anim.SetTrigger(animParams[i].paramId);
@@ -157,8 +131,12 @@ public class EAActorAnim : MonoBehaviour
             }
             if(type == PlayAnimParam.Type.Integer)
             {
-                m_anim.SetInteger(animParams[i].paramId, value);
-                aniTemp += "/" + aniName + " : " + value;
+                m_anim.SetInteger(animParams[i].paramId, (int)value);
+                aniTemp += "/" + aniName + " : " + (int)value;
+            }
+            if(type == PlayAnimParam.Type.Float)
+            {
+                m_anim.SetFloat(animParams[i].paramId,value);
             }
             if(type == PlayAnimParam.Type.Boolean)
             {
@@ -172,6 +150,8 @@ public class EAActorAnim : MonoBehaviour
     public void Initialize()
     {
         m_anim = GetComponent<Animator>();
+
+        ClearAnimation();
         ResetAnimState(animState);
         EAAniStateBehaviour stateMachine = null;
         if (m_anim != null) stateMachine = m_anim.GetBehaviour<EAAniStateBehaviour>();
@@ -183,8 +163,35 @@ public class EAActorAnim : MonoBehaviour
         AnimState state = GetAnimState(key);
         ChangeAnim(state);
     }
+
+    public void ClearAnimation() 
+    {
+        StopAnimation();
+
+        AnimatorControllerParameter[] animParams = m_anim.parameters;
+
+        for (int i = 0; i < animParams.Length; ++i)
+        {
+            AnimatorControllerParameterType paramType = animParams[i].type;
+            switch (paramType)
+            {
+                case AnimatorControllerParameterType.Bool:
+                    m_anim.SetBool(animParams[i].nameHash, false);
+                    break;
+                case AnimatorControllerParameterType.Int:
+                    m_anim.SetInteger(animParams[i].nameHash, 0);
+                    break;
+                case AnimatorControllerParameterType.Float:
+                    m_anim.SetFloat(animParams[i].nameHash, 0f);
+                    break;
+                case AnimatorControllerParameterType.Trigger:
+                    m_anim.ResetTrigger(animParams[i].nameHash);
+                    break;
+            }
+        }
+    }
     
-    public void ClearAnimation()
+    public void StopAnimation()
     {
         if (m_anim != null) m_anim.Rebind();
     }

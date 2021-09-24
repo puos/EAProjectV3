@@ -56,7 +56,7 @@ public class EAMeshTool : Editor
     {
         if(Selection.objects.Length == 0)
         {
-            Debug.Log("Not Character");
+            Debug.Log("Not Object");
             return;
         }
 
@@ -77,7 +77,7 @@ public class EAMeshTool : Editor
     {
         if(Selection.objects.Length == 0)
         {
-            Debug.Log("Not SkinnedMesh");
+            Debug.LogError("Not Object");
             return;
         }
 
@@ -87,13 +87,19 @@ public class EAMeshTool : Editor
             MakePartsInfo(pathSrc);
         }
     }
-
     private static void MakePartsInfo(string pathSrc)
     {
         string pathTarget = pathSrc.Remove(pathSrc.LastIndexOf('/') + 1);
 
         GameObject partsObject = Instantiate<GameObject>(AssetDatabase.LoadAssetAtPath<GameObject>(pathSrc));
         SkinnedMeshRenderer[] parts = partsObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        if(parts.Length == 0)
+        {
+            Debug.LogError($"{pathSrc} SkinnedMesh count zero"); 
+            DestroyImmediate(partsObject);
+            return;
+        }
 
         for(int i = 0; i < parts.Length; ++i)
         {
@@ -104,7 +110,6 @@ public class EAMeshTool : Editor
 
         DestroyImmediate(partsObject);
     }
-
     private static void MakePartInfo(SkinnedMeshRenderer part)
     {
         EASkinInfo skinInfo = part.gameObject.GetComponent<EASkinInfo>();
@@ -114,5 +119,92 @@ public class EAMeshTool : Editor
         skinInfo.BoneNames = new string[part.bones.Length];
 
         for (int i = 0; i < part.bones.Length; ++i) skinInfo.BoneNames[i] = part.bones[i].name;
+    }
+
+    [MenuItem("Assets/EAActorAnim", false, 0)]
+    private static void MakeAnim() 
+    {
+        if(Selection.objects.Length == 0)
+        {
+            Debug.LogError("Not Object");
+            return;
+        }
+
+        for (int i = 0; i < Selection.objects.Length; ++i)
+        {
+            string pathSrc = AssetDatabase.GetAssetPath(Selection.objects[i]);
+            string pathTarget = pathSrc.Remove(pathSrc.LastIndexOf('/') + 1);
+
+            GameObject charObj = Instantiate<GameObject>(AssetDatabase.LoadAssetAtPath<GameObject>(pathSrc));
+            Animator animator = charObj.GetComponent<Animator>();
+
+            if (animator == null)
+            {
+                Debug.LogError($"{pathSrc} animator is nothing");
+                DestroyImmediate(charObj);
+                continue;
+            }
+
+            MakeAnimInfo(charObj);
+            PrefabUtility.SaveAsPrefabAsset(charObj, pathTarget + Selection.objects[i].name + ".prefab", out bool success);
+            DestroyImmediate(charObj);
+        }
+    }
+    
+    private static void MakeAnimInfo(GameObject charObj)
+    {
+        Animator animator = charObj.GetComponent<Animator>();
+
+        EAActorAnim actorAnim = charObj.GetComponent<EAActorAnim>();
+        if (actorAnim == null) actorAnim = charObj.AddComponent<EAActorAnim>();
+
+        AnimatorControllerParameter[] animParams = animator.parameters;
+
+        actorAnim.animState = new EAActorAnim.AnimState[animParams.Length];
+        actorAnim.animState[0] = new EAActorAnim.AnimState();
+        PushAnimParams(animParams, actorAnim.animState[0]);
+    }
+
+    private static void PushAnimParams(AnimatorControllerParameter[] animParams, EAActorAnim.AnimState animState)
+    {
+        for (int i = 0; i < animParams.Length; ++i)
+        {
+            AnimatorControllerParameterType paramType = animParams[i].type;
+
+            switch (paramType)
+            {
+                case AnimatorControllerParameterType.Bool:
+                    animState.playAnimParams.Add(new EAActorAnim.PlayAnimParam()
+                    {
+                        type = EAActorAnim.PlayAnimParam.Type.Boolean,
+                        aniName = animParams[i].name,
+                        value = 0
+                    });
+                    break;
+                case AnimatorControllerParameterType.Int:
+                    animState.playAnimParams.Add(new EAActorAnim.PlayAnimParam()
+                    {
+                        type = EAActorAnim.PlayAnimParam.Type.Integer,
+                        aniName = animParams[i].name,
+                        value = 0
+                    });
+                    break;
+                case AnimatorControllerParameterType.Float:
+                    animState.playAnimParams.Add(new EAActorAnim.PlayAnimParam()
+                    {
+                        type = EAActorAnim.PlayAnimParam.Type.Float,
+                        aniName = animParams[i].name,
+                        value = 0
+                    });
+                    break;
+                case AnimatorControllerParameterType.Trigger:
+                    animState.playAnimParams.Add(new EAActorAnim.PlayAnimParam()
+                    {
+                        type = EAActorAnim.PlayAnimParam.Type.Trigger,
+                        aniName = animParams[i].name
+                    });
+                    break;
+            }
+        }
     }
 }
