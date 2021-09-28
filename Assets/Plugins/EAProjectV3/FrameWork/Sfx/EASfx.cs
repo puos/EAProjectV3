@@ -18,8 +18,6 @@ public enum SfxEventType
 {
     None,
     Impact,
-    Decay,
-    Destroy,
 }
 
 public delegate void SfxEventCallback(EASfx sfx, SfxEventType eventType, string slotName);
@@ -40,6 +38,7 @@ public class EASfx : EAObject
         sfxTypeParticles,
         sfxTypeTimeLine,
         sfxTypeAnimator,
+        sfxTypeRenderer,
     }
 
     [System.Serializable]
@@ -61,6 +60,7 @@ public class EASfx : EAObject
     [SerializeField] private Animator m_anim = null;
     [SerializeField] private string animationName = string.Empty;
     [SerializeField] private ParticleSystem[] m_particles = null;
+    [SerializeField] private Renderer[] m_renderers = null;
     [SerializeField] SfxType m_sfxType = SfxType.sfxTypeParticles;
     [SerializeField] EASoundCue m_soundCue = null;
     [System.NonSerialized] public SfxEventCallback eventCallback;
@@ -77,6 +77,7 @@ public class EASfx : EAObject
             case SfxType.sfxTypeTimeLine: StartFxTimeLine(); break;
             case SfxType.sfxTypeParticles: StartParticles();  break;
             case SfxType.sfxTypeAnimator: StartAnimator();  break;
+            case SfxType.sfxTypeRenderer: StartRenderer();  break; 
         }
     }
 
@@ -87,6 +88,7 @@ public class EASfx : EAObject
             case SfxType.sfxTypeTimeLine: StartFxTimeLine(false); break;
             case SfxType.sfxTypeParticles: StartParticles(false); break;
             case SfxType.sfxTypeAnimator: StartAnimator(false); break;
+            case SfxType.sfxTypeRenderer: StartRenderer(false); break;
         }
     }
 
@@ -147,6 +149,14 @@ public class EASfx : EAObject
         m_anim.speed = 1;
         m_anim.Play(animationName);
     }
+    private void StartRenderer(bool start = true)
+    {
+        for(int i = 0; i < m_renderers.Length; ++i)
+        {
+            Renderer r = m_renderers[i];
+            r.enabled = start;
+        }
+    }
     public void AnimEvent_Impact(string iter)
     {
         SendEventToOwner(SfxEventType.Impact, iter);
@@ -202,6 +212,7 @@ public class EASfx : EAObject
             case SfxType.sfxTypeTimeLine:  return IsAliveTimeLine();
             case SfxType.sfxTypeParticles: return IsAliveParticles();
             case SfxType.sfxTypeAnimator:  return IsAliveAnimator();
+            case SfxType.sfxTypeRenderer:  return IsAliveRenderer(); 
             default: return false; 
         }
     }
@@ -220,9 +231,26 @@ public class EASfx : EAObject
         if (m_anims[index] == null) return false;
         return (m_anims[index].time < m_anims[index].playableAsset.duration) ? true : false;
     }
+    private bool IsAliveRenderer()
+    {
+        bool check = false;
+        for (int i = 0; i < m_renderers.Length; ++i) { check = m_renderers[i].enabled ? true : check; }
+        return check;
+    }
+
     public void PlaySound(int clipIdx)
     {
         if (m_soundCue != null) m_soundCue.curPlayIdx = clipIdx;
         if (m_soundCue != null) m_soundCue.PlaySound();
+    }
+    public void SetRenderColor(Color color)
+    {
+        if (m_sfxType != SfxType.sfxTypeRenderer) return;
+
+        for(int i = 0; i < m_renderers.Length; ++i)
+        {
+            Renderer r = m_renderers[i];
+            if (r != null) r.material.SetColor(@"_TintColor", color);
+        }
     }
 }

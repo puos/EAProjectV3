@@ -40,6 +40,11 @@ public class AnimTest : EASceneLogic
             actor.PushAnimation("Idle");
         }
 
+        if(GUILayout.Button("attack ani", w, h))
+        {
+            actor.PushAnimation("Attack");
+        } 
+
         if (GUILayout.Button("stop ani", w, h))
         {
             actor.StopAnimation();
