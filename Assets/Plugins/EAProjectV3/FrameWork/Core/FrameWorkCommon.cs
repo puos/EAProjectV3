@@ -147,5 +147,11 @@ public static class EAFrameUtil
         float multiplier = Mathf.Pow(10f, decimalPlaces);
         return new Vector3(Mathf.Round(vector3.x * multiplier) / multiplier, Mathf.Round(vector3.y * multiplier) / multiplier, Mathf.Round(vector3.z * multiplier) / multiplier);
     }
+
+    public static int FindIndex<T>(this T[] source,Predicate<T> match)
+    {
+        if (source == null) return -1;
+        return Array.FindIndex<T>(source, match);
+    }
 }
 

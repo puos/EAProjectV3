@@ -2215,111 +2215,111 @@ MonoBehaviour:
     - aniName: DoIdle
       type: 0
       value: 0
-      paramId: 0
+      paramId: 1664863346
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
   - key: Dead
     playAnimParams:
     - aniName: DoDie
       type: 0
       value: 0
-      paramId: 0
+      paramId: -161444124
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
   - key: Move
     playAnimParams:
     - aniName: DoRun
       type: 0
       value: 0
-      paramId: 0
+      paramId: -1620126221
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
   - key: SpecialAction
     playAnimParams:
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
     - aniName: DoSpecial
       type: 0
       value: 0
-      paramId: 0
+      paramId: 1913007539
     - aniName: Index
       type: 1
       value: 0
-      paramId: 0
+      paramId: 1102202885
   - key: PrecastLoop
     playAnimParams:
     - aniName: DoPrecast
       type: 0
       value: 0
-      paramId: 0
+      paramId: 1806511896
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
     - aniName: Index
       type: 1
       value: 0
-      paramId: 0
+      paramId: 1102202885
   - key: Cast
     playAnimParams:
     - aniName: DoCast
       type: 0
       value: 0
-      paramId: 0
+      paramId: -1381515119
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
     - aniName: Index
       type: 1
       value: 0
-      paramId: 0
+      paramId: 1102202885
   - key: CastLoop
     playAnimParams:
     - aniName: DoCastLoop
       type: 0
       value: 0
-      paramId: 0
+      paramId: -601925846
     - aniName: Index
       type: 1
       value: 0
-      paramId: 0
+      paramId: 1102202885
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
   - key: Attack
     playAnimParams:
     - aniName: DoAttack
       type: 0
       value: 0
-      paramId: 0
+      paramId: 1151706844
     - aniName: Index
       type: 1
       value: 0
-      paramId: 0
+      paramId: 1102202885
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
   - key: Stun
     playAnimParams:
     - aniName: DoStun
       type: 0
       value: 0
-      paramId: 0
+      paramId: 1282123881
     - aniName: PrevAnimId
       type: 1
       value: 0
-      paramId: 0
+      paramId: 473690033
 --- !u!1 &100118
 GameObject:
   m_ObjectHideFlags: 0

@@ -160,6 +160,37 @@ public class EAMeshTool : Editor
 
         AnimatorControllerParameter[] animParams = animator.parameters;
 
+        if(actorAnim.animState != null)
+        {
+            for(int i = 0; i < actorAnim.animState.Length; ++i)
+            {
+                List<EAActorAnim.PlayAnimParam> playAnimParams = actorAnim.animState[i].playAnimParams;
+                List<EAActorAnim.PlayAnimParam> removeAnimParams = new List<EAActorAnim.PlayAnimParam>();
+
+                for (int j = 0; j < playAnimParams.Count; ++j)
+                {
+                    int idx = animParams.FindIndex(x => x.name.Equals(playAnimParams[j].aniName));
+                    if (idx == -1)
+                    {
+                        removeAnimParams.Add(playAnimParams[j]);
+                        continue;
+                    }
+                    playAnimParams[j].paramId = animParams[idx].nameHash;
+
+                    if ((int)animParams[idx].type == 4) playAnimParams[j].value = (animParams[idx].defaultBool) ? 1 : 0;
+                    if ((int)animParams[idx].type == 3) playAnimParams[j].value = animParams[idx].defaultInt;
+                    if ((int)animParams[idx].type == 1) playAnimParams[j].value = animParams[idx].defaultFloat;
+                    if ((int)animParams[idx].type == 9) playAnimParams[j].value = 0;
+                }
+
+                for (int j = 0; j < removeAnimParams.Count; ++j)
+                {
+                    playAnimParams.Remove(removeAnimParams[j]);
+                }
+            }
+            return;
+        }
+
         actorAnim.animState = new EAActorAnim.AnimState[animParams.Length];
         actorAnim.animState[0] = new EAActorAnim.AnimState();
         PushAnimParams(animParams, actorAnim.animState[0]);
@@ -178,7 +209,8 @@ public class EAMeshTool : Editor
                     {
                         type = EAActorAnim.PlayAnimParam.Type.Boolean,
                         aniName = animParams[i].name,
-                        value = 0
+                        paramId = animParams[i].nameHash,
+                        value = (animParams[i].defaultBool == true) ? 1 : 0
                     });
                     break;
                 case AnimatorControllerParameterType.Int:
@@ -186,7 +218,8 @@ public class EAMeshTool : Editor
                     {
                         type = EAActorAnim.PlayAnimParam.Type.Integer,
                         aniName = animParams[i].name,
-                        value = 0
+                        paramId = animParams[i].nameHash,
+                        value = animParams[i].defaultInt
                     });
                     break;
                 case AnimatorControllerParameterType.Float:
@@ -194,14 +227,16 @@ public class EAMeshTool : Editor
                     {
                         type = EAActorAnim.PlayAnimParam.Type.Float,
                         aniName = animParams[i].name,
-                        value = 0
+                        paramId = animParams[i].nameHash,
+                        value = animParams[i].defaultFloat
                     });
                     break;
                 case AnimatorControllerParameterType.Trigger:
                     animState.playAnimParams.Add(new EAActorAnim.PlayAnimParam()
                     {
                         type = EAActorAnim.PlayAnimParam.Type.Trigger,
-                        aniName = animParams[i].name
+                        aniName = animParams[i].name,
+                        paramId = animParams[i].nameHash
                     });
                     break;
             }

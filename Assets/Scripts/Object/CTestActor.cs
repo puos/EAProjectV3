@@ -14,6 +14,11 @@ public class CTestActor : EAActor
         actorAnim.Initialize();
         actorAnim.eventCallback = (EAActorAnim anim, AnimationEventType eventType, string slotName, string slotValue) =>
         {
+            int.TryParse(slotName, out int value);
+
+            if (value == AnimatorStateId.Idle) Debug.Log($"Idle {slotValue}");
+            if (value == AnimatorStateId.Run) Debug.Log($"Run {slotValue}");
+
             Debug.Log($"eventType : {eventType} slotName : {slotName} ");        
         };
     }
