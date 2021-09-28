@@ -29,10 +29,7 @@ public class EAActorAnim : MonoBehaviour
         public string aniName;
         public Type   type;
         public float value;
-
-        [HideInInspector] public int paramId;
-
-        public void Initialize(){  this.paramId = Animator.StringToHash(aniName);   }
+        public int paramId;
     }
 
     [Serializable]
@@ -42,15 +39,7 @@ public class EAActorAnim : MonoBehaviour
 
         [SerializeField]
         public List<PlayAnimParam> playAnimParams = new List<PlayAnimParam>();
-                
-        public virtual void Init() 
-        {
-            for(int i = 0; i < playAnimParams.Count; ++i)
-            {
-                playAnimParams[i].Initialize();
-            }
-        }
-
+        
         public PlayAnimParam GetAnimParams(string paramName)
         {
             int idx = playAnimParams.FindIndex(x => x.aniName.Equals(paramName, StringComparison.Ordinal));
@@ -82,7 +71,6 @@ public class EAActorAnim : MonoBehaviour
         dic_animStates.Clear();
         for(int i = 0; i < animStates.Length; ++i)
         {
-            animState[i].Init();
             int key = CRC32.GetHashForAnsi(animStates[i].key);
             if(!dic_animStates.TryGetValue(key,out AnimState state))
             {
@@ -176,13 +164,13 @@ public class EAActorAnim : MonoBehaviour
             switch (paramType)
             {
                 case AnimatorControllerParameterType.Bool:
-                    m_anim.SetBool(animParams[i].nameHash, false);
+                    m_anim.SetBool(animParams[i].nameHash, animParams[i].defaultBool);
                     break;
                 case AnimatorControllerParameterType.Int:
-                    m_anim.SetInteger(animParams[i].nameHash, 0);
+                    m_anim.SetInteger(animParams[i].nameHash, animParams[i].defaultInt);
                     break;
                 case AnimatorControllerParameterType.Float:
-                    m_anim.SetFloat(animParams[i].nameHash, 0f);
+                    m_anim.SetFloat(animParams[i].nameHash, animParams[i].defaultFloat);
                     break;
                 case AnimatorControllerParameterType.Trigger:
                     m_anim.ResetTrigger(animParams[i].nameHash);
@@ -193,6 +181,16 @@ public class EAActorAnim : MonoBehaviour
     
     public void StopAnimation()
     {
-        if (m_anim != null) m_anim.Rebind();
+        if (m_anim == null) return;
+
+        m_anim.Rebind();
+        
+        EAAniStateBehaviour stateMachine = m_anim.GetBehaviour<EAAniStateBehaviour>();
+        if (stateMachine != null) stateMachine.Init(this);
+    }
+
+    public void PlayAnim(int stateNameHash)
+    {
+        m_anim.Play(stateNameHash);
     }
 }
