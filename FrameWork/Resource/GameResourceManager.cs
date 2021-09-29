@@ -100,6 +100,14 @@ public class GameResourceManager : Singleton<GameResourceManager>
         return obj;
     }
 
+    public IEnumerator LoadAsync<T>(string path,System.Action<T> callBack) where T : UnityEngine.Object
+    {
+        ResourceRequest req = Resources.LoadAsync<T>(path);
+        yield return req;
+        if (req.asset) callBack(req.asset as T);
+        if (req.asset) yield break;
+    }
+
     public GameObject Create(EResourceType eType , string strPrefName)
     {
         if (null == m_tRootObjectPool)
