@@ -10,3 +10,35 @@ public class EResourceGroup
     public static readonly EResourceType UIComponent = new EResourceType(4, "Ui/Component");
     public static readonly EResourceType Sfx         = new EResourceType(5, "Effect");
 }
+
+/// Options available in the program ui
+public enum LANGUAGE_TYPE
+{
+    KOREAN,
+    ENGLISH,
+
+    CHINESE_SIMPLIFIED,
+    CHINESE_TRADITIONAL,
+    GERMAN,
+    SPAIN,
+    FRANCE,
+    INDONESIA,
+    ARABIC,
+    ITALY,
+    JAPAN,
+    MALAYSIA,
+    PORTUGAL_AND_BRAZIL,
+    RUSSIA,
+    THAILAND,
+    TURKEY,
+    TAIWAN,
+    VIETNAM
+}
+
+/// UI language table types
+public enum UI_TEXT_TYPE
+{
+    OBJECT,
+    SYSTEM,
+    UI
+}
