@@ -1,0 +1,55 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+
+public class [TableName]DataHolder : DataTable 
+{
+   Dictionary<int,[TableName]Info> dictionaryData = new Dictionary<int,[TableName]Info>();
+   public [TableName]Info[] arrayData = null;
+
+   public override DataInfo FindByKey(string key)
+   {
+       [TableName]Info def = null;
+	   
+	   int keyValue = CRC32.GetHashForAnsi(key);
+
+	   if(dictionaryData.TryGetValue(keyValue,out def))
+	   {
+	      return def;
+	   }
+
+	   return def;
+   }
+
+   public Dictionary<int,[TableName]Info> GetDatas()
+   {
+         return dictionaryData;
+   }
+
+   public override DataInfo[] GetArrayData()
+   {
+         return arrayData;
+   }
+   
+   public override void Load()
+   {
+        dictionaryData.Clear();
+		
+		for (int i = 0; i < arrayData.Length; ++i)
+		{
+		   [TableName]Info v = null;
+		   
+		    int key = CRC32.GetHashForAnsi(arrayData[i].[KeyField]);
+
+		    if(!dictionaryData.TryGetValue(key , out v))
+			{
+			    dictionaryData.Add(key , arrayData[i]);
+			}
+		}
+    }
+	
+	public override void ParseCSV(Type classtype, string path)
+    {
+        arrayData = ([TableName]Info[])ParseCSVToArray(classtype,path);
+    }
+}
