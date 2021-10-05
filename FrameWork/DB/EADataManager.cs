@@ -140,7 +140,6 @@ public class EADataManager<classT> : EAGenericSingleton<classT> where classT : n
 
     public static string NotSetString = "<color=red><NotFound></color>";
 
-
     /// <summary>
     /// Translate with key
     /// </summary>
@@ -152,17 +151,5 @@ public class EADataManager<classT> : EAGenericSingleton<classT> where classT : n
     public virtual string TranslateKeyArgs(LANGUAGE_TYPE langType,UI_TEXT_TYPE uiType,string uiID,params object[] parms)
     {
         return uiID;
-    }
-        /// <summary>
-    /// Reserved word processing routines
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="parms"></param>
-    /// <returns></returns>
-    protected string TranslateKeyArgs(string value,params object[] parms)
-    {
-        // edit line feed
-        string LF = "\\n";
-        return value;
     }
 }
