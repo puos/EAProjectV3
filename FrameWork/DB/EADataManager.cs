@@ -140,6 +140,7 @@ public class EADataManager<classT> : EAGenericSingleton<classT> where classT : n
 
     public static string NotSetString = "<color=red><NotFound></color>";
 
+
     /// <summary>
     /// Translate with key
     /// </summary>
