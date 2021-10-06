@@ -48,6 +48,27 @@ public class [TableName]DataHolder : DataTable
 		}
     }
 	
+	public override IEnumerator LoadAsync()
+	{
+	    dictionaryData.Clear();
+		
+		for (int i = 0; i < arrayData.Length; ++i)
+		{
+		   [TableName]Info v = null;
+		   
+		    int key = CRC32.GetHashForAnsi(arrayData[i].[KeyField]);
+
+		    if(!dictionaryData.TryGetValue(key , out v))
+			{
+			    dictionaryData.Add(key , arrayData[i]);
+			}
+			
+			if(i % 1000 == 0) yield return null;
+		}
+		
+		yield return null;
+	}
+	
 	public override void ParseCSV(Type classtype, string path)
     {
         arrayData = ([TableName]Info[])ParseCSVToArray(classtype,path);
