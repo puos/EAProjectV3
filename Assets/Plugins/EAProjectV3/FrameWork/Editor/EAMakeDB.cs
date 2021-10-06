@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Reflection;
 
 public class EAMakeDB : Editor
 {
@@ -13,6 +14,7 @@ public class EAMakeDB : Editor
     const string codeTargetPath = "Assets/Script/DataStruct/";
     const string tmplDataFile = "[TableName]Info";
     const string tmplDataHolderFile = "[TableName]DataHolder";
+    const string dataAssetLoc = "Assets/Developer/Datatables/";
     const string tmplExt = ".cs";
     static string[] fieldNames = null;
     static string[] fieldTypes = null;
@@ -44,7 +46,7 @@ public class EAMakeDB : Editor
     [MenuItem("Tools/MakeDB")]
     public static void MakeDB()
     {
-        string path = EditorUtility.OpenFilePanel("Please select a CSV file. The file name becomes the data table","", "csv");
+        string path = EditorUtility.OpenFilePanel("Please select a CSV file. The file name becomes the data table","","csv");
 
         if (string.IsNullOrEmpty(path)) return;
 
@@ -52,8 +54,32 @@ public class EAMakeDB : Editor
         string tableName = MakeLines(path);
         tableName = tableName.Split('.')[0];
         GenerateDataTableTemplate(tableName);
+        Type T = GenerateDataHolderTemplate(tableName, fieldNames[0], fieldTypes[0]);
+
+        MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.Public);
+        MethodInfo generic = method.MakeGenericMethod(T);
+        generic.Invoke(null, new object[] { tableName, fieldNames[0] });
+        EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
     }
 
+    [MenuItem("Assets/MakeCSV")]
+    public static void MakeCSV() 
+    {
+        if(Selection.objects.Length == 0)
+        {
+            Debug.Log("Not Object");
+            return;
+        }
+        for(int i = 0; i < Selection.objects.Length; ++i)
+        {
+            string path = AssetDatabase.GetAssetPath(Selection.objects[i]);
+            ScriptableObject sObject = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
+
+            if (sObject == null) continue;
+
+            ExportAsCSV(sObject);
+        }
+    }
     private static string MakeLines(string path)
     {
         dataStartPos = 2;
@@ -81,7 +107,6 @@ public class EAMakeDB : Editor
 
         return filename;
     }
-
     private static void CheckDirectory()
     {
         if (!Directory.Exists(dataAssetPath)) Directory.CreateDirectory(dataAssetPath);
@@ -110,7 +135,7 @@ public class EAMakeDB : Editor
         File.WriteAllText(tmplFullPath, codeTemplate);
     }
 
-    private static void GenerateDataHolderTemplate(string tableName , string primaryKey , string keyType , string pathName)
+    private static Type GenerateDataHolderTemplate(string tableName , string primaryKey , string keyType)
     {
         // Copy the template file to the data type location.
         string targetPath = codeTargetPath + tmplDataHolderFile + ".cs";
@@ -119,49 +144,73 @@ public class EAMakeDB : Editor
 
         targetPath = targetPath.Replace("[TableName]", tableName);
         targetClass = targetClass.Replace("[TableName]", tableName);
+        codeTemplate = codeTemplate.Replace("[TableName]", tableName);
+        codeTemplate = codeTemplate.Replace("[KeyField]", primaryKey);
+        codeTemplate = codeTemplate.Replace("[KeyType]", keyType);
 
+        File.WriteAllText(targetPath, codeTemplate);
+
+        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        AssetDatabase.SaveAssets();
+
+        return Type.GetType(targetClass + ",Assembly-CSharp");
     }
 
-    private static void CreateLock(string pathName,string className,string keyName)
+    public static void CreateAsset<T>(string tableName,string primaryKey) where T : ScriptableObject
     {
-        using (StreamWriter sw = File.CreateText(".Lock.txt")) 
-        {
-            sw.WriteLine("pathName="+pathName);
-            sw.WriteLine("className=" + className);
-            sw.WriteLine("keyName=" + keyName);
-            sw.Close();
-        }
+        T asset = ScriptableObject.CreateInstance<T>();
+        FieldInfo arrayData = asset.GetType().GetField("arrayData");
+        Type dataType = arrayData.FieldType;
+        
+        Array dataElements = Array.CreateInstance(dataType.GetElementType(), lines.Length - dataStartPos);
+
+
     }
-
-    private static bool SecureLock(out string pathName,out string className,out string keyName)
+    private static void ExportAsCSV(ScriptableObject sObject)
     {
-        pathName = string.Empty;
-        className = string.Empty;
-        keyName = string.Empty;
+        if (!Directory.Exists(dataAssetLoc)) Directory.CreateDirectory(dataAssetLoc);
 
-        if (!File.Exists(".Lock.txt")) return false;
+        string str = sObject.GetType().ToString();
+        str = str.Replace("DataHolder", "");
+        FieldInfo arrayData = sObject.GetType().GetField("arrayData");
+        Array dataElements = arrayData.GetValue(sObject) as Array;
 
-        string[] lines = File.ReadAllLines(".Lock.txt");
-        foreach(string s in lines)
+        FieldInfo[] fields = dataElements.GetValue(0).GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+        string[] strArray  = new string[fields.Length];
+        string[] strArray2 = new string[fields.Length];
+
+        for(int i = 0; i < fields.Length; ++i)
         {
-            string[] oneLine = s.Split('=');
-            switch(oneLine[0])
-            {
-                case "pathName":
-                    pathName = oneLine[1];
-                    break;
-                case "className":
-                    className = oneLine[1];
-                    break;
-                case "keyName":
-                    keyName = oneLine[1];
-                    break;
-                default:
-                    Debug.LogWarning("There is an unknown identifier");
-                    break;
-            }
+            strArray[i] = fields[i].Name;
+            strArray2[i] = GetType(fields[i].FieldType.ToString());
         }
-        File.Delete(".Lock.txt");
-        return true;
+
+        StringBuilder builder = new StringBuilder();
+        builder.AppendLine(string.Join(",", strArray));
+        builder.AppendLine(string.Join(",", strArray2));
+
+        for(int i = 0; i < dataElements.Length; ++i)
+        {
+            string[] strArray3 = new string[fields.Length];
+            var data = dataElements.GetValue(i);
+            for (int j = 0; j < fields.Length; ++j)
+            { strArray3[j] = fields[j].GetValue(data).ToString(); }
+            builder.AppendLine(string.Join(",", strArray3));
+        }
+
+        File.WriteAllText(dataAssetLoc + str + ".csv", builder.ToString());
+        AssetDatabase.Refresh();
+    }
+    private static string GetType(string type)
+    {
+        string result = "string";
+        switch(type)
+        {
+            case "System.String": result = "string"; break;
+            case "System.Single": result = "float";  break;
+            case "System.Int32":  result = "int"; break;
+        }
+        return result;
     }
 }
