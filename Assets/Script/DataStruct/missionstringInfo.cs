@@ -7,6 +7,6 @@ public class missionstringInfo : EADataInfo {
 	public string	desc;
 	public string	Korean;
 	public string	English_United_States;
-	public string	Japanese;
+public string	Japanese;
 
 }
