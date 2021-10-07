@@ -15,7 +15,7 @@ public class EADataTable : ScriptableObject
     public virtual void Load()
     {
     }
-    public IEnumerator LoadAsync() 
+    public virtual IEnumerator LoadAsync() 
     {
         yield return null;
     }
