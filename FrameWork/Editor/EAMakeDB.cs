@@ -36,6 +36,9 @@ public class EAMakeDB : Editor
             if(path.Contains("Editor/" + tmplDataFile))
             {
                 codeTmplLoc = Path.GetDirectoryName(path);
+                codeTmplLoc = codeTmplLoc.TrimEnd('/');
+                codeTmplLoc += @"/";
+                codeTmplLoc = codeTmplLoc.Replace("\\", "/");
                 break;
             }
         }  
@@ -129,9 +132,19 @@ public class EAMakeDB : Editor
                 publicMembers += "\n";
                 continue;
             }
+            if(string.IsNullOrEmpty(comments[i]))
+            {
+                publicMembers += "\n";
+                continue;
+            }
+
             publicMembers += "\t//" + comments[i];
             publicMembers += "\n";
         }
+        
+        codeTemplate = codeTemplate.Replace("[@TableName]", tableName);
+        codeTemplate = codeTemplate.Replace("[@Field]", publicMembers);
+
         File.WriteAllText(tmplFullPath, codeTemplate);
     }
 
@@ -161,10 +174,77 @@ public class EAMakeDB : Editor
         T asset = ScriptableObject.CreateInstance<T>();
         FieldInfo arrayData = asset.GetType().GetField("arrayData");
         Type dataType = arrayData.FieldType;
+
+        dataType = dataType.GetElementType();
+        Array dataElements = Array.CreateInstance(dataType, lines.Length - dataStartPos);
+
+        MethodInfo method = typeof(EAMakeDB).GetMethod("GetRecord", BindingFlags.Static | BindingFlags.Public);
+        MethodInfo generic = method.MakeGenericMethod(dataType);
+
+        for(int i = dataStartPos; i < lines.Length; ++i)
+        {
+            object result = (object)generic.Invoke(null, new object[] { fieldNames , lines[i].Split(',') });
+            dataElements.SetValue(result, i - dataStartPos);
+        }
+
+        arrayData.SetValue(asset, dataElements);
+
+        string assetPath = dataAssetPath + "/" + typeof(T).ToString() + "Asset.asset";
+
+        // If the file exists before creating it, delete it and create a new one.
+        if (File.Exists(assetPath)) File.Delete(assetPath);
+
+        AssetDatabase.CreateAsset(asset, assetPath);
+        EditorUtility.SetDirty(asset);
+        AssetDatabase.SaveAssets();
+    }
+
+    private static T GetRecord<T>(string[] fieldName,string[] columns) where T : new()
+    {
+        T record = new T();
         
-        Array dataElements = Array.CreateInstance(dataType.GetElementType(), lines.Length - dataStartPos);
-
-
+        string[] newColumns = new string[fieldName.Length];
+        int curIdx = 0;
+        for(int i =0;i < columns.Length;++i)
+        {
+            if(columns[i].StartsWith("\""))
+            {
+                columns[curIdx] = columns[i];
+                do
+                {
+                    newColumns[curIdx] += columns[++i];
+                }
+                while (!columns[i].EndsWith("\""));
+                newColumns[curIdx] = newColumns[curIdx].Replace("\"", "").Trim();
+            }  
+            else
+            {
+                newColumns[curIdx] = columns[i];
+            }
+            curIdx++;
+        }
+        FieldInfo[] fields = record.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach(FieldInfo f in fields)
+        {
+            for(int i = 0; i < fieldName.Length; ++i)
+            {
+                if(f.Name.Equals(fieldName[i]))
+                {
+                    try
+                    {
+                        if(!string.IsNullOrEmpty(newColumns[i]))
+                        {
+                            f.SetValue(record, Convert.ChangeType(newColumns[i], f.FieldType));
+                        }
+                    }
+                    catch
+                    {
+                        Debug.LogError("line:[" + i + "]" + f.Name + "->" + f.FieldType);
+                    }
+                }
+            }
+        }
+        return record;
     }
     private static void ExportAsCSV(ScriptableObject sObject)
     {

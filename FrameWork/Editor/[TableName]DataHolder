@@ -2,31 +2,23 @@
 using System.Collections.Generic;
 using System;
 
-public class [TableName]DataHolder : DataTable 
+public class [TableName]DataHolder : EADataTable 
 {
-   Dictionary<int,[TableName]Info> dictionaryData = new Dictionary<int,[TableName]Info>();
+   Dictionary<[KeyType],[TableName]Info> dictionaryData = new Dictionary<[KeyType],[TableName]Info>();
    public [TableName]Info[] arrayData = null;
 
-   public override DataInfo FindByKey(string key)
+   public override EADataInfo FindByKey([KeyType] key)
    {
-       [TableName]Info def = null;
-	   
-	   int keyValue = CRC32.GetHashForAnsi(key);
-
-	   if(dictionaryData.TryGetValue(keyValue,out def))
-	   {
-	      return def;
-	   }
-
+	   dictionaryData.TryGetValue(key,out [TableName]Info def);
 	   return def;
    }
 
-   public Dictionary<int,[TableName]Info> GetDatas()
+   public Dictionary<[KeyType],[TableName]Info> GetDatas()
    {
          return dictionaryData;
    }
 
-   public override DataInfo[] GetArrayData()
+   public override EADataInfo[] GetArrayData()
    {
          return arrayData;
    }
@@ -37,14 +29,10 @@ public class [TableName]DataHolder : DataTable
 		
 		for (int i = 0; i < arrayData.Length; ++i)
 		{
-		   [TableName]Info v = null;
-		   
-		    int key = CRC32.GetHashForAnsi(arrayData[i].[KeyField]);
-
-		    if(!dictionaryData.TryGetValue(key , out v))
-			{
-			    dictionaryData.Add(key , arrayData[i]);
-			}
+		   if(!dictionaryData.TryGetValue(arrayData[i].[KeyField] , out [TableName]Info v))
+		   {
+			  dictionaryData.Add(arrayData[i].[KeyField] , arrayData[i]);
+		   }
 		}
     }
 	
@@ -54,16 +42,12 @@ public class [TableName]DataHolder : DataTable
 		
 		for (int i = 0; i < arrayData.Length; ++i)
 		{
-		   [TableName]Info v = null;
-		   
-		    int key = CRC32.GetHashForAnsi(arrayData[i].[KeyField]);
-
-		    if(!dictionaryData.TryGetValue(key , out v))
-			{
-			    dictionaryData.Add(key , arrayData[i]);
-			}
+		   if(!dictionaryData.TryGetValue(arrayData[i].[KeyField] , out [TableName]Info v))
+		   {
+			   dictionaryData.Add(arrayData[i].[KeyField] , arrayData[i]);
+		   }
 			
-			if(i % 1000 == 0) yield return null;
+		   if(i % 1000 == 0) yield return null;
 		}
 		
 		yield return null;
