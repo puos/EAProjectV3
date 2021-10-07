@@ -23,6 +23,14 @@ public class EADataTable : ScriptableObject
     {
         return default(EADataInfo);
     }
+    public virtual EADataInfo FindByKey(int key)
+    {
+        return default(EADataInfo);
+    } 
+    public virtual EADataInfo FindByKey(float key)
+    {
+        return default(EADataInfo);
+    }
     public virtual EADataInfo[] GetArrayData() 
     {
         return null;

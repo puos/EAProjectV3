@@ -8,6 +8,7 @@ using UnityEditor;
 using System.IO;
 using System.Reflection;
 
+
 public class EAMakeDB : Editor
 {
     const string dataAssetPath = "Assets/Resources/DataAssets";
@@ -57,12 +58,19 @@ public class EAMakeDB : Editor
         string tableName = MakeLines(path);
         tableName = tableName.Split('.')[0];
         GenerateDataTableTemplate(tableName);
-        Type T = GenerateDataHolderTemplate(tableName, fieldNames[0], fieldTypes[0]);
+        GenerateDataHolderTemplate(tableName, fieldNames[0], fieldTypes[0]);
 
-        MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.Public);
-        MethodInfo generic = method.MakeGenericMethod(T);
-        generic.Invoke(null, new object[] { tableName, fieldNames[0] });
-        EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
+        EAEditorUtil.Delay(.5f, () => 
+        {
+            string targetClass = tmplDataHolderFile;
+            targetClass = targetClass.Replace("[TableName]", tableName);
+            Type T = Type.GetType(targetClass + ",Assembly-CSharp");
+
+            MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo generic = method.MakeGenericMethod(T);
+            generic.Invoke(null, new object[] { tableName, fieldNames[0] });
+            EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
+        });
     }
 
     [MenuItem("Assets/MakeCSV")]
@@ -126,8 +134,13 @@ public class EAMakeDB : Editor
         string codeTemplate = File.ReadAllText(GetRootPath() + tmplDataFile);
         for(int i = 0; i < fieldNames.Length; ++i)
         {
+            fieldNames[i] = fieldNames[i].Replace("(", "");
+            fieldNames[i] = fieldNames[i].Replace(")", "");
+            fieldNames[i] = fieldNames[i].Replace(" ", "_");
+
             publicMembers += "\tpublic " + fieldTypes[i].ToLower() + "\t" + fieldNames[i] + ";";
-            if(comments == null)
+           
+            if(comments.Length == 0)
             {
                 publicMembers += "\n";
                 continue;
@@ -147,8 +160,7 @@ public class EAMakeDB : Editor
 
         File.WriteAllText(tmplFullPath, codeTemplate);
     }
-
-    private static Type GenerateDataHolderTemplate(string tableName , string primaryKey , string keyType)
+    private static void GenerateDataHolderTemplate(string tableName , string primaryKey , string keyType)
     {
         // Copy the template file to the data type location.
         string targetPath = codeTargetPath + tmplDataHolderFile + ".cs";
@@ -165,11 +177,8 @@ public class EAMakeDB : Editor
 
         AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         AssetDatabase.SaveAssets();
-
-        return Type.GetType(targetClass + ",Assembly-CSharp");
     }
-
-    public static void CreateAsset<T>(string tableName,string primaryKey) where T : ScriptableObject
+    private static void CreateAsset<T>(string tableName,string primaryKey) where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();
         FieldInfo arrayData = asset.GetType().GetField("arrayData");
@@ -178,7 +187,7 @@ public class EAMakeDB : Editor
         dataType = dataType.GetElementType();
         Array dataElements = Array.CreateInstance(dataType, lines.Length - dataStartPos);
 
-        MethodInfo method = typeof(EAMakeDB).GetMethod("GetRecord", BindingFlags.Static | BindingFlags.Public);
+        MethodInfo method = typeof(EAMakeDB).GetMethod("GetRecord", BindingFlags.Static | BindingFlags.NonPublic);
         MethodInfo generic = method.MakeGenericMethod(dataType);
 
         for(int i = dataStartPos; i < lines.Length; ++i)
@@ -198,25 +207,26 @@ public class EAMakeDB : Editor
         EditorUtility.SetDirty(asset);
         AssetDatabase.SaveAssets();
     }
-
     private static T GetRecord<T>(string[] fieldName,string[] columns) where T : new()
     {
         T record = new T();
-        
+
         string[] newColumns = new string[fieldName.Length];
         int curIdx = 0;
-        for(int i =0;i < columns.Length;++i)
+        for (int i = 0; i < columns.Length; ++i)
         {
-            if(columns[i].StartsWith("\""))
+            if (columns[i].StartsWith("\""))
             {
-                columns[curIdx] = columns[i];
+                newColumns[curIdx] = columns[i];
                 do
                 {
-                    newColumns[curIdx] += columns[++i];
+                    i = i + 1;
+                    if (i >= columns.Length) break;
+                    newColumns[curIdx] += " " + columns[i];
                 }
                 while (!columns[i].EndsWith("\""));
                 newColumns[curIdx] = newColumns[curIdx].Replace("\"", "").Trim();
-            }  
+            }
             else
             {
                 newColumns[curIdx] = columns[i];
@@ -224,26 +234,27 @@ public class EAMakeDB : Editor
             curIdx++;
         }
         FieldInfo[] fields = record.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-        foreach(FieldInfo f in fields)
+        foreach (FieldInfo f in fields)
         {
-            for(int i = 0; i < fieldName.Length; ++i)
+            for (int i = 0; i < fieldName.Length; ++i)
             {
-                if(f.Name.Equals(fieldName[i]))
+                if (f.Name.Equals(fieldName[i]))
                 {
                     try
                     {
-                        if(!string.IsNullOrEmpty(newColumns[i]))
+                        if (!string.IsNullOrEmpty(newColumns[i]))
                         {
                             f.SetValue(record, Convert.ChangeType(newColumns[i], f.FieldType));
                         }
                     }
                     catch
                     {
-                        Debug.LogError("line:[" + i + "]" + f.Name + "->" + f.FieldType);
+                        Debug.LogError("line:[" + i + "]" + f.Name + " : " + newColumns[i] + "->" + f.FieldType);
                     }
                 }
             }
         }
+
         return record;
     }
     private static void ExportAsCSV(ScriptableObject sObject)

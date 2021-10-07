@@ -1,6 +1,6 @@
 id,item_name,wear_type,gear_type,grade,atk,atk_range,model_res,res_icon,projectile_id,projectile_speed,hit_effect_id,hit_effect_id2
 string,string,int,int,int,float,float,string,string,string,float,string,string 
-//,,Weapon = 0 Helmet = 1 Armor = 2 NeckPlace = 3 Ring = 4 Etc = 5,Sword = 1 Bow = 2  Rifle = 3   Pistol = 4 Etc = 5 ,,,,,,,,,
+//,,Weapon = 0 Helmet = 1 Armor = 2  NeckPlace = 3  Ring = 4  Etc = 5,Sword = 1  Bow = 2   Rifle = 3   Pistol = 4  Etc = 5 ,,,,,,,,,
 mob_sword001,mob_sword001_name,0,1,1,1,1,3DObject/mob_sword,Sword_01,,0,hit,
 mob_shadowGun,mob_shadowGun_name,0,4,1,1,35,3DObject/shadowgun,,suriken,7,hit,star
 hero_sword001,hero_sword001_name,0,1,1,1,2.5,3DObject/sword,Sword_01,,0,hit,

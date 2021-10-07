@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a02197a01add054999cd5936a208a54, type: 3}
+  m_Name: data_gearItemDataHolderAsset
+  m_EditorClassIdentifier: 
+  arrayData:
+  - id: mob_sword001
+    item_name: mob_sword001_name
+    wear_type: 0
+    gear_type: 1
+    grade: 1
+    atk: 1
+    atk_range: 1
+    model_res: 3DObject/mob_sword
+    res_icon: Sword_01
+    projectile_id: 
+    projectile_speed: 0
+    hit_effect_id: hit
+    hit_effect_id2: 
+  - id: mob_shadowGun
+    item_name: mob_shadowGun_name
+    wear_type: 0
+    gear_type: 4
+    grade: 1
+    atk: 1
+    atk_range: 35
+    model_res: 3DObject/shadowgun
+    res_icon: 
+    projectile_id: suriken
+    projectile_speed: 7
+    hit_effect_id: hit
+    hit_effect_id2: star
+  - id: hero_sword001
+    item_name: hero_sword001_name
+    wear_type: 0
+    gear_type: 1
+    grade: 1
+    atk: 1
+    atk_range: 2.5
+    model_res: 3DObject/sword
+    res_icon: Sword_01
+    projectile_id: 
+    projectile_speed: 0
+    hit_effect_id: hit
+    hit_effect_id2: 
+  - id: mob_shadowGun2
+    item_name: hero_shadowGun2_name
+    wear_type: 0
+    gear_type: 4
+    grade: 1
+    atk: 1
+    atk_range: 35
+    model_res: 3DObject/shadowgun
+    res_icon: 
+    projectile_id: log
+    projectile_speed: 5
+    hit_effect_id: hit
+    hit_effect_id2: log_eff
