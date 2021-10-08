@@ -1,0 +1,18 @@
+{
+    "name": "PUOS.EAProjectV3Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:53b3eb8e5a0908b46817c1b2a51150c5"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
