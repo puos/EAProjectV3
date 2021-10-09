@@ -9,6 +9,18 @@ using UnityEngine;
 // Implementation of multilingual support method for UI
 
 [ExecuteInEditMode]
-class MultiLanguageText : Text
+public class MultiLanguageText : Text
 {
+    [HideInInspector] public LANGUAGE_TYPE langType;
+    [HideInInspector] public UI_TEXT_TYPE uiType;
+    [HideInInspector] public string uiID;
+    
+
+}
+
+//
+[SerializeField]
+public class ChangeRectTransform
+{
+
 }
