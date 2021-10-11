@@ -153,5 +153,10 @@ public static class EAFrameUtil
         if (source == null) return -1;
         return Array.FindIndex<T>(source, match);
     }
+    public static int IndexOf<T>(this T[] source,T value)
+    {
+        if (source == null) return -1;
+        return Array.IndexOf(source, value);
+    }
 }
 
