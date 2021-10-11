@@ -44,7 +44,7 @@ public class EADataTable : ScriptableObject
     }
 }
 
-public class EADataManager<classT> : EAGenericSingleton<classT> where classT : new() 
+public class EADataManager : EAGenericSingleton<EADataManager>
 {
     private Dictionary<int, EADataTable> dicDataTables = new Dictionary<int, EADataTable>();
 
