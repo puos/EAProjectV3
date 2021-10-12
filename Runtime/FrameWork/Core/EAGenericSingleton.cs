@@ -18,5 +18,10 @@ public class EAGenericSingleton<T> where T : new()
     // Prevent generation from outside
     protected EAGenericSingleton()
     {
+        SingletonToInit();
+    }
+
+    protected virtual void SingletonToInit()
+    {
     }
 }

@@ -85,7 +85,7 @@ public class MultiLanguageText : Text
             positionSnaps.Add(langList[i], rectTransformList[i]);
         }
 
-        if(!isTranslated) 
+        if (!isTranslated) ResetLanguage(this.parms);
 
         base.OnEnable();
     }
@@ -114,7 +114,11 @@ public class MultiLanguageText : Text
             trans.RestoreRect(this);
         }
       
-        text = EADataManager.instance.TranslateKeyArgs(langType, uiType, uiID, parms);
+        if(EAMainFrame.iDataManager != null)
+        {
+            text = EAMainFrame.iDataManager.TranslateKeyArgs(langType, uiType, uiID, parms);
+        }
+
         isTranslated = true;
 
         return true;

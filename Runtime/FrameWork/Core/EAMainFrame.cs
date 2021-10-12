@@ -42,6 +42,8 @@ public class EAMainFrame : Singleton<EAMainFrame>
 
     public static float screenY { get; private set; }
 
+    public static IEADataManager iDataManager { get; set; } 
+
     MainFrameAddFlags facilityCreatedFlags = 0;
     
     private float nextLazyUpdateCheckTime = 0;

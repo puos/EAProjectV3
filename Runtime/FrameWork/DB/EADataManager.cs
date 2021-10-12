@@ -44,9 +44,19 @@ public class EADataTable : ScriptableObject
     }
 }
 
-public class EADataManager : EAGenericSingleton<EADataManager>
+public interface IEADataManager
+{
+    string TranslateKeyArgs(LANGUAGE_TYPE langType, UI_TEXT_TYPE uiType, string uiID, params object[] parms);
+}
+
+public class EADataManager<classT> : EAGenericSingleton<classT> , IEADataManager where classT : new()
 {
     private Dictionary<int, EADataTable> dicDataTables = new Dictionary<int, EADataTable>();
+
+    protected override void SingletonToInit()
+    {
+       if(EAMainFrame.iDataManager == null) EAMainFrame.iDataManager = this;
+    }
 
     public void InitializeTableData(Dictionary<string,string> DataInfoList)
     {
