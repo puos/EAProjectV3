@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 [CustomEditor(typeof(MultiLanguageText))]
 public class MultiLanguageTextEditor : Editor
@@ -115,6 +116,9 @@ public class LanguageChanger : Editor
    public static void LanguageChange()
    {
         string scriptFile = "Assets/Script/Editor/LanguageItemMenu.cs";
+
+        if (!Directory.Exists(scriptFile)) Directory.CreateDirectory(scriptFile);
+
         string[] menuItems = Enum.GetNames(typeof(LANGUAGE_TYPE));
 
         // The class string
@@ -136,5 +140,12 @@ public class LanguageChanger : Editor
             sb.AppendLine("");
         }
 
+        sb.AppendLine("");
+        sb.AppendLine("}");
+
+        if (File.Exists(scriptFile)) System.IO.File.Delete(scriptFile);
+        System.IO.File.WriteAllText(scriptFile, sb.ToString());
+        AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(scriptFile,ImportAssetOptions.ForceUpdate);
     }
 }
