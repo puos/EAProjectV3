@@ -19,7 +19,9 @@ public class MultiLanguageText : Text
         public Vector2 size;
         public int fontSize;
 
-        public ChangeRectTransform(Vector2 position,Vector2 size, int fontSize)
+        public ChangeRectTransform() { }
+
+        public ChangeRectTransform(Vector2 position ,Vector2 size, int fontSize)
         {
             this.position = position;
             this.size = size;
@@ -46,10 +48,9 @@ public class MultiLanguageText : Text
     [HideInInspector] public LANGUAGE_TYPE langType;
     [HideInInspector] public UI_TEXT_TYPE uiType;
     [HideInInspector] public string uiID;
-    [HideInInspector] public ChangeRectTransform defaultTransform;
-
-    [SerializeField] private LANGUAGE_TYPE[] langList;
-    [SerializeField] private ChangeRectTransform[] rectTransformList;
+   
+    [SerializeField] public LANGUAGE_TYPE[] langList;
+    [SerializeField] public ChangeRectTransform[] rectTransformList;
 
     private Dictionary<LANGUAGE_TYPE, ChangeRectTransform> positionSnaps = new Dictionary<LANGUAGE_TYPE, ChangeRectTransform>();
 
@@ -62,6 +63,10 @@ public class MultiLanguageText : Text
          canvasRenderer.SetAlpha(color.a);  
          base.color = value; 
       } 
+    }
+    public Dictionary<LANGUAGE_TYPE, ChangeRectTransform> posSnaps
+    {
+        get { return positionSnaps; }
     }
 
     protected override void OnEnable()
@@ -108,11 +113,7 @@ public class MultiLanguageText : Text
         {
             trans.RestoreRect(this);
         }
-        else
-        {
-            if (defaultTransform != null) defaultTransform.RestoreRect(this);
-        }
-
+      
         text = EADataManager.instance.TranslateKeyArgs(langType, uiType, uiID, parms);
         isTranslated = true;
 

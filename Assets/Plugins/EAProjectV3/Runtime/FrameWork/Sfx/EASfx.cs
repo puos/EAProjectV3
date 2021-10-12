@@ -9,11 +9,6 @@ using UnityEngine.Timeline;
 using UnityEngine.Animations;
 using EAEffectID = System.UInt32;
 
-public interface SfxParamSlotListener
-{
-    void OnSfxParamSlotAssigned(int slotIdx, EASfx.SfxParamSlot slot);
-}
-
 public enum SfxEventType
 {
     None,
