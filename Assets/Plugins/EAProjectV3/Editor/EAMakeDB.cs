@@ -159,6 +159,9 @@ public class EAMakeDB : Editor
         codeTemplate = codeTemplate.Replace("[@Field]", publicMembers);
 
         File.WriteAllText(tmplFullPath, codeTemplate);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(tmplFullPath, ImportAssetOptions.ForceUpdate);
     }
     private static void GenerateDataHolderTemplate(string tableName , string primaryKey , string keyType)
     {
@@ -175,8 +178,8 @@ public class EAMakeDB : Editor
 
         File.WriteAllText(targetPath, codeTemplate);
 
-        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(targetPath, ImportAssetOptions.ForceUpdate);
     }
     private static void CreateAsset<T>(string tableName,string primaryKey) where T : ScriptableObject
     {
@@ -199,13 +202,12 @@ public class EAMakeDB : Editor
         arrayData.SetValue(asset, dataElements);
 
         string assetPath = dataAssetPath + "/" + typeof(T).ToString() + "Asset.asset";
-
         // If the file exists before creating it, delete it and create a new one.
         if (File.Exists(assetPath)) File.Delete(assetPath);
 
         AssetDatabase.CreateAsset(asset, assetPath);
-        EditorUtility.SetDirty(asset);
         AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(assetPath,ImportAssetOptions.ForceUpdate);
     }
     private static T GetRecord<T>(string[] fieldName,string[] columns) where T : new()
     {

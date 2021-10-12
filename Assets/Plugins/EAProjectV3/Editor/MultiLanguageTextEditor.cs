@@ -100,9 +100,41 @@ public class MultiLanguageTextEditor : Editor
             curtarget.posSnaps.Keys.CopyTo(curtarget.langList, 0);
 
             curtarget.rectTransformList = new MultiLanguageText.ChangeRectTransform[curtarget.posSnaps.Values.Count];
+            curtarget.posSnaps.Values.CopyTo(curtarget.rectTransformList, 0);
 
+            curtarget.OnChangeLanguage(curtarget.langType);
         } 
 
         base.OnInspectorGUI();
+    }
+}
+
+public class LanguageChanger : Editor 
+{
+   [MenuItem("Language/Refresh language",false,20)]
+   public static void LanguageChange()
+   {
+        string scriptFile = "Assets/Script/Editor/LanguageItemMenu.cs";
+        string[] menuItems = Enum.GetNames(typeof(LANGUAGE_TYPE));
+
+        // The class string
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("// This class is Auto-Generated");
+        sb.AppendLine("using UnityEngine;");
+        sb.AppendLine("using UnityEditor;");
+        sb.AppendLine("");
+        sb.AppendLine("  public static class GeneratedMenuItems {");
+        sb.AppendLine("");
+
+        // loops though the array and generates the menu items
+        for(int i = 0; i < menuItems.Length; ++i)
+        {
+            sb.AppendLine("   [MenuItem(\"Language/" + menuItems[i] + "\")]");
+            sb.AppendLine("   private static void MenuItem" + i.ToString() + "(){");
+            sb.AppendLine("     LanguageChanger.RebuildLanguage( LANGUAGE_TYPE." + menuItems[i] + ");");
+            sb.AppendLine("   }");
+            sb.AppendLine("");
+        }
+
     }
 }
