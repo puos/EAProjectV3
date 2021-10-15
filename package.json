@@ -4,19 +4,12 @@
   "version": "1.0.0",
   "unity": "2019.4",
   "description": "EAProjectV3",
-  "scopedRegistries": [
-    {
-      "name": "package.openupm.com",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.demigiant.dotween",
-        "com.openupm"
-      ]
-    }
-  ],
   "dependencies":
   {
       "com.demigiant.dotween": "1.2.42",
 	  "com.unity.timeline": "1.4.8"
+  },
+  "publishConfig": {
+    "registry": "https://package.openupm.com"
   }
 }
