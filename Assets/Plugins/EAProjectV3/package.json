@@ -8,5 +8,6 @@
   {
       "com.demigiant.dotween": "https://github.com/yoshida190/dotween.git#upm",
 	  "com.unity.timeline": "1.4.8"
-  }
+  },
+  "resolutionStrategy" : "higherMinor"
 }
