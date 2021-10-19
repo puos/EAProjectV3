@@ -14,6 +14,7 @@ public class AnimTest : EASceneLogic
     protected override void OnInit()
     {
         actor = CTestActor.Clone();
+        EAFrameUtil.Call<EAFPSCounter>(EAFPSCounter.instance);
     }
 
     protected override IEnumerator OnPostInit()
