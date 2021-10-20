@@ -366,7 +366,8 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: Event AnimationEvent_Impact has a time (1.477778) outside
+      the clip's valid range (0.000000..1.266667). It will never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -404,7 +405,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.033333335
+      - time: 1.0666667
         functionName: AnimationEvent_Impact
         data: test5
         objectReferenceParameter: {instanceID: 0}
