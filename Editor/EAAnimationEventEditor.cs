@@ -86,7 +86,8 @@ public class EAAnimationEventEditor : EditorWindow
 
             EditorGUI.indentLevel++;
 
-            animEvent.time = Decimal.ToSingle(new Decimal(EditorGUILayout.IntField("frame", frame)) * frameTime);
+            Decimal curFrame = new Decimal(EditorGUILayout.IntField("frame", frame));
+            animEvent.time = Decimal.ToSingle(curFrame * frameTime);
             animEvent.stringParameter = EditorGUILayout.TextField("params", animEvent.stringParameter);
             if (GUILayout.Button("Remove",GUILayout.Width(70)))
             {
