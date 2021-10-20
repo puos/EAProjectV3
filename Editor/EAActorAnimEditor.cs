@@ -25,10 +25,13 @@ public class EAActorAnimEditor : Editor
         {
             if(GUILayout.Button("Edit"))
             {
-                EAAnimationEventEditor.EAAnimationEventEditorMenu();
+                EAAnimationEventEditor.EAAnimationEventEditorMenu(_target.GetComponent<Animator>());
             }
         }
 
-        base.serializedObject.ApplyModifiedProperties();
+        if(GUI.changed)
+        {
+            base.serializedObject.ApplyModifiedProperties();
+        }
     }
 }
