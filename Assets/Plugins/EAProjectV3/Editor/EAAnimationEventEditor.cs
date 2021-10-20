@@ -8,20 +8,10 @@ using System.Linq;
 
 public class EAAnimationEventEditor : EditorWindow
 {
-    public static void EAAnimationEventEditorMenu() 
+    public static void EAAnimationEventEditorMenu(Animator animator) 
     {
         EditorWindow.GetWindow(typeof(EAAnimationEventEditor));
-
-        if (Selection.objects.Length == 0)
-        {
-            Debug.LogError("Not Object");
-            return;
-        }
-
-        string pathSrc = AssetDatabase.GetAssetPath(Selection.objects[0]);
-        string pathTarget = pathSrc.Remove(pathSrc.LastIndexOf('/') + 1);
-        GameObject charObj = AssetDatabase.LoadAssetAtPath<GameObject>(pathSrc);
-        sourceAnimator = charObj.GetComponent<Animator>();
+        sourceAnimator = animator;
     }
 
     public class EAAnimationEventItem
@@ -74,46 +64,41 @@ public class EAAnimationEventEditor : EditorWindow
         if (selectedIndex != prevIndex) ShowAnimationEvent();
         if (listAnimEventItem == null) return;
         if (currentClip == null) return;
-                
 
         if (GUILayout.Button("Add Event"))
         {
             listAnimEventItem.Add(new EAAnimationEventItem(new AnimationEvent(),"AnimationEvent_Impact",string.Empty));
         }
 
-        if(GUILayout.Button("Remove Event"))
-        {
-            if(listAnimEventItem.Count > 0)
-            {
-                listAnimEventItem.RemoveAt(listAnimEventItem.Count - 1);
-            }
-        } 
-
         decimal frameTime = (1.0m / new Decimal(currentClip.frameRate));
         EditorGUILayout.LabelField("FrameTime=" + frameTime);
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-        int currentFrameText = -1;
-
         foreach(EAAnimationEventItem item in listAnimEventItem)
         {
             AnimationEvent animEvent = item.animationEvent;
             int frame = (int)Decimal.Round(new Decimal(animEvent.time) / frameTime);
-            if(frame > currentFrameText)
-            {
-                currentFrameText = frame;
-                EditorGUILayout.PrefixLabel("Frame " + currentFrameText);
-            }
+            
+            EditorGUILayout.PrefixLabel("Frame " + frame);
+
+            bool isRemove = false;
 
             EditorGUI.indentLevel++;
 
             animEvent.time = Decimal.ToSingle(new Decimal(EditorGUILayout.IntField("frame", frame)) * frameTime);
             animEvent.stringParameter = EditorGUILayout.TextField("params", animEvent.stringParameter);
+            if (GUILayout.Button("Remove",GUILayout.Width(70)))
+            {
+                listAnimEventItem.Remove(item);
+                isRemove = true;
+            }
 
             EditorGUI.indentLevel--;
 
             EditorGUILayout.Space();
+
+            if (isRemove) break;
         }
 
         EditorGUILayout.EndScrollView();
