@@ -81,6 +81,7 @@ public class EAObject : MonoBehaviour
     {
         cachedTransform.localPosition = localPos;
     }
+   
     public void SetLocalRotation(Quaternion localRot)
     {
         cachedTransform.localRotation = localRot;
@@ -100,6 +101,10 @@ public class EAObject : MonoBehaviour
         if (col == null) return 1f;
 
         return col.bounds.extents.magnitude;
+    }
+
+    public void SetBRadius(float r) 
+    {    
     }
 
     public Vector3 GetCenterPos()

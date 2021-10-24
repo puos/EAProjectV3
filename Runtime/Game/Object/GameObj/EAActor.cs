@@ -23,6 +23,8 @@ public class EAActor : EAObject
 
     public eObjectType objType { get { return (m_CharBase != null) ? m_CharBase.GetObjInfo().m_eObjType : eObjectType.CT_MAXNUM; } }
 
+    private float maxSpeed = 1f;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -47,6 +49,13 @@ public class EAActor : EAObject
         EA_ItemManager.instance.RemoveEquip(Id);
         EACObjManager.instance.DeleteGameObject(objType, Id);
     }
+    public float GetMaxSpeed() { return maxSpeed; }
+    public void SetMaxSpeed(float newSpeed) { maxSpeed = newSpeed; }
+
+    public Vector3 GetVelocity() { return rb.velocity; }
+
+    public float GetSpeed() { return rb.velocity.magnitude; }
+
     // Works after SetItemAttachment function
     public virtual void DoAttachItem(eAttachType attachType, eItemType itemType)
     {
@@ -219,4 +228,5 @@ public class EAActor : EAObject
 
         bones[nKey] = obj;
     }
+   
 }
