@@ -12,7 +12,6 @@ public class EAActorMover : MonoBehaviour
     private bool isMove = false;
     protected Vector3 targetPosition = Vector3.zero;
     protected System.Action onMoveComplete = null;
-    private float maxSpeed = 1f;
     private float decelerationTweeker = 0.3f;
     public bool isReachedSetPos { private get; set; }
 
@@ -58,7 +57,7 @@ public class EAActorMover : MonoBehaviour
         if (dist > epsilon)
         {
             float speed = dist / decelerationTweeker;
-            speed = Mathf.Min(speed, maxSpeed);
+            speed = Mathf.Min(speed, actor.GetMaxSpeed());
 
             Vector3 desiredVelocity = toTarget * (speed / dist);
             desiredVelocity.y = actor.rb.velocity.y;
@@ -78,7 +77,7 @@ public class EAActorMover : MonoBehaviour
 
     public void SetSpeed(float speed , float epsilon = 0.01f)
     {
-        maxSpeed = speed;
+        actor.SetMaxSpeed(speed);
         arriveEpsilon = epsilon;
     }
 
