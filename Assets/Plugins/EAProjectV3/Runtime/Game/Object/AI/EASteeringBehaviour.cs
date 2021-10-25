@@ -515,6 +515,9 @@ public class EASteeringBehaviour
                         (m_entity.GetSpeed() / m_entity.GetMaxSpeed()) * minDetectionBoxLength;
 
         //tag all obstacles within range of the box for processing
+        m_entity.World().TagObstablesWithinViewRange(m_entity, m_fDBoxLength);
+
+        //this will keep track of the closest intersecting obstacle (CIB)
         
     }
 }

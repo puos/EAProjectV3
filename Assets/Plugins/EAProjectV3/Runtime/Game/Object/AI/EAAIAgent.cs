@@ -18,4 +18,6 @@ public interface EAAIAgent : EAAIObject
     * @return time elapsed from last update
     */
     float GetTimeElapsed();
+
+    EAGamePhysicWorld World();
 }

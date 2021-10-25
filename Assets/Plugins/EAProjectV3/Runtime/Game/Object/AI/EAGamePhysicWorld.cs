@@ -73,4 +73,32 @@ public class EAGamePhysicWorld
         return m_Obstacles;
     }
 
+    public void TagObstablesWithinViewRange(EAAIAgent entity,float radius)
+    {
+        IEnumerator<EAAIObject> it = m_Obstacles.GetEnumerator();
+
+        while(it.MoveNext())
+        {
+            EAAIObject curEntity = it.Current;
+
+            //first clear any current tag
+            curEntity.UnTagging();
+
+            Vector3 to = curEntity.GetPos() - entity.GetPos();
+
+            //the bounding radius of the other is taken into account by adding it
+            //to the range
+            float range = radius + curEntity.GetBRadius();
+
+            //if entity within range, tag for further consideration. (working in
+            //distance-squared space to avoid sqrts)
+            if(!object.ReferenceEquals(curEntity,entity) &&
+                (to.sqrMagnitude < range * range))
+            {
+                curEntity.Tagging();
+            }
+        }
+    }
+
+    
 }
