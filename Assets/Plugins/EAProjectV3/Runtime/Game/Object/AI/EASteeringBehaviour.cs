@@ -11,13 +11,6 @@ public class EASteeringBehaviour
 
     EAAIAgent m_entity = null;
 
-    public enum summing_method
-    {
-       weighted_average = 0,
-       prioritized = 1,
-       dithered = 2,
-    }
-
     [Flags]
     private enum behaviour_type
     {
@@ -57,27 +50,7 @@ public class EASteeringBehaviour
     float m_fWanderRadius = 10.0f;
     float m_fWanderDistance = 25.0f;
 
-    //multipliers. these can be adjusted to effect strength of the 
-    //appropriate behaviour. Useful to get flocking the way you require
-    //for example.
-
-    private float m_fWeightSeparation;
-    private float m_fWeightCohesion;
-    private float m_fWeightAlignment;
-    private float m_fWeightWander;
-    private float m_fWeightObstacleAvoidance;
-    private float m_fWeightWallAvoidance;
-    private float m_fWeightSeek;
-    private float m_fWeightFlee;
-    private float m_fWeightArrive;
-    private float m_fWeightPursuit;
-    private float m_fWeightInterpose = 0;
-    private float m_fWeightHide;
-    private float m_fWeightEvade;
-    private float m_fWeightFollowPath;
-
-    private float prObstacleAvoidance = 0;
-
+    
     //how far the agent can 'see'
     private float m_fViewDistance;
 
@@ -106,9 +79,7 @@ public class EASteeringBehaviour
 
     Deceleration m_deceleration = Deceleration.normal;
 
-    float minDetectionBoxLength;
-
-    summing_method summingMethod = summing_method.weighted_average;
+    float minDetectionBoxLength = 20.0f;
 
     public EASteeringBehaviour(EAAIAgent entity)
     {
@@ -132,10 +103,6 @@ public class EASteeringBehaviour
         m_pPath.Set(paths);
         if (isLoop == true) m_pPath.LoopOn();
         if (isLoop == false) m_pPath.LoopOff();
-    }
-    public void SetSummingMethod(summing_method sm)
-    {
-        summingMethod = sm;
     }
     bool IsOn(behaviour_type bType) { return IsOn(bType,m_iflag); }
     bool IsOn(behaviour_type bType, behaviour_type iflag) { return ((iflag & bType) == bType); }
@@ -274,6 +241,12 @@ public class EASteeringBehaviour
    */
     private Vector3 Pursuit(EAAIAgent evader)
     {
+        if(evader == null)
+        {
+            Debug.Assert(false, "Pursuit evader is not assigned");
+            return Vector3.zero;
+        }
+
         //if the evader is ahead and facing the agent then we can just seek
         //for the evader's current position.
         Vector3 toEvader = evader.GetPos() - m_entity.GetPos();
@@ -299,8 +272,14 @@ public class EASteeringBehaviour
   *  similar to pursuit except the agent Flees from the estimated future
   *  position of the pursuer
   */
-    private Vector3 Evader(EAAIAgent pursuer)
+    private Vector3 Evade(EAAIAgent pursuer)
     {
+        if(pursuer == null)
+        {
+            Debug.Assert(false, "evade pursuer not assigned");
+            return Vector3.zero;
+        }   
+
         // Not necessary to include the check for facing direction this time
         Vector3 toPursuer = pursuer.GetPos() - m_entity.GetPos();
 
@@ -518,6 +497,248 @@ public class EASteeringBehaviour
         m_entity.World().TagObstablesWithinViewRange(m_entity, m_fDBoxLength);
 
         //this will keep track of the closest intersecting obstacle (CIB)
+        EAAIObject closetIntersectingObstacle = null;
+
+        //this will be used to track the distance to the CIB
+        float distToClosetIP = float.MaxValue;
+
+        //this will record the transformed local coordinates of the CIB
+        Vector3 localPosOfClosetObstacle = Vector3.zero;
+
+        IEnumerator<EAAIObject> it = obstacles.GetEnumerator();
+
+        while(it.MoveNext())
+        {
+            //if the obstacle has been tagged within range proceed
+            EAAIObject curOb = it.Current;
+
+            if(curOb.Tag)
+            {
+                //calculate this obstacle's position in local space
+                Vector3 localPos = EAMathUtil.PointToWorldSpace(curOb.GetPos(),
+                    m_entity.GetHeading(),
+                    m_entity.GetSide(),
+                    m_entity.GetPos());
+
+                // entity Heading and LocalPos is 
+                if(Vector3.Dot(localPos,Vector3.forward) > 0)
+                {
+                    //than its radius + half the width of the detection box then there
+                    //is a potential intersection
+                    float expandedRadius = curOb.GetBRadius() + m_entity.GetBRadius();
+
+                    if(Mathf.Abs(localPos.x) < expandedRadius)
+                    {
+                        //test to see if this is the closet so far. If it is keep a
+                        //record of the obstacle and its local coordinates
+                        if(localPos.magnitude < distToClosetIP)
+                        {
+                            distToClosetIP = localPos.magnitude;
+                            closetIntersectingObstacle = curOb;
+                            localPosOfClosetObstacle = localPos;
+                        }
+                    }
+                }
+            }
+        }
+
+        //if we have found an intersecting obstacle, calculate a steering
+        //force away from it
+        Vector3 steeringForce = Vector3.zero;
+
+        if(closetIntersectingObstacle != null)
+        {
+            //should be
+            //the closer the agent is to an object, the stronger the 
+            //steering force should be
+            float multiplier = 1.0f + (m_fDBoxLength - localPosOfClosetObstacle.z) / m_fDBoxLength;
+
+            //calculate the lateral force
+            steeringForce.x = (closetIntersectingObstacle.GetBRadius() - localPosOfClosetObstacle.x) * multiplier;
+
+            //apply a braking force proportional to the obstacles distance from
+            //the vehicle
+            float brakingWeight = 0.2f;
+
+            steeringForce.z = (closetIntersectingObstacle.GetBRadius() - localPosOfClosetObstacle.z) * brakingWeight;
+        }
+
+        //finally, convert the steering vector from local to world space
+        return EAMathUtil.VectorToWorldSpace(steeringForce, m_entity.GetHeading(), m_entity.GetSide());
+    }
+
+    /**
+    * Given two agents, this method returns a force that attempts to 
+    * position the vehicle between them
+    */
+    private Vector3 Interpose(EAAIAgent agentA,EAAIAgent agentB)
+    {
+        if(agentA == null || agentB == null)
+        {
+            Debug.Assert(false, "Interpose agents not assigned");
+            return Vector3.zero;
+        }
+
+        //first we need to figure out where the two agents are going to be at
+        //time T in the future. This is approximated by determining the time
+        //taken to reach the mid way point at the current time at max speed.
+        Vector3 midPoint = (agentA.GetPos() + agentB.GetPos()) / 2.0f;
+
+        float timeToReachMidPoint = (midPoint - m_entity.GetPos()).sqrMagnitude / m_entity.GetMaxSpeed();
+
+        //now we have T, we assume that agent A and agent B will continue on a
+        //straight trajectory and extrapolate to get their future positions
+        Vector3 aPos = agentA.GetPos() + (agentA.GetVelocity() * timeToReachMidPoint);
+        Vector3 bPos = agentB.GetPos() + (agentB.GetVelocity() * timeToReachMidPoint);
+
+        //calculate the mid point of these predicted positions
+        midPoint = (aPos + bPos) / 2.0f;
+
+        //then steer to arrive at it
+        return Arrive(midPoint, Deceleration.fast);
+    }
+
+    private Vector3 Hide(EAAIAgent hunter,List<EAAIObject> obstacles)
+    {
+        float distToCloset = float.MaxValue;
+        Vector3 bestHidingSpt = Vector3.zero;
+        EAAIObject closet;
+
+        for(int i = 0; i < obstacles.Count; ++i)
+        {
+            EAAIObject curOb = obstacles[i];
+
+            Vector3 hidingSpot = GetHidingPosition(curOb.GetPos(), curOb.GetBRadius(), hunter.GetPos());
+
+            float dist = (m_entity.GetPos() - hidingSpot).sqrMagnitude;
+            distToCloset = dist;
+            bestHidingSpt = hidingSpot;
+            if (dist < distToCloset) closet = curOb;
+        }
+
+        //if no suitable obstacles found then evade the hunter
+        if (distToCloset == float.MaxValue) return Evade(hunter);
+
+        //else use Arrive on the hiding spot
+        return Arrive(bestHidingSpt, Deceleration.fast);
+    }
+
+    /**
+   *  Given the position of a hunter, and the position and radius of
+   *  an obstacle, this method calculates a position DistanceFromBoundary 
+   *  away from its bounding radius and directly opposite the hunter
+   */
+    private Vector3 GetHidingPosition(Vector3 posOb,float radiusOb,Vector3 posHunter)
+    {
+        //calculate how far away the agent is to be from the chosen obstacle's
+        //bounding radius
+        float distanceFromBoundary = 30.0f;
+        float distAway = radiusOb + distanceFromBoundary;
+
+        //calculate the heading toward the object from the hunter
+        Vector3 toOb = (posOb - posHunter).normalized;
+
+        //scale it to size and add to the obstacles position to get
+        //the hiding spot.
+        return (toOb * distAway) + posOb;
+    }
+    private Vector3 FollowPath() 
+    {
+        //move to next target if close enough to current target (working in
+        //distance squared space)
+        Vector3 wayPoint = m_pPath.CurrentWayPoint();
         
+        if((wayPoint - m_entity.GetPos()).sqrMagnitude < m_fWaypointSeekDistSq)
+        {
+            m_pPath.SetNextWayPoint();
+        }
+
+        if (!m_pPath.Finished()) return FindRoute(m_pPath.CurrentWayPoint());
+        
+        return Arrive(m_pPath.CurrentWayPoint(), Deceleration.normal);
+    }
+
+    /**
+     * calculates the accumulated steering force according to the method set
+     *  in m_SummingMethod
+     */
+    public Vector3 Calculate() 
+    {
+        // reset the steering force
+        Vector3 steeringForce = Vector3.zero;
+
+        //tag neighbors if any of the following 3 group behaviors are switched on
+        if(IsOn(behaviour_type.separation) || IsOn(behaviour_type.alignment) || IsOn(behaviour_type.cohesion))
+        {
+            m_entity.World().TagObstablesWithinViewRange(m_entity, m_fViewDistance);
+        }
+
+        if (IsOn(behaviour_type.wall_avoidance)) steeringForce += WallAvoidance(m_entity.World().Walls());
+        if (IsOn(behaviour_type.obstacle_avoidance)) steeringForce += ObstacleAvoidance(m_entity.World().Obstacles());
+        if (IsOn(behaviour_type.evade)) steeringForce += Evade(m_pTargetAgent1);
+
+        //these next tree can be combined for flocking behavior (wander is
+        //also a good behavior to add into this mix
+        if (IsOn(behaviour_type.separation)) steeringForce += Separation(m_entity.GetAIGroup().Agents());
+        if (IsOn(behaviour_type.alignment)) steeringForce += Alignment(m_entity.GetAIGroup().Agents());
+        if (IsOn(behaviour_type.cohesion)) steeringForce += Cohesion(m_entity.GetAIGroup().Agents());
+        if (IsOn(behaviour_type.wander)) steeringForce += Wander();
+        if (IsOn(behaviour_type.seek)) steeringForce += Seek(m_entity.VTarget());
+        if (IsOn(behaviour_type.flee)) steeringForce += Flee(m_entity.VTarget());
+        if (IsOn(behaviour_type.arrive)) steeringForce += Arrive(m_entity.VTarget(), m_deceleration);
+        if (IsOn(behaviour_type.pursuit)) steeringForce += Pursuit(m_pTargetAgent1);
+        if (IsOn(behaviour_type.interpose)) steeringForce += Interpose(m_pTargetAgent1, m_pTargetAgent2);
+        if (IsOn(behaviour_type.hide)) steeringForce += Hide(m_pTargetAgent1, m_entity.World().Obstacles());
+        if (IsOn(behaviour_type.follow_path)) steeringForce += FollowPath();
+
+        steeringForce = EAMathUtil.Truncate(steeringForce, m_entity.GetMaxSpeed());
+        return steeringForce;
+    }
+
+    public void OnDebugRender() 
+    {
+        if(IsOn(behaviour_type.wander))
+        {
+            Vector3 m_vTCC = EAMathUtil.PointToWorldSpace(m_fWanderDistance * Vector3.forward,
+                m_entity.GetHeading(),
+                m_entity.GetSide(),
+                m_entity.GetPos());
+
+            //draw the wander circle
+            DebugExtension.DrawCircle(m_vTCC, Color.green, m_fWanderRadius);
+
+            Vector3 target = (m_vWanderTarget + m_fWanderDistance * Vector3.forward);
+
+            target = EAMathUtil.PointToWorldSpace(target, m_entity.GetHeading(), m_entity.GetSide(), m_entity.GetPos());
+            DebugExtension.DrawLineArrow(m_entity.GetPos(), target);
+            DebugExtension.DrawCircle(target, Color.red, 3);
+        }
+
+        if(IsOn(behaviour_type.arrive) || IsOn(behaviour_type.flee))
+        {
+            DebugExtension.DrawLineArrow(m_entity.GetPos(), m_entity.VTarget());
+            DebugExtension.DrawCircle(m_entity.VTarget(), Color.red, 3);
+        }
+
+        if (IsOn(behaviour_type.follow_path)) m_pPath.OnDebugRender();
+
+        if(IsOn(behaviour_type.obstacle_avoidance))
+        {
+            float length = minDetectionBoxLength + (m_entity.GetSpeed() / m_entity.GetMaxSpeed()) * minDetectionBoxLength;
+
+            Matrix4x4 matTransform = Matrix4x4.TRS(m_entity.GetPos(), Quaternion.LookRotation(m_entity.GetHeading(),Vector3.up),Vector3.one);
+
+            Vector3 size = Vector3.zero;
+            size.x = m_entity.GetBRadius();
+            size.y = 0f;
+            size.z = length;
+
+            Vector3 center = Vector3.zero;
+            center.x = 0f;
+            center.y = 0f;
+            center.z = length * 0.5f;
+
+            DebugExtension.DrawLocalCube(matTransform, size, Color.black, center);
+        }
     }
 }

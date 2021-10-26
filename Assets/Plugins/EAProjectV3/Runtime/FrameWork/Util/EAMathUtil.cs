@@ -59,15 +59,49 @@ public class EAMathUtil
         return a.x * b.y - a.y * b.x;
     }
 
-    public static Vector3 PointToWorldSpace(Vector3 point,Vector3 AgentHeading,Vector3 AgentSide,Vector3 AgentPosition)
+    public static Vector3 PointToWorldSpace(Vector3 point,Vector3 agentHeading,Vector3 agentSide,Vector3 agentPosition)
     {
-        Vector3 up = Vector3.Cross(AgentHeading, AgentSide);
+        Vector3 up = Vector3.Cross(agentHeading, agentSide);
 
         //create a transformation matrix
-        Matrix4x4 matTransform = Matrix4x4.TRS(AgentPosition, Quaternion.LookRotation(AgentHeading, up), Vector3.one);
+        Matrix4x4 matTransform = Matrix4x4.TRS(agentPosition, Quaternion.LookRotation(agentHeading, up), Vector3.one);
         Vector3 transPoint = matTransform.MultiplyPoint(point);
         return transPoint;
     }
+
+    public static Vector3 VectorToWorldSpace(Vector3 vector,Vector3 agentHeading,Vector3 agentSide)
+    {
+        Vector3 up = Vector3.Cross(agentHeading, agentSide);
+
+        //create a transformation matrix
+        Matrix4x4 matTransform = Matrix4x4.TRS(Vector3.zero, Quaternion.LookRotation(agentHeading, up), Vector3.one);
+        Vector3 transPoint = matTransform.MultiplyVector(vector);
+        return transPoint;
+    }
+
+    public static Vector3 PointToLocalSpace(Vector3 point,
+                                           Vector3 agentHeading,
+                                           Vector3 agentSide,
+                                           Vector3 agentPosition)
+    {
+        Vector3 up = Vector3.Cross(agentHeading, agentSide);
+
+        //create a transformation matrix
+        Matrix4x4 matTransform = Matrix4x4.TRS(agentPosition, Quaternion.LookRotation(agentHeading, up), Vector3.one);
+        Vector3 transPoint = matTransform.inverse.MultiplyPoint(point);
+        return transPoint;
+    }
+
+    public static Vector3 Truncate(Vector3 v,float mag)
+    {
+        if(v.magnitude > mag)
+        {
+            v.Normalize();
+            v *= mag;
+        }
+        return v;
+    }
+
     public static KeyValuePair<bool,Vector2> LineIntersection2D(Vector2 A, Vector2 B, Vector2 C, Vector2 D, out float dist)
     {
         // Line AB represented as a1x + b1y = c1  
