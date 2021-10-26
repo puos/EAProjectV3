@@ -63,7 +63,7 @@ public partial class EAActor : EAObject
     protected override void UpdatePerFrame()
     {
         base.UpdatePerFrame();
-        actorMover.UpdateMove();
+        actorMover.AIUpdate();
     }
     public void FSMUpdate()
     {

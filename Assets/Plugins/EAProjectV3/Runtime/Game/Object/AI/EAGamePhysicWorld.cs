@@ -100,5 +100,50 @@ public class EAGamePhysicWorld
         }
     }
 
-    
+    public bool Overlapped(EAAIObject ob,List<EAAIObject> conOb,float minDistBetweenObstacles)
+    {
+        IEnumerator<EAAIObject> it = conOb.GetEnumerator();
+        while(it.MoveNext())
+        {
+            EAAIObject tmp = it.Current;
+            if (EAMathUtil.TwoCirclesOverlapped(ob.GetPos(),ob.GetBRadius() + minDistBetweenObstacles,tmp.GetPos(),tmp.GetBRadius())) return true;
+        }
+        return false;
+    }
+
+    public void AddAgent(string teamId,EAAIAgent agent)
+    {
+        int key = CRC32.GetHashForAnsi(teamId);
+        if(!m_aiGroup.TryGetValue(key,out EAAIGroup group))
+        {
+            m_aiGroup.Add(key, new EAAIGroup(teamId));
+        }
+        RemoveAgent(agent);
+        m_aiGroup[key].AddAgent(agent);
+    }
+
+    public void RemoveAgent(EAAIAgent agent)
+    {
+        agent.GetAIGroup().RemoveAgent(agent);
+    }
+
+    public void SetCrosshair(Vector3 p,string id="basic")
+    {
+        Vector3 proposedPosition = p;
+        //make sure it's not inside an obstacle
+        for(int i = 0; i < m_Obstacles.Count; ++i)
+        {
+            EAAIObject curOb = m_Obstacles[i];
+            if (EAMathUtil.PointInCircle(curOb.GetPos(), curOb.GetBRadius(), proposedPosition)) return;
+        }
+
+        EAAIGroup aiGroup = GetAIGroup(id);
+        if (aiGroup != null) aiGroup.SetCrosshair(p);
+    }
+    public EAAIGroup GetAIGroup(string id)
+    {
+        int key = CRC32.GetHashForAnsi(id);
+        m_aiGroup.TryGetValue(key, out EAAIGroup aiGroup);
+        return aiGroup;
+    }
 }

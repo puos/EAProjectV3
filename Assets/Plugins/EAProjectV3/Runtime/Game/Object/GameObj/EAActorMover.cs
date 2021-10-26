@@ -7,29 +7,39 @@ using UnityEngine;
 
 public class EAActorMover : MonoBehaviour
 {
-    private EAActor actor = null;
-    private float arriveEpsilon = 0.01f;
-    private bool isMove = false;
-    protected Vector3 targetPosition = Vector3.zero;
-    protected System.Action onMoveComplete = null;
-    private float decelerationTweeker = 0.3f;
-    public bool isReachedSetPos { private get; set; }
+    private EAAIAgent aiAgent = null;
 
+    private EASteeringBehaviour steeringBehaviour = null;
+    protected OnMoveComplete onMoveComplete = null;
+    public enum MoveCompleteState { Reached , Landed }
+
+    public delegate void OnMoveComplete(EAAIAgent aiAgent, EASteeringBehaviour sbehaviour, MoveCompleteState state);
+    
     public void Initialize()
     {
-        isReachedSetPos = true;
-        actor = GetComponent<EAActor>();
+        aiAgent = GetComponent<EAActor>();
+        steeringBehaviour = new EASteeringBehaviour(aiAgent);
     }
 
-    public void UpdateMove()
+    public void Release()
     {
-        if (isMove == false) return;
+        EAGamePhysicWorld.instance.RemoveAgent(aiAgent); 
+    }
 
-        Vector3 changedVelocity = Arrive(targetPosition, arriveEpsilon);
-        Vector3 curDir = targetPosition - actor.GetPos();
-        curDir.Normalize();
+    public void AIUpdate()
+    {
+        //keep a record of its old position so we can update its cell later
+        //in this method
+        Vector3 oldVelocity = aiAgent.GetVelocity();
 
-        actor.rb.velocity = changedVelocity;
+        //calculate the combined force from each steering behavior in the 
+        //vehicle's list
+        Vector3 changedVelocity = steeringBehaviour.Calculate();
+        
+        aiAgent.AIUpdate(changedVelocity , Time.deltaTime);
+        
+        
+        
         bool reached = false;
 
         if ((curDir.magnitude > 0.01f) && (Vector3.Dot(curDir, changedVelocity) < 0)) reached = true;
@@ -37,47 +47,20 @@ public class EAActorMover : MonoBehaviour
 
         if (reached)
         {
-            isMove = false;
-
-            actor.rb.isKinematic = true;
-            actor.rb.velocity = Vector3.zero;
-            actor.rb.angularVelocity = Vector3.zero;
-            actor.SetPos(targetPosition);
-            actor.rb.isKinematic = false;
-
-            if (onMoveComplete != null) onMoveComplete();
+             if (onMoveComplete != null) onMoveComplete();
         }
     }
 
-    private Vector3 Arrive(Vector3 targetPos, float epsilon = 0.01f)
-    {
-        Vector3 toTarget = targetPos - actor.GetPos();
-        float dist = toTarget.magnitude;
-
-        if (dist > epsilon)
-        {
-            float speed = dist / decelerationTweeker;
-            speed = Mathf.Min(speed, actor.GetMaxSpeed());
-
-            Vector3 desiredVelocity = toTarget * (speed / dist);
-            desiredVelocity.y = actor.rb.velocity.y;
-            return desiredVelocity;
-        }
-
-        return Vector3.zero;
-    }
-
-    public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
+    public void MoveTo(Vector3 targetPosition, OnMoveComplete onMoveComplete = null)
     {
         this.targetPosition = targetPosition;
         this.onMoveComplete = onMoveComplete;
-
-        isMove = true;
+         
     }
 
     public void SetSpeed(float speed , float epsilon = 0.01f)
     {
-        actor.SetMaxSpeed(speed);
+        aiAgent.SetMaxSpeed(speed);
         arriveEpsilon = epsilon;
     }
 
