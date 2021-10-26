@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface EAAIAgent : EAAIObject
 {
-    uint objectId { get; set; }
+    public uint objectId { get; set; }
     Vector3 VTarget();
     void SetVTarget(Vector3 vCrosshair);
     Vector3 GetVelocity();
