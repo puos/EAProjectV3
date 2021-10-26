@@ -5,19 +5,21 @@ using UnityEngine;
 public interface EAAIAgent : EAAIObject
 {
     public uint objectId { get; set; }
-    Vector3 VTarget();
-    void SetVTarget(Vector3 vCrosshair);
-    Vector3 GetVelocity();
-    float GetMaxSpeed();
-    void SetMaxSpeed(float newSpeed);
-    float GetSpeed();
-    Vector3 GetSide();
-    EAAIGroup GetAIGroup();
-    void SetAIGroup(EAAIGroup aiGroup);
+    public Vector3 VTarget();
+    public void SetVTarget(Vector3 vCrosshair);
+    public Vector3 GetVelocity();
+    public float GetMaxSpeed();
+    public void SetMaxSpeed(float newSpeed);
+    public float GetSpeed();
+    public Vector3 GetSide();
+    public EAAIGroup GetAIGroup();
+    public void SetAIGroup(EAAIGroup aiGroup);
     /**
     * @return time elapsed from last update
     */
-    float GetTimeElapsed();
+    public float GetTimeElapsed();
 
-    EAGamePhysicWorld World();
+    public EAGamePhysicWorld World();
+
+    public void AIUpdate(Vector3 velocity, float fElapsedTime);
 }

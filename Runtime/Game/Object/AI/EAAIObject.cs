@@ -9,14 +9,14 @@ public interface EAAIObject
 {
    public bool Tag { get; set; }
 
-   void UnTagging();
-   void Tagging();
-   float GetBRadius();
-   void SetBRadius(float r);
-   Vector3 GetPos();
-   void SetPos(Vector3 vPos);
-   Vector3 GetHeading();
-   void SetHeading(Vector3 newHeading);
+   public void UnTagging();
+   public void Tagging();
+   public float GetBRadius();
+   public void SetBRadius(float r);
+   public Vector3 GetPos();
+   public void SetPos(Vector3 vPos);
+   public Vector3 GetHeading();
+   public void SetHeading(Vector3 newHeading);
 }
 
 

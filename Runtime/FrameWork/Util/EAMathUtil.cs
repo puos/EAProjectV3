@@ -147,4 +147,29 @@ public class EAMathUtil
 
         return result.Key;
     }
+    public static bool TwoCirclesOverlapped(Vector3 c1,float r1,Vector3 c2,float r2)
+    {
+        Vector2 tc1 = ToVec2(c1);
+        Vector2 tc2 = ToVec2(c2);
+
+        float distBetweenCenters = (tc1 - tc2).sqrMagnitude;
+
+        if (distBetweenCenters < (r1 + r2) || distBetweenCenters < Mathf.Abs(r1 - r2)) return true;
+
+        return false;
+    }
+
+    /**
+    *  returns true if the point p is within the radius of the given circle
+    */
+    public static bool PointInCircle(Vector3 pos,float radius,Vector3 p)
+    {
+        Vector2 tp   = ToVec2(p);
+        Vector2 tpos = ToVec2(pos);
+
+        double distFromCenteredSquared = (tp - tpos).sqrMagnitude;
+        if (distFromCenteredSquared < (radius * radius)) return true;
+        
+        return false;
+    }
 }

@@ -34,28 +34,36 @@ public partial class EAActor : EAAIAgent
         Tag = false;
     }
 
-    void EAAIObject.Tagging()
+    public void Tagging()
     {
-        throw new NotImplementedException();
+        Tag = true;
     }
 
-    float EAAIObject.GetBRadius()
+    public Vector3 GetHeading()
     {
-        throw new NotImplementedException();
+        return tr.forward;
     }
 
-    void EAAIObject.SetBRadius(float r)
+    public void SetHeading(Vector3 newHeading)
     {
-        throw new NotImplementedException();
+        tr.forward = newHeading;
     }
 
-    Vector3 EAAIObject.GetHeading()
+    public void AIUpdate(Vector3 velocity, float fElapsedTime)
     {
-        throw new NotImplementedException();
+        float gravitySpeed = velocity.y;
+
+        //make sure vehicle does not exceed maximum velocity
+        velocity = EAMathUtil.Truncate(velocity, maxSpeed);
+        velocity.Set(velocity.x, gravitySpeed, velocity.z);
+        rb.velocity = velocity;
     }
 
-    void EAAIObject.SetHeading(Vector3 newHeading)
+    public void Stop()
     {
-        throw new NotImplementedException();
+       rb.isKinematic = true;
+       rb.velocity = Vector3.zero;
+       rb.angularVelocity = Vector3.zero;
+       rb.isKinematic = false;
     }
 }
