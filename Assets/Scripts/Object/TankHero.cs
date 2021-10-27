@@ -155,10 +155,7 @@ public class TankHero : EASceneLogic
                     users.Clear();
 
                     hero.Release();
-                    hero.SetActive(false);
-
                     target.Release();
-                    target.SetActive(false);
                 }
                 break;
         }

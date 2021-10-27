@@ -91,6 +91,11 @@ public class EAObject : MonoBehaviour
 
     public virtual uint GetObjId() { return CObjGlobal.InvalidObjID; }
 
+    public T AddComponent<T>() where T : Component
+    {
+        return gameObject.AddComponent<T>();
+    }
+
     public void SetParent(Transform tf)
     {
         cachedTransform.parent = tf;

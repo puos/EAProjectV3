@@ -59,7 +59,7 @@ public partial class EAActor : EAAIAgent
         rb.velocity = velocity;
     }
 
-    public void Stop()
+    public void StopMove()
     {
        rb.isKinematic = true;
        rb.velocity = Vector3.zero;

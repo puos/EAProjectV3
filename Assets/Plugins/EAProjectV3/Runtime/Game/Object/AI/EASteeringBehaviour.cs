@@ -106,15 +106,16 @@ public class EASteeringBehaviour
     }
     bool IsOn(behaviour_type bType) { return IsOn(bType,m_iflag); }
     bool IsOn(behaviour_type bType, behaviour_type iflag) { return ((iflag & bType) == bType); }
-    void Off(behaviour_type bType) { if (IsOn(bType)) m_iflag ^= bType; }
     behaviour_type Off(behaviour_type bType, behaviour_type iflag)
     {
-        Off(bType, iflag);
+        if (IsOn(bType, iflag)) iflag ^= bType;
         return iflag;
     }
+    void Off(behaviour_type bType) => Off(bType, m_iflag); 
     void On(behaviour_type bType) =>  m_iflag |= bType; 
     public void DefaultOn()
     {
+        m_iflag = 0;
         On(behaviour_type.obstacle_avoidance);
         On(behaviour_type.wall_avoidance);
     }

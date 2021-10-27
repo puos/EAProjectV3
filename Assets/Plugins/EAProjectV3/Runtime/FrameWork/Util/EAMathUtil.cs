@@ -172,4 +172,15 @@ public class EAMathUtil
         
         return false;
     }
+    // Check if the position value has changed. Tolerance epsilon
+    public static bool Equal(Vector3 v1,Vector3 v2,float epsilon = 0.01f)
+    {
+        Vector3 offset = v1 - v2;
+        return (offset.magnitude < epsilon) ? true : false;
+    }
+    public static bool Equal(float f1,float f2)
+    {
+        float epsilon = 0.01f;
+        return (Mathf.Abs(f1 - f2) < epsilon) ? true : false;
+    }
 }

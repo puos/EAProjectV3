@@ -6,7 +6,6 @@ public class CHero : EAActor
 {
     private Transform muzzle = null;
     private Transform turret = null;
-
     private Quaternion turret_rotation = Quaternion.identity;
 
     public override void Initialize()
@@ -15,10 +14,9 @@ public class CHero : EAActor
 
         turret = GetTransform("TankTurret");
 
-        actorMover.isReachedSetPos = false;
-
         rb.useGravity = true;
         actorMover.SetSpeed(2f);
+   
         if (turret != null) turret_rotation = turret.rotation;
         collisionEvent = (Collision c, EAObject myObj) => 
         {
@@ -32,7 +30,7 @@ public class CHero : EAActor
     {
         base.UpdatePerFrame();
 
-        Vector3 velocity = rb.velocity;
+        Vector3 velocity = GetVelocity();
 
         velocity.y = 0f;
         velocity.Normalize();
@@ -84,7 +82,6 @@ public class CHero : EAActor
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null) 
     { 
         actorMover.MoveTo(targetPosition, onMoveComplete);
-
         SetRotationSubReset();
     }
 

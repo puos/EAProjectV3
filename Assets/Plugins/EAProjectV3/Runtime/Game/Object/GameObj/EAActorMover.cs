@@ -5,20 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EAActorMover : MonoBehaviour
+public class EAActorMover 
 {
     private EAAIAgent aiAgent = null;
 
     private EASteeringBehaviour steeringBehaviour = null;
-    protected OnMoveComplete onMoveComplete = null;
-    public enum MoveCompleteState { Reached , Landed }
+    protected System.Action onMoveComplete = null;
 
-    public delegate void OnMoveComplete(EAAIAgent aiAgent, EASteeringBehaviour sbehaviour, MoveCompleteState state);
-    
-    public void Initialize()
+    public bool AIOn { get; set; }
+
+    public void Initialize(EAAIAgent aiAgent)
     {
-        aiAgent = GetComponent<EAActor>();
+        this.aiAgent = aiAgent;
         steeringBehaviour = new EASteeringBehaviour(aiAgent);
+        AIOn = true;
     }
 
     public void Release()
@@ -28,6 +28,8 @@ public class EAActorMover : MonoBehaviour
 
     public void AIUpdate()
     {
+        if (AIOn == false) return;
+
         //keep a record of its old position so we can update its cell later
         //in this method
         Vector3 oldVelocity = aiAgent.GetVelocity();
@@ -38,41 +40,35 @@ public class EAActorMover : MonoBehaviour
         
         aiAgent.AIUpdate(changedVelocity , Time.deltaTime);
         
-        
-        
-        bool reached = false;
-
-        if ((curDir.magnitude > 0.01f) && (Vector3.Dot(curDir, changedVelocity) < 0)) reached = true;
-        if (changedVelocity.magnitude <= 0.01f && Vector3.Distance(actor.GetPos(), targetPosition) <= arriveEpsilon) reached = true;
-
-        if (reached)
+        //moveState
+        if(steeringBehaviour.IsSteering())
         {
-             if (onMoveComplete != null) onMoveComplete();
-        }
+            float epsillon = 0.01f;
+            Vector3 vel = aiAgent.GetVelocity();
+
+            if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
+                oldVelocity.magnitude >= epsillon)
+            {
+                if (onMoveComplete != null) onMoveComplete();
+            }
+        }  
     }
 
-    public void MoveTo(Vector3 targetPosition, OnMoveComplete onMoveComplete = null)
+    public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
     {
-        this.targetPosition = targetPosition;
+        aiAgent.SetVTarget(targetPosition);
+        steeringBehaviour.ArriveOn();
         this.onMoveComplete = onMoveComplete;
-         
     }
 
-    public void SetSpeed(float speed , float epsilon = 0.01f)
+    public void SetSpeed(float speed)
     {
         aiAgent.SetMaxSpeed(speed);
-        arriveEpsilon = epsilon;
     }
 
     public void Stop()
     {
-        this.targetPosition = Vector3.zero;
-        this.onMoveComplete = null;
-        isMove = false;
-
-        actor.rb.isKinematic = true;
-        actor.rb.velocity = Vector3.zero;
-        actor.rb.angularVelocity = Vector3.zero;
-        actor.rb.isKinematic = false;
+        steeringBehaviour.DefaultOn();
+        aiAgent.StopMove();
     }
 }

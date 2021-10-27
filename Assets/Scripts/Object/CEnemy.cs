@@ -20,8 +20,8 @@ public class CEnemy : EAActor
         rb.useGravity = true;
 
         target = null;
-        actorMover.isReachedSetPos = false;
-        actorMover.SetSpeed(3.5f,0.1f);
+
+        actorMover.SetSpeed(3.5f);
 
         collisionEvent = (Collision c, EAObject myObj) =>
         {
