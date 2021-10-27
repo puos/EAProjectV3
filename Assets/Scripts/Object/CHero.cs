@@ -60,6 +60,13 @@ public class CHero : EAActor
         return true;
     }
 
+    public override void DoAttachItem(eAttachType attachType, eItemType itemType)
+    {
+        base.DoAttachItem(attachType, itemType);
+        if (itemType != eItemType.eIT_Weapon) return; 
+        if(currWeapon != null) currWeapon.StartFire();
+    }
+
     public override void Release()
     {
         base.Release();

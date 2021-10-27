@@ -23,7 +23,7 @@ public class HeroTest : EASceneLogic
 
         inGameUi.SetMoveEndEvent(() =>
         {
-            //if (hero != null) hero.Stop();
+            if (hero != null) hero.Stop();
         });
 
         inGameUi.SetAttackEndEvent(() =>

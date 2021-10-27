@@ -48,6 +48,12 @@ public class CEnemy : EAActor
         if (attachType == eAttachType.eWT_Turret) EAFrameUtil.SetParent(gameObject.tr, turret);
         return true;
     }
+    public override void DoAttachItem(eAttachType attachType, eItemType itemType)
+    {
+        base.DoAttachItem(attachType, itemType);
+        if (itemType != eItemType.eIT_Weapon) return;
+        if (currWeapon != null) currWeapon.StartFire();
+    }
 
     public void StartFire()
     {

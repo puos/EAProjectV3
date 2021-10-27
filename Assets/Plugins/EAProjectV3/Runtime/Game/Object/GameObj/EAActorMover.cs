@@ -47,7 +47,7 @@ public class EAActorMover
             Vector3 vel = aiAgent.GetVelocity();
 
             if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
-                oldVelocity.magnitude >= epsillon)
+                (oldVelocity.magnitude - vel.magnitude) >= 0f)
             {
                 if (onMoveComplete != null) onMoveComplete();
             }
