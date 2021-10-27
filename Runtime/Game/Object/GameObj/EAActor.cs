@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(EAActorMover))]
 public partial class EAActor : EAObject 
 {
     private    EA_CCharBPlayer m_CharBase = new EA_CCharBPlayer();
-    protected  EAActorMover actorMover = null;
-    protected EAWeapon currWeapon = null;
+    protected EAActorMover actorMover = null;
+    protected  EAWeapon currWeapon = null;
 
     private Dictionary<int, Transform> bones = new Dictionary<int, Transform>();
     private Renderer[] renderers = null;
@@ -35,12 +34,14 @@ public partial class EAActor : EAObject
         SetSkeleton();
         SetRenderer();
 
-        actorMover = GetComponent<EAActorMover>();
-        actorMover.Initialize();
+        if(actorMover == null) actorMover = new EAActorMover();
+        actorMover.Initialize(this);
     }
     public override void Release()
     {
         base.Release();
+
+        actorMover.Release();
 
         ReleaseParts();
 
