@@ -6,12 +6,15 @@ using UnityEngine;
 public partial class EAActor : EAAIAgent
 {
     private float maxSpeed = 1f;
+    private float epsilon  = 0.01f;
     private Vector3 m_vCrosshair;
     private EAAIGroup m_aiGroup = new EAAIGroup();
     public uint objectId { get; set; }
     public bool Tag { get; set; }
     public float GetMaxSpeed() => maxSpeed; 
-    public void SetMaxSpeed(float newSpeed) => maxSpeed = newSpeed; 
+    public void SetMaxSpeed(float newSpeed) => maxSpeed = newSpeed;
+    public float GetEpsilon() => epsilon;
+    public void SetEpsilon(float epsilon) => this.epsilon = epsilon;
     public Vector3 GetVelocity() => rb.velocity; 
     public float GetSpeed() => rb.velocity.magnitude; 
     public Vector3 VTarget() => m_vCrosshair;

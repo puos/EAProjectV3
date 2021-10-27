@@ -15,7 +15,7 @@ public class CHero : EAActor
         turret = GetTransform("TankTurret");
 
         rb.useGravity = true;
-        actorMover.SetSpeed(2f);
+        actorMover.SetSpeed(2f , 0.1f);
    
         if (turret != null) turret_rotation = turret.rotation;
         collisionEvent = (Collision c, EAObject myObj) => 

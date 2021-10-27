@@ -23,7 +23,7 @@ public class HeroTest : EASceneLogic
 
         inGameUi.SetMoveEndEvent(() =>
         {
-            if (hero != null) hero.Stop();
+            //if (hero != null) hero.Stop();
         });
 
         inGameUi.SetAttackEndEvent(() =>
@@ -53,7 +53,10 @@ public class HeroTest : EASceneLogic
         if (direction.magnitude > 0) Debug.DrawLine(hero.GetPos(), pos, Color.red);
 
         if (changed == true) hero.Stop();
-        if (direction.magnitude > 0) hero.MoveTo(pos);
+        if (direction.magnitude > 0) hero.MoveTo(pos,()=> 
+        {
+            Debug.Log("Move Complete");
+        });
     }
 
     private void HeroAttack()

@@ -21,7 +21,7 @@ public class CEnemy : EAActor
 
         target = null;
 
-        actorMover.SetSpeed(3.5f);
+        actorMover.SetSpeed(3.5f, 0.1f);
 
         collisionEvent = (Collision c, EAObject myObj) =>
         {

@@ -218,9 +218,8 @@ public class EASteeringBehaviour
 
         //calculate the distance to the target
         float dist = toTarget.magnitude;
-        float epsilon = 0.01f;
-
-        if (dist > epsilon)
+        
+        if (dist > m_entity.GetEpsilon())
         {
             //because Deceleration is enumerated as an int, this value is required
             //to provide fine tweaking of the deceleration..
