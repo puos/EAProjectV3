@@ -18,6 +18,8 @@ public interface EAAIAgent : EAAIObject
     * @return time elapsed from last update
     */
     public float GetTimeElapsed();
+    public float GetEpsilon();
+    public void SetEpsilon(float epsilon);
     public EAGamePhysicWorld World();
     public void AIUpdate(Vector3 velocity, float fElapsedTime);
     public void StopMove();

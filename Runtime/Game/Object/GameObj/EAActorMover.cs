@@ -43,7 +43,7 @@ public class EAActorMover
         //moveState
         if(steeringBehaviour.IsSteering())
         {
-            float epsillon = 0.01f;
+            float epsillon = aiAgent.GetEpsilon();
             Vector3 vel = aiAgent.GetVelocity();
 
             if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
@@ -61,9 +61,10 @@ public class EAActorMover
         this.onMoveComplete = onMoveComplete;
     }
 
-    public void SetSpeed(float speed)
+    public void SetSpeed(float speed,float epsilon = 0.01f)
     {
         aiAgent.SetMaxSpeed(speed);
+        aiAgent.SetEpsilon(epsilon);
     }
 
     public void Stop()
