@@ -315,26 +315,6 @@ public class TankHero : EASceneLogic
             enemiesCount = enemiesCount + 1;
         }
     }
-        
-    public List<EAActor> WithinViewRange(List<EAActor> list, EAActor unit , float closetRadius = 0f)
-    {
-        List<EAActor> units = new List<EAActor>();
-        IEnumerator<EAActor> it = list.GetEnumerator();
-
-        while(it.MoveNext())
-        {
-            EAActor curUnit = it.Current;
-            float dist  = Vector3.Distance(unit.GetPos(), curUnit.GetPos());
-            float range = closetRadius + curUnit.GetBRadius();
-
-            if (object.ReferenceEquals(unit, curUnit)) continue;
-            if (dist > range) continue;
-
-            units.Add(curUnit);
-        }
-
-        return units;
-    }
 
     private void Move(CEnemy enemy)
     {
@@ -378,22 +358,32 @@ public class TankHero : EASceneLogic
 
             updateTime = Time.time + 1f;
 
-            List<EAActor> unit = WithinViewRange(users, enemy, 10f);
+            EAGamePhysicWorld.instance.TagAIAgentWithinViewRange(enemy, 10f + enemy.GetBRadius());
 
-            if (unit.Count <= 0) return;
+            EAAIGroup heroes = EAGamePhysicWorld.instance.GetAIGroup("hero");
+
+            if (heroes == null) return;
 
             DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f, 1f);
 
-            if (unit[0].Id != myHeroId)
+            List<EAAIAgent> unit = heroes.Agents();
+
+            unit = unit.FindAll(x => x.Tag);
+
+            if (unit.Count <= 0) return;
+
+            EAActor actor = unit[0] as EAActor;
+
+            if (actor.objectId != myHeroId)
             {
-                enemy.SetTarget(unit[0]);
+                enemy.SetTarget(actor as EAActor);
                 enemy.ChangeFSMState(CEnemy.EFSMState.Chasing);
                 return;
             }
 
             MazeGen.CTileAttrib m = Array.Find(maze, x =>
             {
-                List<CSubCube> doors = x.cubeObject.GetRayCubes(unit[0].GetCenterPos(), enemy.GetCenterPos());
+                List<CSubCube> doors = x.cubeObject.GetRayCubes(actor.GetCenterPos(), enemy.GetCenterPos());
                 if (doors.Count > 0) return true;
                 return false;
             });
@@ -403,7 +393,7 @@ public class TankHero : EASceneLogic
                 return;
             }
 
-            enemy.SetTarget(unit[0]);
+            enemy.SetTarget(actor);
             enemy.ChangeFSMState((int)CEnemy.EFSMState.Chasing);
         });
     }

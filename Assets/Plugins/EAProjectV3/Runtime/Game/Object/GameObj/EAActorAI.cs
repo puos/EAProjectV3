@@ -69,4 +69,9 @@ public partial class EAActor : EAAIAgent
        rb.angularVelocity = Vector3.zero;
        rb.isKinematic = false;
     }
+
+    public void AddAgent(string teamId)
+    {
+        World().AddAgent(teamId, this);
+    }
 }

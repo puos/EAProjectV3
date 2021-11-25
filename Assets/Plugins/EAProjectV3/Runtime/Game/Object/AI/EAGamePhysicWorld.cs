@@ -100,6 +100,38 @@ public class EAGamePhysicWorld
         }
     }
 
+    public void TagAIAgentWithinViewRange(EAAIAgent entity, float radius)
+    {
+        Dictionary<int, EAAIGroup>.Enumerator it = m_aiGroup.GetEnumerator();
+
+        while(it.MoveNext())
+        {
+            List<EAAIAgent> entities = it.Current.Value.Agents();
+
+            for (int i = 0; i < entities.Count; ++i)
+            {
+                EAAIAgent curEntity = entities[i];
+
+                //first clear any current tag
+                curEntity.UnTagging();
+
+                Vector3 to = curEntity.GetPos() - entity.GetPos();
+
+                //the bounding radius of the other is taken into account by adding it 
+                //to the range
+                float range = radius + curEntity.GetBRadius();
+
+                //if entity within range, tag for further consideration. (working in
+                //distance-squared space to avoid sqrts)
+                if ((curEntity.GetHashCode() != entity.GetHashCode()) &&
+                    (to.sqrMagnitude < range * range))
+                {
+                    curEntity.Tagging();
+                }
+            }
+        }
+    }
+
     public bool Overlapped(EAAIObject ob,List<EAAIObject> conOb,float minDistBetweenObstacles)
     {
         IEnumerator<EAAIObject> it = conOb.GetEnumerator();

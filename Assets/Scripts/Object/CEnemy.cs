@@ -22,6 +22,7 @@ public class CEnemy : EAActor
         target = null;
 
         actorMover.SetSpeed(3.5f, 0.1f);
+        actorMover.aiAgent.AddAgent("enemy");
 
         collisionEvent = (Collision c, EAObject myObj) =>
         {

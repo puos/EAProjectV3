@@ -16,7 +16,8 @@ public class CHero : EAActor
 
         rb.useGravity = true;
         actorMover.SetSpeed(2f , 0.1f);
-   
+        actorMover.aiAgent.AddAgent("hero");
+
         if (turret != null) turret_rotation = turret.rotation;
         collisionEvent = (Collision c, EAObject myObj) => 
         {
