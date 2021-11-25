@@ -36,6 +36,8 @@ public partial class EAActor : EAObject
 
         if(actorMover == null) actorMover = new EAActorMover();
         actorMover.Initialize(this);
+
+        objectId = Id;
     }
     public override void Release()
     {

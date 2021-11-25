@@ -14,6 +14,9 @@ public interface EAAIAgent : EAAIObject
     public Vector3 GetSide();
     public EAAIGroup GetAIGroup();
     public void SetAIGroup(EAAIGroup aiGroup);
+
+    public void AddAgent(string aiGroup);
+
     /**
     * @return time elapsed from last update
     */

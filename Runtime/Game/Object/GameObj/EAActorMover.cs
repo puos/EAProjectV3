@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class EAActorMover 
 {
-    private EAAIAgent aiAgent = null;
+    public EAAIAgent aiAgent { get; private set; }
 
     private EASteeringBehaviour steeringBehaviour = null;
     protected System.Action onMoveComplete = null;
