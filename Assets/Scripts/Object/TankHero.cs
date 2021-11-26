@@ -358,13 +358,13 @@ public class TankHero : EASceneLogic
 
             updateTime = Time.time + 1f;
 
+            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f + enemy.GetBRadius() , 1f);
+
             EAGamePhysicWorld.instance.TagAIAgentWithinViewRange(enemy, 10f + enemy.GetBRadius());
 
             EAAIGroup heroes = EAGamePhysicWorld.instance.GetAIGroup("hero");
 
             if (heroes == null) return;
-
-            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f, 1f);
 
             List<EAAIAgent> unit = heroes.Agents();
 
