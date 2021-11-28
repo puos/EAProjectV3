@@ -158,5 +158,30 @@ public static class EAFrameUtil
         if (source == null) return -1;
         return Array.IndexOf(source, value);
     }
+
+    // Changes the layer.
+    public static void setLayer(this Transform t ,int layer,bool includeChildren = true)
+    {
+        t.gameObject.layer = layer;
+        if (includeChildren == false) return;
+
+        int count = t.childCount;
+        for(int i = 0; i < count; ++i)
+        {
+            Transform child = t.GetChild(i);
+            child.gameObject.layer = layer;
+
+            if (child.childCount != 0) setLayer(child, layer, includeChildren);
+        }
+    }
+
+    // size setting
+    public static void setSize(this RectTransform rt,Vector2 newSize)
+    {
+        var pivot = rt.pivot;
+        var dist = newSize - rt.rect.size;
+        rt.offsetMin = rt.offsetMin - new Vector2(dist.x * pivot.x, dist.y * pivot.y);
+        rt.offsetMax = rt.offsetMax + new Vector2(dist.x * (1f - pivot.x), dist.y * (1 - pivot.y));
+    }
 }
 
