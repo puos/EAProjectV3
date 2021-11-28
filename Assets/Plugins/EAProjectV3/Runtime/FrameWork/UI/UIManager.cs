@@ -94,6 +94,8 @@ public class UIManager : Singleton<UIManager>
         uiCompo.Clear();
     }
 
+    public Transform GetUIRoot() { return m_tUIRoot; }
+
     private UICtrl LoadPage(EUIPage ePage)
     {
 
@@ -149,7 +151,6 @@ public class UIManager : Singleton<UIManager>
         
         return default;
     }
-
     public void OpenPage(EUIPage ePage)
     {
         if (ePage != m_eCurPage) HidePage(m_eCurPage);
@@ -158,7 +159,6 @@ public class UIManager : Singleton<UIManager>
         UICtrl uiDlg = GetPage(ePage);
         if (uiDlg != null) uiDlg.Open();
     }
-
     public T OpenPage<T>(EUIPage ePage) where T : UICtrl
     {
         if (ePage != m_eCurPage) HidePage(m_eCurPage);
@@ -168,7 +168,6 @@ public class UIManager : Singleton<UIManager>
         if (uiDlg != null) uiDlg.Open();
         return uiDlg as T;
     }
-
     public void OpenAbove(EUIPage ePage)
     {
         var key = (int)ePage.Id;
@@ -184,21 +183,18 @@ public class UIManager : Singleton<UIManager>
         if(UiDlg != null) { UiDlg.Open(); }
         return UiDlg as T;
     }
-
     public void HidePage(EUIPage ePage)
     {
         var key = (int)ePage.Id;
         if (uiPage.ContainsKey(key))
             uiPage[key].Close();
     }
-
     public void HidePopup(EUIPopup ePopup)
     {
         var key = (int)ePopup.Id;
         if (uiPopup.ContainsKey(key))
             uiPopup[key].Close();
     }
-
     public UICtrl GetPage(EUIPage ePage)
     {
         var key = (int)ePage.Id;
@@ -206,12 +202,10 @@ public class UIManager : Singleton<UIManager>
             return uiDlg;
         return LoadPage(ePage);
     }
-
     public UICtrl GetPage<T>(EUIPage ePage) where T : UICtrl
     {
         return GetPage(ePage) as T;
     }
-
     public UICtrl GetAbove(EUIPage ePage)
     {
         var key = (int)ePage.Id;
