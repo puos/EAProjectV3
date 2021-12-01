@@ -29,7 +29,7 @@ public abstract class EASceneLogic : MonoBehaviour
 
     abstract protected void OnInit();
 
-    abstract protected IEnumerator OnPostInit();
+    protected virtual IEnumerator OnPostInit() { yield return null; }
 
     abstract protected void OnUpdate();
 
