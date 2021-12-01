@@ -9,7 +9,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
 [InitializeOnLoad]
-public class EAEditorUtil
+public static class EAEditorUtil
 {
     class Events
     {
