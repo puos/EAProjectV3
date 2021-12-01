@@ -3,7 +3,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-public static class JsonUtil
+public class JsonUtil
 {
     public static string ObjToJson(object obj, bool prettyPrint = false)
     {
