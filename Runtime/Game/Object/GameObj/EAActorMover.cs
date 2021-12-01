@@ -13,6 +13,7 @@ public class EAActorMover
     protected System.Action onMoveComplete = null;
 
     public bool AIOn { get; set; }
+    public EASteeringBehaviour Steering { get { return steeringBehaviour; } }
 
     public void Initialize(EAAIAgent aiAgent)
     {
