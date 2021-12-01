@@ -12,7 +12,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "DOTween.dll",
-        "DOTweenEditor.dll"
+        "DOTweenEditor.dll",
+        "JsonFx.Json.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
