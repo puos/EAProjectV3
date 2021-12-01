@@ -66,10 +66,13 @@ public class EAMakeDB : Editor
             targetClass = targetClass.Replace("[TableName]", tableName);
             Type T = Type.GetType(targetClass + ",Assembly-CSharp");
 
+            if (T == null) return false;
+
             MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.NonPublic);
             MethodInfo generic = method.MakeGenericMethod(T);
             generic.Invoke(null, new object[] { tableName, fieldNames[0] });
             EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
+            return true;
         });
     }
 

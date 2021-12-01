@@ -14,7 +14,7 @@ public class EAEditorUtil
     class Events
     {
         public float execTime;
-        public Action cb;
+        public Func<bool>  cb;
     }
     
     static List<Events> eventsJob = new List<Events>();
@@ -36,6 +36,7 @@ public class EAEditorUtil
         Delay(0.5f, () =>
         {
             EditorUtility.ClearProgressBar();
+            return true;
         });
     }
 
@@ -143,13 +144,14 @@ public class EAEditorUtil
             Events e = eventsJob[i];
             if(e.execTime >= EditorApplication.timeSinceStartup)
             {
-                if(e.cb != null)e.cb();
-                eventsJob.RemoveAt(i);
+                bool erase = false;
+                if (e.cb != null) erase = e.cb();
+                if(erase) eventsJob.RemoveAt(i);
             } 
         }
     }
 
-    public static void Delay(float timeout,Action cb)
+    public static void Delay(float timeout,Func<bool> cb)
     {
         Events e = new Events();
         e.execTime = (float)EditorApplication.timeSinceStartup + timeout;
