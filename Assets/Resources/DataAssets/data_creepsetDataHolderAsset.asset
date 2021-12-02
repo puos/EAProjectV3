@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a622770237f7c7342bccea01b3b450eb, type: 3}
+  m_Name: data_creepsetDataHolderAsset
+  m_EditorClassIdentifier: 
+  arrayData:
+  - creep_set_id: stage_set_01_001
+    creep_id: 1
+    qty: 15
+    round_gold: 20
+  - creep_set_id: stage_set_01_002
+    creep_id: 2
+    qty: 15
+    round_gold: 20
+  - creep_set_id: stage_set_01_003
+    creep_id: 3
+    qty: 15
+    round_gold: 20
+  - creep_set_id: stage_set_01_004
+    creep_id: 4
+    qty: 15
+    round_gold: 20
+  - creep_set_id: stage_set_01_005
+    creep_id: 5
+    qty: 1
+    round_gold: 20
+  - creep_set_id: stage_set_01_006
+    creep_id: 6
+    qty: 20
+    round_gold: 20
+  - creep_set_id: stage_set_01_007
+    creep_id: 7
+    qty: 20
+    round_gold: 20
+  - creep_set_id: stage_set_01_008
+    creep_id: 8
+    qty: 20
+    round_gold: 20
+  - creep_set_id: stage_set_01_009
+    creep_id: 9
+    qty: 20
+    round_gold: 20
+  - creep_set_id: stage_set_01_010
+    creep_id: 10
+    qty: 1
+    round_gold: 20
+  - creep_set_id: stage_set_01_011
+    creep_id: 11
+    qty: 25
+    round_gold: 30
+  - creep_set_id: stage_set_01_012
+    creep_id: 12
+    qty: 25
+    round_gold: 30
+  - creep_set_id: stage_set_01_013
+    creep_id: 13
+    qty: 25
+    round_gold: 30
+  - creep_set_id: stage_set_01_014
+    creep_id: 14
+    qty: 25
+    round_gold: 30
+  - creep_set_id: stage_set_01_015
+    creep_id: 15
+    qty: 1
+    round_gold: 30
+  - creep_set_id: stage_set_01_016
+    creep_id: 16
+    qty: 30
+    round_gold: 30
+  - creep_set_id: stage_set_01_017
+    creep_id: 17
+    qty: 30
+    round_gold: 30
+  - creep_set_id: stage_set_01_018
+    creep_id: 18
+    qty: 30
+    round_gold: 30
+  - creep_set_id: stage_set_01_019
+    creep_id: 19
+    qty: 30
+    round_gold: 30
+  - creep_set_id: stage_set_01_020
+    creep_id: 20
+    qty: 1
+    round_gold: 30
+  - creep_set_id: stage_set_01_021
+    creep_id: 21
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_022
+    creep_id: 22
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_023
+    creep_id: 23
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_024
+    creep_id: 24
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_025
+    creep_id: 25
+    qty: 1
+    round_gold: 40
+  - creep_set_id: stage_set_01_026
+    creep_id: 26
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_027
+    creep_id: 27
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_028
+    creep_id: 28
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_029
+    creep_id: 29
+    qty: 30
+    round_gold: 40
+  - creep_set_id: stage_set_01_030
+    creep_id: 30
+    qty: 1
+    round_gold: 40
