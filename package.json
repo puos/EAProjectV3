@@ -7,7 +7,8 @@
   "dependencies":
   {
       "com.demigiant.dotween": "1.2.42",
-	  "com.unity.timeline": "1.4.8"
+	  "com.unity.timeline": "1.4.8",
+	  "com.unity.editorcoroutines": "1.0.0"
   },
   "resolutionStrategy" : "higherMinor"
 }
