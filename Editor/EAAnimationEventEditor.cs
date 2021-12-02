@@ -113,7 +113,6 @@ public class EAAnimationEventEditor : EditorWindow
                 AssetDatabase.SaveAssets();
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(currentClip));
                 Debug.Log("Save: currentClip=" + currentClip);
-                return true;
             });
         }
         GUI.color = Color.white;

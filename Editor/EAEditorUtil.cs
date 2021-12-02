@@ -7,21 +7,18 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using Unity.EditorCoroutines.Editor;
+using System.Collections;
 
+[InitializeOnLoad]
 public class EAEditorUtil
 {
     class Events
     {
         public float execTime;
-        public Func<bool>  cb;
+        public Action  cb;
     }
 
-    static List<Events> eventsJob = new List<Events>();;
-
-    static EAEditorUtil()
-    {
-        EditorApplication.update += OnEditorUpdate;
-    }
 
     [MenuItem("Tools/Save Assets %&#s")]
     public static void SaveAssets()
@@ -35,7 +32,6 @@ public class EAEditorUtil
         Delay(0.5f, () =>
         {
             EditorUtility.ClearProgressBar();
-            return true;
         });
     }
 
@@ -134,28 +130,21 @@ public class EAEditorUtil
         return EditorUtility.DisplayDialog("Notice", msg, "OK", "Cancel");
     }
 
-    static void OnEditorUpdate() 
+    static IEnumerator DelayFunc(Events e)
     {
-        if (eventsJob.Count == 0) return;
+        yield return new WaitForSeconds(e.execTime);
 
-        for(int i = eventsJob.Count - 1; i >= 0; --i)
-        {
-            Events e = eventsJob[i];
-            if(e.execTime >= EditorApplication.timeSinceStartup)
-            {
-                bool erase = false;
-                if (e.cb != null) erase = e.cb();
-                if(erase) eventsJob.RemoveAt(i);
-            } 
-        }
+        e.cb();
     }
 
-    public static void Delay(float timeout,Func<bool> cb)
+    public static void Delay(float timeout,Action cb)
     {
         Events e = new Events();
-        e.execTime = (float)EditorApplication.timeSinceStartup + timeout;
+        e.execTime = timeout;
         e.cb = cb;
-        eventsJob.Add(e);
+
+        object obj = new object();
+        EditorCoroutineUtility.StartCoroutine(DelayFunc(e), obj);
     }
 
     public static void SetDirty(UnityEngine.Object target)
