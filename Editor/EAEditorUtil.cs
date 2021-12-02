@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
-[InitializeOnLoad]
 public class EAEditorUtil
 {
     class Events
@@ -16,8 +15,8 @@ public class EAEditorUtil
         public float execTime;
         public Func<bool>  cb;
     }
-    
-    static List<Events> eventsJob = new List<Events>();
+
+    static List<Events> eventsJob = new List<Events>();;
 
     static EAEditorUtil()
     {
