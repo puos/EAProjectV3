@@ -73,4 +73,11 @@ public class EAActorMover
         steeringBehaviour.DefaultOn();
         aiAgent.StopMove();
     }
+
+    public void MoveToPath(List<Vector3> paths,bool isLoop = false , System.Action onMoveComplete = null)
+    {
+        steeringBehaviour.SetPath(paths, isLoop);
+        steeringBehaviour.FollowPathOn();
+        this.onMoveComplete = onMoveComplete;
+    }
 }
