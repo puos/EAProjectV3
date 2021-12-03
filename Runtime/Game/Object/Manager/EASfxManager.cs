@@ -118,7 +118,6 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
 
         return module.GetSfx();
     }
-        
 
     public void DeleteSfx(EAEffectID id)
     {
@@ -127,5 +126,33 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         module.ResetInfo(eEffectState.ES_UnLoad);
         m_effects.Remove(id);
         m_IDGenerator.FreeID(id);
+    }
+
+    // puos 20141019 Delete an effect associated with a specific actor
+    public void DeleteRelatedSfxActor(uint ActorId , bool bOnlyNotLoop = false)
+    {
+        List<uint> sfxIdList = new List<uint>();
+
+        var it = m_effects.GetEnumerator();
+
+        while(it.MoveNext())
+        {
+            uint id = it.Current.Value.GetEffectInfo().m_EffectId;
+
+            // Get the effect id corresponding to the actor
+            if (it.Current.Value.GetEffectInfo().m_AttachObjectId != ActorId) continue;
+            if(bOnlyNotLoop) 
+            {
+                // loop passes.
+                if (it.Current.Value.GetEffectInfo().m_lifeTime > 0) sfxIdList.Add(id);
+            }
+            if(!bOnlyNotLoop)
+            {
+                sfxIdList.Add(id);
+            }
+        }
+
+        // Delete the effect list.
+        for (int i = 0; i < sfxIdList.Count; ++i) DeleteSfx(sfxIdList[i]);
     }
 }

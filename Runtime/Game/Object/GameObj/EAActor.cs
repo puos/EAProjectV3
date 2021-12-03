@@ -49,6 +49,8 @@ public partial class EAActor : EAObject
 
         EA_ItemManager.instance.RemoveEquip(Id);
         EACObjManager.instance.DeleteGameObject(objType, Id);
+        EASfxManager.instance.DeleteRelatedSfxActor(Id);
+        
     }
     // Works after SetItemAttachment function
     public virtual void DoAttachItem(eAttachType attachType, eItemType itemType)
