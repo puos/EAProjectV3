@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 public class EA_CCharMob : EA_CCharBPlayer
 {
     MobInfo m_MobInfo = new MobInfo();
+    
     public EA_CCharMob() 
     {
     }
-
+    
     public bool SetMobInfo(MobInfo mobInfo)
     {
         m_MobInfo = mobInfo;
         return true;
     }
-
-    MobInfo GetMobInfo() { return m_MobInfo; }
+    public MobInfo GetMobInfo() { return m_MobInfo; }
 }
