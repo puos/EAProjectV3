@@ -42,3 +42,9 @@ public enum UI_TEXT_TYPE
     SYSTEM,
     UI
 }
+
+public enum BASEOptions
+{
+    BgmVolume,
+    SfxVolume,
+}
