@@ -75,6 +75,25 @@ public class EADataManager<classT> : EAGenericSingleton<classT> , IEADataManager
             }
         }
     }
+    public IEnumerator CoInitializeTableData(Dictionary<string, string> DataInfoList)
+    {
+        var it = DataInfoList.GetEnumerator();
+        while (it.MoveNext())
+        {
+            EADataTable so = GameResourceManager.instance.Load<EADataTable>(it.Current.Value);
+            if (so != null)
+            {
+                int key = CRC32.GetHashForAnsi(it.Current.Key);
+                if (!dicDataTables.TryGetValue(key, out EADataTable outDatas))
+                {
+                    so.Load();
+                    dicDataTables.Add(key, so);
+                }
+                yield return null;
+            }
+        }
+        yield return null;
+    }
     public IEnumerator InitializeTableDataAsync(Dictionary<string, string> DataInfoList)
     {
         var it = DataInfoList.GetEnumerator();
