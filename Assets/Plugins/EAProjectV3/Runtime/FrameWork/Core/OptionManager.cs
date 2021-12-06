@@ -40,6 +40,8 @@ public class OptionManager : Singleton<OptionManager>
     }
 
     Dictionary<int, OptionValue> optionValues = new Dictionary<int, OptionValue>();
+
+    protected readonly string optionKeys = "optionKeys";
     
     public override GameObject GetSingletonParent()
     {
@@ -49,6 +51,18 @@ public class OptionManager : Singleton<OptionManager>
     protected override void Initialize()
     {
         base.Initialize();
+
+        if (PlayerPrefs.HasKey(optionKeys))
+        {
+            string keys = PlayerPrefs.GetString(optionKeys,"");
+            List<string> keyList = keys.Split(':').ToList();
+            for(int i = 0; i < keyList.Count; ++i)
+            {
+                string key = keyList[i];
+                string value = PlayerPrefs.GetString(key);
+                SetOptionValue(key, value);
+            }
+        }
 
         EAMainFrame.instance.OnMainFrameFacilityCreated(MainFrameAddFlags.OptionMgr);
     }
@@ -69,6 +83,20 @@ public class OptionManager : Singleton<OptionManager>
             PlayerPrefs.SetString(it.Current.Value.key, it.Current.Value.stringValue);
         }
 
+        List<OptionValue> options = new List<OptionValue>(optionValues.Values);
+
+        StringBuilder keys = new StringBuilder();
+        keys.Append(options[0].key);
+
+        for(int i = 1; i < options.Count; ++i)
+        {
+            keys.Append(":");
+            keys.Append(options[i].key);
+        }
+
+        if (options.Count <= 0) PlayerPrefs.DeleteKey(optionKeys);
+        if (options.Count >  0) PlayerPrefs.SetString(optionKeys, keys.ToString());
+
         PlayerPrefs.Save();
 
         Debug.Log("OptionManager - SaveToDisc");
@@ -77,6 +105,18 @@ public class OptionManager : Singleton<OptionManager>
     {
         var optionConverted = CRC32.GetHashForAnsi(option);
         if(optionValues.TryGetValue(optionConverted,out OptionValue Value))
+        {
+            Value.Set(value);
+        }
+        else
+        {
+            optionValues.Add(optionConverted, new OptionValue(option, value));
+        }
+    }
+    public void SetOptionValue(string option,string value)
+    {
+        var optionConverted = CRC32.GetHashForAnsi(option);
+        if (optionValues.TryGetValue(optionConverted, out OptionValue Value))
         {
             Value.Set(value);
         }
