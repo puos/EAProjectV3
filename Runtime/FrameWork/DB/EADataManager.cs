@@ -117,14 +117,14 @@ public class EADataManager<classT> : EAGenericSingleton<classT> , IEADataManager
             }
         }
     }
-    public T GetData<T>(string tableKey) where T : EADataInfo
+    public EADataTable GetTable<T>() where T : EADataInfo
     {
         string tableName = typeof(T).Name;
         int key = CRC32.GetHashForAnsi(tableName);
         dicDataTables.TryGetValue(key, out EADataTable table);
-        if (table != null) return (T)table.FindByKey(tableKey);
-        Debug.LogError("not find data type " + typeof(T) + " key=" + tableKey);
-        return default(T);
+        if (table != null) return table;
+        Debug.LogError("not find data type " + typeof(T));
+        return default(EADataTable);
     }
     public List<T> GetData<T>(Predicate<T> match) where T : EADataInfo
     {
