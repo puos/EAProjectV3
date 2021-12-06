@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class EAEventBase
+public class EventBase
 {
     public int nErrCode = 0;
 }
