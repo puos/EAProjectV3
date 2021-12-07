@@ -77,6 +77,14 @@ public class OptionManager : Singleton<OptionManager>
     // player pref save
     public void SaveToDisc() 
     {
+        if(optionValues.Count <= 0)
+        {
+            PlayerPrefs.DeleteKey(optionKeys);
+            PlayerPrefs.Save();
+            Debug.Log("OptionManager - SaveToDisc");
+            return;
+        }
+
         var it = optionValues.GetEnumerator();
         while (it.MoveNext())
         {
@@ -94,9 +102,7 @@ public class OptionManager : Singleton<OptionManager>
             keys.Append(options[i].key);
         }
 
-        if (options.Count <= 0) PlayerPrefs.DeleteKey(optionKeys);
-        if (options.Count >  0) PlayerPrefs.SetString(optionKeys, keys.ToString());
-
+        PlayerPrefs.SetString(optionKeys, keys.ToString());
         PlayerPrefs.Save();
 
         Debug.Log("OptionManager - SaveToDisc");

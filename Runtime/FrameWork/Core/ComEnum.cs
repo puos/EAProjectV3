@@ -43,8 +43,3 @@ public enum UI_TEXT_TYPE
     UI
 }
 
-public enum BASEOptions
-{
-    BgmVolume,
-    SfxVolume,
-}
