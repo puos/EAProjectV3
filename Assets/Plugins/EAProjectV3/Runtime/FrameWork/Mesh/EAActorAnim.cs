@@ -49,7 +49,7 @@ public class EAActorAnim : MonoBehaviour
     }
 
     [SerializeField] public AnimState[] animState = null;
-    private Animator m_anim = null;
+    [SerializeField] public Animator m_anim = null;
 
     [System.NonSerialized] public AnimEventCallback eventCallback;
 
@@ -137,8 +137,7 @@ public class EAActorAnim : MonoBehaviour
 
     public void Initialize()
     {
-        m_anim = GetComponent<Animator>();
-
+        if(m_anim == null) m_anim = GetComponent<Animator>();
         ClearAnimation();
         ResetAnimState(animState);
         EAAniStateBehaviour stateMachine = null;

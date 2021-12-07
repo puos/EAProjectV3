@@ -136,7 +136,7 @@ public class EAMeshTool : Editor
             string pathTarget = pathSrc.Remove(pathSrc.LastIndexOf('/') + 1);
 
             GameObject charObj = Instantiate<GameObject>(AssetDatabase.LoadAssetAtPath<GameObject>(pathSrc));
-            Animator animator = charObj.GetComponent<Animator>();
+            Animator animator = charObj.GetComponentInChildren<Animator>();
 
             if (animator == null)
             {
@@ -153,10 +153,11 @@ public class EAMeshTool : Editor
     
     private static void MakeAnimInfo(GameObject charObj)
     {
-        Animator animator = charObj.GetComponent<Animator>();
+        Animator animator = charObj.GetComponentInChildren<Animator>();
 
         EAActorAnim actorAnim = charObj.GetComponent<EAActorAnim>();
         if (actorAnim == null) actorAnim = charObj.AddComponent<EAActorAnim>();
+        actorAnim.m_anim = animator;
 
         AnimatorControllerParameter[] animParams = animator.parameters;
 
