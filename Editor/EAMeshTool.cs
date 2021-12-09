@@ -159,6 +159,19 @@ public class EAMeshTool : Editor
         if (actorAnim == null) actorAnim = charObj.AddComponent<EAActorAnim>();
         actorAnim.m_anim = animator;
 
+        EAActorAnimEvent[] events = animator.GetComponents<EAActorAnimEvent>();
+        
+        if(events != null)
+        {
+            for (int i = 0; i < events.Length; ++i) DestroyImmediate(events[i]);
+        }
+
+        if (charObj.GetComponent<Animator>() == null)
+        {
+            EAActorAnimEvent e = animator.gameObject.AddComponent<EAActorAnimEvent>();
+            e.actorAnim = actorAnim;
+        }
+
         AnimatorControllerParameter[] animParams = animator.parameters;
 
         if(actorAnim.animState != null)
