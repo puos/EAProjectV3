@@ -230,7 +230,7 @@ public class EASteeringBehaviour
 
             Vector3 desiredVelocity = toTarget * (speed / dist);
             desiredVelocity.y = m_entity.GetVelocity().y;
-            return desiredVelocity;
+            return desiredVelocity - m_entity.GetVelocity();
         }
         return Vector3.zero;
     }
@@ -691,7 +691,6 @@ public class EASteeringBehaviour
         if (IsOn(behaviour_type.hide)) steeringForce += Hide(m_pTargetAgent1, m_entity.World().Obstacles());
         if (IsOn(behaviour_type.follow_path)) steeringForce += FollowPath();
 
-        steeringForce = EAMathUtil.Truncate(steeringForce, m_entity.GetMaxSpeed());
         return steeringForce;
     }
 

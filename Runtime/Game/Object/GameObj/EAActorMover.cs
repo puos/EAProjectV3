@@ -36,9 +36,9 @@ public class EAActorMover
 
         //calculate the combined force from each steering behavior in the 
         //vehicle's list
-        Vector3 changedVelocity = steeringBehaviour.Calculate();
-        
-        aiAgent.AIUpdate(changedVelocity , Time.deltaTime);
+        Vector3 force = steeringBehaviour.Calculate();
+
+        aiAgent.AIUpdate(force, Time.deltaTime);
         
         //moveState
         if(steeringBehaviour.IsSteering())

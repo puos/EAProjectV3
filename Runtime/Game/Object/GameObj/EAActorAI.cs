@@ -54,12 +54,16 @@ public partial class EAActor : EAAIAgent
 
     public void AIUpdate(Vector3 velocity, float fElapsedTime)
     {
-        float gravitySpeed = velocity.y;
+        float gravitySpeed = GetVelocity().y;
+
+        Vector3 v = GetVelocity();
+        v.y = 0f;
+        v = v + velocity;
 
         //make sure vehicle does not exceed maximum velocity
-        velocity = EAMathUtil.Truncate(velocity, maxSpeed);
-        velocity.Set(velocity.x, gravitySpeed, velocity.z);
-        rb.velocity = velocity;
+        v = EAMathUtil.Truncate(v, maxSpeed);
+        v.Set(v.x, gravitySpeed, v.z);
+        rb.velocity = v;
     }
 
     public void StopMove()
