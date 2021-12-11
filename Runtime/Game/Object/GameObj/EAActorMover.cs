@@ -13,6 +13,7 @@ public class EAActorMover
     protected System.Action onMoveComplete = null;
 
     public bool AIOn { get; set; }
+    public EASteeringBehaviour Steering { get { return steeringBehaviour; } }
 
     public void Initialize(EAAIAgent aiAgent)
     {
@@ -71,5 +72,12 @@ public class EAActorMover
     {
         steeringBehaviour.DefaultOn();
         aiAgent.StopMove();
+    }
+
+    public void MoveToPath(List<Vector3> paths,bool isLoop = false , System.Action onMoveComplete = null)
+    {
+        steeringBehaviour.SetPath(paths, isLoop);
+        steeringBehaviour.FollowPathOn();
+        this.onMoveComplete = onMoveComplete;
     }
 }

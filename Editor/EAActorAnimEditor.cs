@@ -25,7 +25,7 @@ public class EAActorAnimEditor : Editor
         {
             if(GUILayout.Button("Edit"))
             {
-                EAAnimationEventEditor.EAAnimationEventEditorMenu(_target.GetComponent<Animator>());
+                EAAnimationEventEditor.EAAnimationEventEditorMenu(_target.m_anim);
             }
         }
 

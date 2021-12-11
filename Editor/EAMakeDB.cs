@@ -47,6 +47,7 @@ public class EAMakeDB : Editor
     }
 
 
+
     [MenuItem("Tools/MakeDB")]
     public static void MakeDB()
     {
@@ -54,23 +55,36 @@ public class EAMakeDB : Editor
 
         if (string.IsNullOrEmpty(path)) return;
 
+        EditorPrefs.DeleteKey("MakeDB_PATH");
+
         path = path.Replace("\\", "/");
         string tableName = MakeLines(path);
         tableName = tableName.Split('.')[0];
+
         GenerateDataTableTemplate(tableName);
         GenerateDataHolderTemplate(tableName, fieldNames[0], fieldTypes[0]);
+              
 
-        EAEditorUtil.Delay(.5f, () => 
-        {
-            string targetClass = tmplDataHolderFile;
-            targetClass = targetClass.Replace("[TableName]", tableName);
-            Type T = Type.GetType(targetClass + ",Assembly-CSharp");
+        EditorPrefs.SetString("MakeDB_PATH", path);
+    }
 
-            MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.NonPublic);
-            MethodInfo generic = method.MakeGenericMethod(T);
-            generic.Invoke(null, new object[] { tableName, fieldNames[0] });
-            EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
-        });
+    [UnityEditor.Callbacks.DidReloadScripts]
+    static void ResourceGen() 
+    {
+        if (!EditorPrefs.HasKey("MakeDB_PATH")) return;
+
+        string path = EditorPrefs.GetString("MakeDB_PATH");
+        string tableName = MakeLines(path);
+        tableName = tableName.Split('.')[0];
+        
+        string targetClass = tmplDataHolderFile;
+        targetClass = targetClass.Replace("[TableName]", tableName);
+        Type T = Type.GetType(targetClass + ",Assembly-CSharp");
+        MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo generic = method.MakeGenericMethod(T);
+        generic.Invoke(null, new object[] { tableName });
+        EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
+        EditorPrefs.DeleteKey("MakeDB_PATH");
     }
 
     [MenuItem("Assets/MakeCSV")]
@@ -177,11 +191,11 @@ public class EAMakeDB : Editor
         codeTemplate = codeTemplate.Replace("[KeyType]", keyType);
 
         File.WriteAllText(targetPath, codeTemplate);
-
+       
         AssetDatabase.SaveAssets();
         AssetDatabase.ImportAsset(targetPath, ImportAssetOptions.ForceUpdate);
     }
-    private static void CreateAsset<T>(string tableName,string primaryKey) where T : ScriptableObject
+    private static void CreateAsset<T>(string tableName) where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();
         FieldInfo arrayData = asset.GetType().GetField("arrayData");
