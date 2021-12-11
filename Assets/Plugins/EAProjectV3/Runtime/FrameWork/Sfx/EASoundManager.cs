@@ -70,11 +70,11 @@ public class EASoundManager : Singleton<EASoundManager>
     }
     public float GetBGMVolumeNormalized() 
     {
-        return 1f;
+        return OptionManager.instance.GetValueInRatio(bgmVolume, 0,bgmMaxVolume);
     }
     public float GetSFXVolumeNormalized() 
     {
-        return 1f;
+        return OptionManager.instance.GetValueInRatio(sfxVolume, 0,sfxMaxVolume);
     }
     public void LoadBGM(string bgmPath)
     {
