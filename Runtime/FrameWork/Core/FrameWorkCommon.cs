@@ -183,5 +183,7 @@ public static class EAFrameUtil
         rt.offsetMin = rt.offsetMin - new Vector2(dist.x * pivot.x, dist.y * pivot.y);
         rt.offsetMax = rt.offsetMax + new Vector2(dist.x * (1f - pivot.x), dist.y * (1 - pivot.y));
     }
+
+    public static readonly WaitForEndOfFrame waitforendOfFrame = new WaitForEndOfFrame();
 }
 

@@ -13,6 +13,8 @@ public class EAActorMover
     protected System.Action onMoveComplete = null;
 
     public bool AIOn { get; set; }
+    public bool LookOn { get; set; }
+
     public EASteeringBehaviour Steering { get { return steeringBehaviour; } }
 
     public void Initialize(EAAIAgent aiAgent)
@@ -46,6 +48,8 @@ public class EAActorMover
         {
             float epsillon = aiAgent.GetEpsilon();
             Vector3 vel = aiAgent.GetVelocity();
+
+            if (LookOn) aiAgent.SetHeading(vel);
 
             if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
                 (oldVelocity.magnitude - vel.magnitude) >= 0f)
