@@ -29,7 +29,7 @@ public class CEnemy : EAActor
         {
             EAActor unit = c.gameObject.GetComponent<EAActor>();
             if (unit != null) Stop();
-          
+
             CSubCube map = c.gameObject.GetComponent<CSubCube>();
             if (map != null) Stop();
         };
