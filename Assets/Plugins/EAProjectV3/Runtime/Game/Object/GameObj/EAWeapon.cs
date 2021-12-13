@@ -56,9 +56,6 @@ public class EAWeapon : EAItem
 
         ObjectInfo objInfo = new ObjectInfo();
 
-        objInfo.spawnPos = muzzleTransform.position;
-        objInfo.spawnAngle = muzzleTransform.eulerAngles;
-
         objInfo.m_ModelTypeIndex = weaponInfo.uProjectileModelType;
         objInfo.m_objClassType = weaponInfo.m_objProjectileClassType;
         objInfo.SetObjName("projectile");
@@ -68,6 +65,9 @@ public class EAWeapon : EAItem
         itemInfo.m_eItemType = eItemObjType.IK_Projectile;
         EA_CItem item = EACObjManager.instance.CreateItem(objInfo, itemInfo);
         EAProjectile projectile = item.GetLinkItem() as EAProjectile;
+
+        projectile.SetPos(muzzleTransform.position);
+        projectile.SetRotation(Quaternion.Euler(muzzleTransform.eulerAngles));
         projectile.SetWeaponInfo(weaponInfo);
         projectile.SetRotation(Quaternion.LookRotation(muzzleTransform.forward, Vector3.up));
         projectile.FireEvent();

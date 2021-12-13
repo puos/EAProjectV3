@@ -169,6 +169,7 @@ public class EA_CEffectModule
             case eEffectAttachType.eLinkOffset:
                 {
                     EAObject obj = GameResourceManager.instance.CreateEAObject(EResourceGroup.Sfx, typeof(EASfx), effectInfo.m_EffectTableIndex);
+                    if (obj != null) obj.Initialize();
                     pEffectNode.SetLinkEffect(obj.GetComponent<EASfx>());
                 } 
                 break;
@@ -177,6 +178,7 @@ public class EA_CEffectModule
                     //  [4/11/2014 puos]  attach to the actor bone
                     EA_CObjectBase pObjectBase = EACObjManager.instance.GetGameObject(effectInfo.m_AttachObjectId);
                     EAObject obj = GameResourceManager.instance.CreateEAObject(EResourceGroup.Sfx, typeof(EASfx), effectInfo.m_EffectTableIndex);
+                    if (obj != null) obj.Initialize();
                     if (pObjectBase != null)
                     {
                        UnityEngine.Transform tr = pObjectBase.GetObjectInActor(effectInfo.m_AttachBoneName);

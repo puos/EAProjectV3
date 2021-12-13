@@ -105,6 +105,9 @@ public class CHero : EAActor
         obj.m_objClassType = typeof(CHero);
         mainPlayer.ResetInfo(eObjectState.CS_SETENTITY);
 
+        CHero hero = mainPlayer.GetLinkIActor() as CHero;
+        hero.Initialize();
+
         EAItemInfo info = new EAItemInfo();
         info.m_eItemType = eItemType.eIT_Weapon;
         info.m_objClassType = typeof(EAWeapon);
@@ -125,6 +128,6 @@ public class CHero : EAActor
         EA_ItemManager.instance.InsertEquip(mainPlayer.GetObjID(), 0, unit);
         EA_ItemManager.instance.EquipmentItem(mainPlayer.GetObjID(), 0);
 
-        return mainPlayer.GetLinkIActor() as CHero;
+        return hero;
     }
 }

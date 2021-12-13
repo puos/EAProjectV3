@@ -22,7 +22,6 @@ public class EA_CCharNPC : EA_CCharBPlayer
     public override bool ResetInfo(eObjectState eChangeState)
     {
         m_ObjInfo.m_eObjState = eChangeState;
-        m_ObjInfo.isSpawn = false;
         SetObjInfo(m_ObjInfo);
         SetNPCInfo(m_NPCInfo);
         return true;

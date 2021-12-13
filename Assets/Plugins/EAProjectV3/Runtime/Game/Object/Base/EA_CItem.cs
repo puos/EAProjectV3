@@ -54,7 +54,6 @@ public class EA_CItem : EA_CObjectBase
     public override bool ResetInfo(eObjectState eChangeState)
     {
         m_ObjInfo.m_eObjState = eChangeState;
-        m_ObjInfo.isSpawn = false;
         SetObjInfo(m_ObjInfo);
         SetItemInfo(m_ItemInfo);
         return true;
