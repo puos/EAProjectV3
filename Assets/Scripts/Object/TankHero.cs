@@ -324,7 +324,7 @@ public class TankHero : EASceneLogic
 
             MazeGen.CTileAttrib m = Array.Find(maze, x =>
             {
-                return x.cubeObject.col.bounds.Contains(enemy.GetCenterPos());
+                return x.cubeObject.col.bounds.Intersects(enemy.col.bounds);
             });
 
             if (m == null)
