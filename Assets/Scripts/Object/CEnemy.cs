@@ -28,8 +28,10 @@ public class CEnemy : EAActor
         collisionEvent = (Collision c, EAObject myObj) =>
         {
             EAActor unit = c.gameObject.GetComponent<EAActor>();
-            if (unit == null) return;
-            Stop();
+            if (unit != null) Stop();
+
+            CSubCube map = c.gameObject.GetComponent<CSubCube>();
+            if (unit != null) Stop();
         };
     }
 
@@ -73,7 +75,11 @@ public class CEnemy : EAActor
         this.target = target;
     }
 
-    public void Stop() { actorMover.Stop(); }
+    public void Stop() 
+    {
+        actorMover.Steering.DefaultOn();
+        actorMover.aiAgent.StopMove();
+    }
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
     {
