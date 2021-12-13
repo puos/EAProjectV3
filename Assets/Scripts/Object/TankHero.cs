@@ -201,7 +201,7 @@ public class TankHero : EASceneLogic
         direction.y = 0;
         direction.Normalize();
 
-        if (direction.magnitude > 0) hero.SetRotationSub(Quaternion.LookRotation(direction, Vector3.up));
+        if (direction.magnitude > 0) hero.SetRotationMuzzle(Quaternion.LookRotation(direction, Vector3.up));
     }
 
     private void MakeMaze(int tileX, int tileZ)
@@ -341,8 +341,6 @@ public class TankHero : EASceneLogic
             pos.y = enemy.GetPos().y;
 
             Debug.Log("enemey id :" + enemy.Id + $"cur[{m.mX},{m.mY}] => next[{m2.mX},{m2.mY}]");
-
-            enemy.SetRotation(Quaternion.LookRotation((pos - enemy.GetPos()).normalized, Vector3.up));
 
             enemy.MoveTo(pos, () =>
             {

@@ -23,6 +23,7 @@ public class CEnemy : EAActor
 
         actorMover.SetSpeed(3.5f, 0.1f);
         actorMover.aiAgent.AddAgent("enemy");
+        actorMover.LookOn = true;
 
         collisionEvent = (Collision c, EAObject myObj) =>
         {
@@ -62,7 +63,7 @@ public class CEnemy : EAActor
         if (currWeapon != null) currWeapon.FireShoot();
     }
 
-    public void SetRotationSub(Quaternion rot)
+    public void SetRotationMuzzle(Quaternion rot)
     {
         if (turret != null) turret.rotation = rot;
     }
@@ -118,7 +119,6 @@ public class CEnemy : EAActor
 
             Vector3 targetPos = enemy.target.GetPos();
             enemy.Stop();
-            enemy.SetRotation(Quaternion.LookRotation((targetPos - enemy.GetPos()).normalized, Vector3.up));
 
             Debug.Log("before enemy pos : " + enemy.GetPos() + " target pos : " + targetPos);
 
@@ -160,7 +160,7 @@ public class CEnemy : EAActor
             dir.Normalize();
 
             enemy.Stop();
-            enemy.SetRotationSub(Quaternion.LookRotation(dir, Vector3.up));
+            enemy.SetRotationMuzzle(Quaternion.LookRotation(dir, Vector3.up));
             enemy.StartFire();
         });
 

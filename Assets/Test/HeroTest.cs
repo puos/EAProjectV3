@@ -66,7 +66,7 @@ public class HeroTest : EASceneLogic
         direction.y = 0;
         direction.Normalize();
 
-        if (direction.magnitude > 0) hero.SetRotationSub(Quaternion.LookRotation(direction, Vector3.up));
+        if (direction.magnitude > 0) hero.SetRotationMuzzle(Quaternion.LookRotation(direction, Vector3.up));
     }
 
     protected override IEnumerator OnPostInit()

@@ -73,7 +73,7 @@ public class CHero : EAActor
         base.Release();
     }
 
-    public void SetRotationSub(Quaternion rot)
+    public void SetRotationMuzzle(Quaternion rot)
     {
         turret_rotation = rot;
     }
