@@ -29,9 +29,9 @@ public class CEnemy : EAActor
         {
             EAActor unit = c.gameObject.GetComponent<EAActor>();
             if (unit != null) Stop();
-
+          
             CSubCube map = c.gameObject.GetComponent<CSubCube>();
-            if (unit != null) Stop();
+            if (map != null) Stop();
         };
     }
 
