@@ -47,11 +47,6 @@ public class EA_CObjectBase
                 break;
         }
 
-        if(m_ObjInfo.isSpawn == true) 
-        {
-            ResetWorldTransform(m_ObjInfo.spawnPos, m_ObjInfo.spawnAngle);
-        }
-
         if(m_pEntity != null)
         {
             if (!string.IsNullOrEmpty(m_ObjInfo.m_strGameName)) m_pEntity.Name = m_ObjInfo.m_strGameName;
@@ -81,7 +76,6 @@ public class EA_CObjectBase
     public virtual bool ResetInfo(eObjectState eChangeState)
     {
         m_ObjInfo.m_eObjState = eChangeState;
-        m_ObjInfo.isSpawn = false;
         SetObjInfo(m_ObjInfo);
         return true;
     }
@@ -91,17 +85,6 @@ public class EA_CObjectBase
         if (m_ObjInfo.m_strGameName.Equals(strGameName, StringComparison.Ordinal)) return;
 
         m_ObjInfo.SetObjName(strGameName);
-    }
-
-    // Change the object's transform
-    public bool ResetWorldTransform(Vector3 pos,Vector3 angle)
-    {
-        if (m_pEntity == null) return false;
-
-        m_pEntity.SetPos(pos);
-        m_pEntity.SetRotation(Quaternion.Euler(angle));
-
-        return true;
     }
 
     public virtual Transform GetObjectInActor(string szBoneName)  {  return null;  }

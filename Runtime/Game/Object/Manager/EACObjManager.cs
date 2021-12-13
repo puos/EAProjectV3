@@ -32,7 +32,6 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         mainObjInfo.m_eObjState = eObjectState.CS_MYENTITY;
         mainObjInfo.m_eObjType = eObjectType.CT_MYPLAYER;
         mainObjInfo.m_ObjId = CObjGlobal.MyPlayerID;
-        mainObjInfo.isSpawn = false;
         m_MainPlayer.SetObjInfo(mainObjInfo);
 
         CharInfo emptyCharInfo = new CharInfo();
@@ -107,8 +106,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         EA_CObjectBase returnObject = null;
 
         gameObjInfo.m_eObjState = eObjectState.CS_SETENTITY;
-        gameObjInfo.isSpawn = true;
-
+     
         //	Temporarily specify ObjId (sometimes temporary use by external system)
         //	Apply the information to the generated number
         if (gameObjInfo.m_ObjId == CObjGlobal.InvalidObjID) gameObjInfo.m_ObjId = (EAObjID)m_IDGenerater.GenerateID();

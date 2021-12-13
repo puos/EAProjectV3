@@ -297,7 +297,6 @@ public class GameResourceManager : Singleton<GameResourceManager>
             eaObj.gameObject.AddComponent(objClassType);
 
         EAObject obj = eaObj.GetComponent<EAObject>();
-        if (obj != null) obj.Initialize();
         return obj;
     }
 
