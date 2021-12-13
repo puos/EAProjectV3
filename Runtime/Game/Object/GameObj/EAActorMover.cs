@@ -49,13 +49,15 @@ public class EAActorMover
             float epsillon = aiAgent.GetEpsilon();
             Vector3 vel = aiAgent.GetVelocity();
 
-            if (LookOn) aiAgent.SetHeading(vel);
-
             if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
                 (oldVelocity.magnitude - vel.magnitude) >= 0f)
             {
+                if (LookOn) aiAgent.SetHeading(vel);
                 if (onMoveComplete != null) onMoveComplete();
+                return;
             }
+
+            if (LookOn) aiAgent.SetHeading(vel,true);
         }  
     }
 
@@ -70,12 +72,6 @@ public class EAActorMover
     {
         aiAgent.SetMaxSpeed(speed);
         aiAgent.SetEpsilon(epsilon);
-    }
-
-    public void Stop()
-    {
-        steeringBehaviour.DefaultOn();
-        aiAgent.StopMove();
     }
 
     public void MoveToPath(List<Vector3> paths,bool isLoop = false , System.Action onMoveComplete = null)
