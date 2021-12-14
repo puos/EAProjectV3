@@ -41,6 +41,7 @@ public class EAWeapon : EAItem
 
     protected virtual void FireEvent() 
     {
+        FireShoot();
     }
 
     public void FireShoot()
@@ -50,9 +51,6 @@ public class EAWeapon : EAItem
         if (actor == null) return;
         if (muzzleTransform == null) return;
         if (bLock == true) return;
-
-        FireEvent();
-
 
         ObjectInfo objInfo = new ObjectInfo();
 
@@ -102,6 +100,6 @@ public class EAWeapon : EAItem
         if (updateCheckTime < Time.time) updateCheckTime = Time.time;
         updateCheckTime += coolTime;
 
-        FireShoot();
+        FireEvent();
     }
 }
