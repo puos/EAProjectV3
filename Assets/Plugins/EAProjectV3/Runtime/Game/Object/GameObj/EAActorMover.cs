@@ -14,6 +14,7 @@ public class EAActorMover
 
     public bool AIOn { get; set; }
     public bool LookOn { get; set; }
+    public bool LookAtTarget { get; set; }
 
     public EASteeringBehaviour Steering { get { return steeringBehaviour; } }
 

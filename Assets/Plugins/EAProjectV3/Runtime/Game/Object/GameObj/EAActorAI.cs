@@ -50,7 +50,7 @@ public partial class EAActor : EAAIAgent
     public void SetHeading(Vector3 newHeading , bool isSmooth = false)
     {
        newHeading.y = 0;
-       SetRotation(Quaternion.LookRotation(newHeading.normalized, Vector3.up), isSmooth , 0.5f);
+       SetRotation(Quaternion.LookRotation(newHeading.normalized, Vector3.up), isSmooth , 0.25f);
     }
 
     public void AIUpdate(Vector3 velocity, float fElapsedTime)
