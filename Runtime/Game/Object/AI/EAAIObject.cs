@@ -16,7 +16,7 @@ public interface EAAIObject
    public Vector3 GetPos();
    public void SetPos(Vector3 vPos);
    public Vector3 GetHeading();
-   public void SetHeading(Vector3 newHeading, bool isSmooth = false);
+   public void SetHeading(Vector3 newHeading, float smoothRatio = 1f);
 }
 
 
