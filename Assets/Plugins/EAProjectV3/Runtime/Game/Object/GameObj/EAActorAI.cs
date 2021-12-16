@@ -47,10 +47,10 @@ public partial class EAActor : EAAIAgent
         return tr.forward;
     }
 
-    public void SetHeading(Vector3 newHeading , bool isSmooth = false)
+    public void SetHeading(Vector3 newHeading , float smoothRatio = 1f)
     {
        newHeading.y = 0;
-       SetRotation(Quaternion.LookRotation(newHeading.normalized, Vector3.up), isSmooth , 0.25f);
+       SetRotation(Quaternion.LookRotation(newHeading.normalized, Vector3.up), smoothRatio);
     }
 
     public void AIUpdate(Vector3 velocity, float fElapsedTime)

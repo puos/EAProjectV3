@@ -15,6 +15,7 @@ public class EAActorMover
     public bool AIOn { get; set; }
     public bool LookOn { get; set; }
     public bool LookAtTarget { get; set; }
+    public float smoothRatio { get; set; }
 
     public EASteeringBehaviour Steering { get { return steeringBehaviour; } }
 
@@ -25,6 +26,7 @@ public class EAActorMover
         AIOn = true;
         LookOn = false;
         LookAtTarget = false;
+        smoothRatio = 0.25f;
     }
 
     public void Release()
@@ -61,15 +63,15 @@ public class EAActorMover
                 return;
             }
 
-            if (LookOn) aiAgent.SetHeading(vel,true);
-            if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos(),true);
+            if (LookOn) aiAgent.SetHeading(vel, smoothRatio);
+            if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos(), smoothRatio);
         }  
     }
 
-    protected void LookAtDirection(Vector3 direction,bool isSmooth = false)
+    protected void LookAtDirection(Vector3 direction,float smoothRatio = 1f)
     {
         direction.Normalize();
-        aiAgent.SetHeading(direction, isSmooth);
+        aiAgent.SetHeading(direction, smoothRatio);
     } 
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)

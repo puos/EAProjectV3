@@ -61,14 +61,14 @@ public class EAObject : MonoBehaviour
         return cachedTransform.transform.position;
     }
 
-    public void SetRotation(Quaternion rot, bool isSmooth = false,float ratio = 1.0f)
+    public void SetRotation(Quaternion rot, float ratio = 1.0f)
     {
-        if(isSmooth == true)
+        ratio = Mathf.Clamp01(ratio);
+        if (ratio < 1.0f)
         {
             cachedTransform.rotation = Quaternion.Lerp(cachedTransform.rotation, rot, ratio);
             return;
         }
-
         cachedTransform.rotation = rot;
     }
 

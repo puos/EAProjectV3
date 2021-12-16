@@ -37,7 +37,7 @@ public class CHero : EAActor
         velocity.Normalize();
 
         if (velocity.magnitude > 0)
-            SetRotation(Quaternion.LookRotation(velocity, Vector3.up), true, Time.deltaTime * 2.0f);
+            SetRotation(Quaternion.LookRotation(velocity, Vector3.up), Time.deltaTime * 2.0f);
 
         if (turret != null)
         {
