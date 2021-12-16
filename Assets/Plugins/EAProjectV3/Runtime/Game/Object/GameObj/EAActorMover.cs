@@ -23,6 +23,8 @@ public class EAActorMover
         this.aiAgent = aiAgent;
         steeringBehaviour = new EASteeringBehaviour(aiAgent);
         AIOn = true;
+        LookOn = false;
+        LookAtTarget = false;
     }
 
     public void Release()
@@ -54,13 +56,21 @@ public class EAActorMover
                 (oldVelocity.magnitude - vel.magnitude) >= 0f)
             {
                 if (LookOn) aiAgent.SetHeading(vel);
+                if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos());
                 if (onMoveComplete != null) onMoveComplete();
                 return;
             }
 
             if (LookOn) aiAgent.SetHeading(vel,true);
+            if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos(),true);
         }  
     }
+
+    protected void LookAtDirection(Vector3 direction,bool isSmooth = false)
+    {
+        direction.Normalize();
+        aiAgent.SetHeading(direction, isSmooth);
+    } 
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
     {
