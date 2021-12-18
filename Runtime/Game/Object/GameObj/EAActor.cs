@@ -9,9 +9,9 @@ public partial class EAActor : EAObject
     protected EAActorMover actorMover = null;
     protected  EAWeapon currWeapon = null;
 
-    private Dictionary<int, Transform> bones = new Dictionary<int, Transform>();
-    private Renderer[] renderers = null;
-    private string[] m_PartTblId = new string[(int)eCharParts.CP_MAX];
+    protected Dictionary<int, Transform> bones = new Dictionary<int, Transform>();
+    protected Renderer[] renderers = null;
+    protected string[] m_PartTblId = new string[(int)eCharParts.CP_MAX];
     
     protected Dictionary<int, System.Action> states = new Dictionary<int, System.Action>();
     protected Dictionary<int, System.Action> updates = new Dictionary<int, System.Action>();
