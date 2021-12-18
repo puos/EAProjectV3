@@ -47,9 +47,11 @@ public class EAActorMover
         Vector3 force = steeringBehaviour.Calculate();
 
         aiAgent.AIUpdate(force, Time.deltaTime);
-        
+
+        if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos(), smoothRatio);
+
         //moveState
-        if(steeringBehaviour.IsSteering())
+        if (steeringBehaviour.IsSteering())
         {
             float epsillon = aiAgent.GetEpsilon();
             Vector3 vel = aiAgent.GetVelocity();
@@ -57,15 +59,18 @@ public class EAActorMover
             if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
                 (oldVelocity.magnitude - vel.magnitude) >= 0f)
             {
-                if (LookOn) aiAgent.SetHeading(vel);
-                if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos());
+                if (IsLookOn()) aiAgent.SetHeading(vel);
                 if (onMoveComplete != null) onMoveComplete();
                 return;
             }
 
-            if (LookOn) aiAgent.SetHeading(vel, smoothRatio);
-            if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos(), smoothRatio);
+            if (IsLookOn()) aiAgent.SetHeading(vel, smoothRatio);
         }  
+    }
+
+    private bool IsLookOn()
+    {
+        return (LookOn && !LookAtTarget);
     }
 
     protected void LookAtDirection(Vector3 direction,float smoothRatio = 1f)
