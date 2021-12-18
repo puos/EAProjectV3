@@ -70,7 +70,7 @@ public class EAAnimationEventEditor : EditorWindow
             listAnimEventItem.Add(new EAAnimationEventItem(new AnimationEvent(),"AnimationEvent_Impact",string.Empty));
         }
 
-        decimal frameTime = (1.0m / new Decimal(currentClip.frameRate));
+        decimal frameTime = Decimal.Round(1.0m / new Decimal(currentClip.frameRate) * 1000m)/1000m;
         EditorGUILayout.LabelField("FrameTime=" + frameTime);
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
@@ -80,7 +80,7 @@ public class EAAnimationEventEditor : EditorWindow
             AnimationEvent animEvent = item.animationEvent;
             int frame = (int)Decimal.Round(new Decimal(animEvent.time) / frameTime);
             
-            EditorGUILayout.PrefixLabel("Frame " + frame);
+            EditorGUILayout.PrefixLabel("Frame " + Decimal.Round((frame * frameTime) * 1000m)/1000m);
 
             bool isRemove = false;
 
