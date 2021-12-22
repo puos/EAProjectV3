@@ -23,7 +23,6 @@ static class EA_ObjectFactory
         {
             GameObject obj = new GameObject(prefabName, setObjInfo.m_objClassType);
             eaObj = obj.GetComponent<EAObject>();
-            eaObj.Initialize();
         }
 
         pSetObject.SetLinkEntity(eaObj);
