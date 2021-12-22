@@ -9,7 +9,7 @@ public class EAWeapon : EAItem
 {
     EAItemAttackWeaponInfo weaponInfo = new EAItemAttackWeaponInfo();
 
-    bool bLock = false;
+    bool bLock = true;
     float coolTime = 0;
     float updateCheckTime = 0;
 
@@ -50,8 +50,7 @@ public class EAWeapon : EAItem
 
         if (actor == null) return;
         if (muzzleTransform == null) return;
-        if (bLock == true) return;
-
+       
         ObjectInfo objInfo = new ObjectInfo();
 
         objInfo.m_ModelTypeIndex = weaponInfo.uProjectileModelType;
@@ -95,6 +94,7 @@ public class EAWeapon : EAItem
         base.UpdatePerFrame();
 
         if (weaponInfo.bAutoMode == false) return;
+        if (bLock == true) return;
 
         if (updateCheckTime >= Time.time) return;
         if (updateCheckTime < Time.time) updateCheckTime = Time.time;
