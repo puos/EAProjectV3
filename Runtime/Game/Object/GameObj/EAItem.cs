@@ -39,8 +39,7 @@ public class EAItem : EAObject
 
         return null;
     }
-    public virtual void OnAction(params object[] parms) {}
-
+  
     public override uint GetObjId() { return Id; }
 
     public Transform GetObjectInItem(string strObjectName)

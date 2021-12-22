@@ -57,9 +57,7 @@ public partial class EAActor : EAObject
     {
         if (itemType == eItemType.eIT_Weapon) RaiseWeapon();
     }
-    public virtual void OnAction(params object[] parms)
-    {
-    }
+    
     // Works before DoSwitchWeapon
     public virtual bool SetItemAttachment(eAttachType attachType , EAObject gameObject)
     {
