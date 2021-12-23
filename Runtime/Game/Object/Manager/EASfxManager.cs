@@ -61,19 +61,10 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         m_IDGenerator.ReGenerate();
     }
 
-    public EASfx StartFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
+    public EASfx LoadSfx(EACEffectInfo info, float lifeTime)
     {
-        EACEffectInfo info = new EACEffectInfo();
-        info.m_eEffectState = eEffectState.ES_Load;
-        info.m_eAttachType = eEffectAttachType.eWorld;
-        info.m_EffectTableIndex = fxtag.ToString();
-        info.m_lifeTime = lifeTime;
-        info.m_EmitPos = emitPos;
-        info.m_EmitAngle = emitAngle;
-        info.isSpawn = true;
-
         info.m_EffectId = m_IDGenerator.GenerateID();
-        if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module)) 
+        if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module))
         {
             module.SetObjInfo(info);
             if (lifeTime > 0) module.AutoDelete();
@@ -84,12 +75,24 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         m_effects.Add(info.m_EffectId, module);
         module.SetObjInfo(info);
         if (lifeTime > 0) module.AutoDelete();
-        module.ResetInfo(eEffectState.ES_Start);
-
         return module.GetSfx();
     }
 
-    public EASfx StartFxOffset(EFxTag fxtag,EAObject obj,string attachBoneName , Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
+    public EASfx LoadFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime)
+    {
+        EACEffectInfo info = new EACEffectInfo();
+        info.m_eEffectState = eEffectState.ES_Load;
+        info.m_eAttachType = eEffectAttachType.eWorld;
+        info.m_EffectTableIndex = fxtag.ToString();
+        info.m_lifeTime = lifeTime;
+        info.m_EmitPos = emitPos;
+        info.m_EmitAngle = emitAngle;
+        info.isSpawn = true;
+        EASfx sfx = LoadSfx(info, lifeTime);
+        return sfx;
+    }
+
+    public EASfx LoadFxOffset(EFxTag fxtag, EAObject obj, string attachBoneName, Vector3 emitPos, Vector3 emitAngle, float lifeTime)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
@@ -102,24 +105,10 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         info.m_EmitAngle = emitAngle;
         info.isSpawn = true;
 
-        info.m_EffectId = m_IDGenerator.GenerateID();
-        if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module))
-        {
-            module.SetObjInfo(info);
-            if (lifeTime > 0) module.AutoDelete();
-            return module.GetSfx();
-        }
-
-        module = new EA_CEffectModule();
-        m_effects.Add(info.m_EffectId, module);
-        module.SetObjInfo(info);
-        if (lifeTime > 0) module.AutoDelete();
-        module.ResetInfo(eEffectState.ES_Start);
-
-        return module.GetSfx();
+        EASfx sfx = LoadSfx(info, lifeTime);
+        return sfx;
     }
-
-    public EASfx StartFxLinkBone(EFxTag fxtag, EAObject obj, string attachBoneName,float lifeTime = 0f)
+    public  EASfx LoadFxLinkBone(EFxTag fxtag, EAObject obj, string attachBoneName, float lifeTime)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
@@ -130,21 +119,29 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         info.m_lifeTime = lifeTime;
         info.isSpawn = true;
 
-        info.m_EffectId = m_IDGenerator.GenerateID();
-        if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module))
-        {
-            module.SetObjInfo(info);
-            if (lifeTime > 0) module.AutoDelete();
-            return module.GetSfx();
-        }
+        EASfx sfx = LoadSfx(info, lifeTime);
+        return sfx;
+    }
 
-        module = new EA_CEffectModule();
-        m_effects.Add(info.m_EffectId, module);
-        module.SetObjInfo(info);
-        if (lifeTime > 0) module.AutoDelete();
-        module.ResetInfo(eEffectState.ES_Start);
+    public EASfx StartFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
+    {
+        EASfx sfx = LoadFxWorld(fxtag, emitPos, emitAngle, lifeTime);
+        sfx.StartFx();
+        return sfx;
+    }
 
-        return module.GetSfx();
+    public EASfx StartFxOffset(EFxTag fxtag,EAObject obj,string attachBoneName , Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
+    {
+        EASfx sfx = LoadFxOffset(fxtag, obj, attachBoneName, emitPos, emitAngle, lifeTime);
+        sfx.StartFx();
+        return sfx;
+    }
+
+    public EASfx StartFxLinkBone(EFxTag fxtag, EAObject obj, string attachBoneName,float lifeTime = 0f)
+    {
+        EASfx sfx = LoadFxLinkBone(fxtag, obj, attachBoneName, lifeTime);
+        sfx.StartFx();
+        return sfx;
     }
 
     public void DeleteSfx(EAEffectID id)
