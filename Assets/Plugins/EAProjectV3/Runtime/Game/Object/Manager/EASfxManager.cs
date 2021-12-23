@@ -78,7 +78,7 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         return module.GetSfx();
     }
 
-    public EASfx LoadFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime)
+    public EASfx LoadFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
@@ -92,7 +92,7 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         return sfx;
     }
 
-    public EASfx LoadFxOffset(EFxTag fxtag, EAObject obj, string attachBoneName, Vector3 emitPos, Vector3 emitAngle, float lifeTime)
+    public EASfx LoadFxOffset(EFxTag fxtag, EAObject obj, string attachBoneName, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
@@ -108,7 +108,7 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         EASfx sfx = LoadSfx(info, lifeTime);
         return sfx;
     }
-    public  EASfx LoadFxLinkBone(EFxTag fxtag, EAObject obj, string attachBoneName, float lifeTime)
+    public  EASfx LoadFxLinkBone(EFxTag fxtag, EAObject obj, string attachBoneName, float lifeTime = 0f)
     {
         EACEffectInfo info = new EACEffectInfo();
         info.m_eEffectState = eEffectState.ES_Load;
