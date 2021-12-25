@@ -70,24 +70,29 @@ public class EAAnimationEventEditor : EditorWindow
             listAnimEventItem.Add(new EAAnimationEventItem(new AnimationEvent(),"AnimationEvent_Impact",string.Empty));
         }
 
-        decimal frameTime = Decimal.Round(1.0m / new Decimal(currentClip.frameRate) * 1000m)/1000m;
+        float frameTime = Mathf.Round(1000f/currentClip.frameRate)/1000f;
+        float endFrame = currentClip.length / frameTime;
         EditorGUILayout.LabelField("FrameTime=" + frameTime);
+
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
         foreach(EAAnimationEventItem item in listAnimEventItem)
         {
             AnimationEvent animEvent = item.animationEvent;
-            int frame = (int)Decimal.Round(new Decimal(animEvent.time) / frameTime);
-            
-            EditorGUILayout.PrefixLabel("Frame " + Decimal.Round((frame * frameTime) * 1000m)/1000m);
+            int frame = (int)Mathf.Round(animEvent.time / frameTime);
 
+            //Debug.Log(animEvent.stringParameter + " time : " + animEvent.time + " frame Time" + frameTime + "aniLength " + currentClip.length);
+
+            EditorGUILayout.PrefixLabel("Frame " + frame);
+          
             bool isRemove = false;
 
             EditorGUI.indentLevel++;
 
-            Decimal curFrame = new Decimal(EditorGUILayout.IntSlider(frame, 0, (int)(1f / (float)frameTime)));       
-            animEvent.time = Decimal.ToSingle(curFrame * frameTime);
+            float curFrame = EditorGUILayout.IntSlider(frame, 0, (int)endFrame);       
+            animEvent.time = curFrame * frameTime;
+            EditorGUILayout.LabelField("Time", animEvent.time.ToString() + " / " + currentClip.length.ToString());
             animEvent.stringParameter = EditorGUILayout.TextField("params", animEvent.stringParameter);
             if (GUILayout.Button("Remove",GUILayout.Width(70)))
             {
@@ -108,12 +113,6 @@ public class EAAnimationEventEditor : EditorWindow
         if(GUILayout.Button("save"))
         {
             SaveAnimation();
-            EAEditorUtil.Delay(.5f, () => 
-            {
-                AssetDatabase.SaveAssets();
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(currentClip));
-                Debug.Log("Save: currentClip=" + currentClip);
-            });
         }
         GUI.color = Color.white;
     }
@@ -155,6 +154,9 @@ public class EAAnimationEventEditor : EditorWindow
 
         so.SetIsDifferentCacheDirty();
         so.ApplyModifiedProperties();
+
+        modelImporter.SaveAndReimport();
+        Debug.Log("Save: currentClip=" + currentClip);
     }
 
     public void SetEvents(SerializedProperty sp , AnimationEvent[] newEvents)
@@ -162,7 +164,7 @@ public class EAAnimationEventEditor : EditorWindow
         SerializedProperty serializedProperty = sp.FindPropertyRelative("events");
         if (serializedProperty == null) return;
         if (newEvents == null) return;
-       
+
         serializedProperty.ClearArray();
         for(int i = 0; i < newEvents.Length; ++i)
         {
@@ -174,7 +176,7 @@ public class EAAnimationEventEditor : EditorWindow
             eventProperty.FindPropertyRelative("intParameter").intValue = animationEvent.intParameter;
             eventProperty.FindPropertyRelative("objectReferenceParameter").objectReferenceValue = animationEvent.objectReferenceParameter;
             eventProperty.FindPropertyRelative("data").stringValue = animationEvent.stringParameter;
-            eventProperty.FindPropertyRelative("time").floatValue = animationEvent.time;
+            eventProperty.FindPropertyRelative("time").floatValue = animationEvent.time / currentClip.length;
         }
     }
 
