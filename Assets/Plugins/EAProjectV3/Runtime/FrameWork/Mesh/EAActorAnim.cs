@@ -148,6 +148,7 @@ public class EAActorAnim : MonoBehaviour
     public void PushAnimation(string key)
     {
         AnimState state = GetAnimState(key);
+        if (state == null) return;
         ChangeAnim(state);
     }
 

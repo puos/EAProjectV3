@@ -377,9 +377,9 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.462
+      - time: 1
         functionName: AnimationEvent_Impact
-        data: 
+        data: attack
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

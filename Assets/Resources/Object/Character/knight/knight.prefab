@@ -1016,7 +1016,7 @@ MonoBehaviour:
       type: 0
       value: 0
       paramId: 1748754976
-  - key: attack1
+  - key: Attack
     playAnimParams:
     - aniName: AttackNormal
       type: 0

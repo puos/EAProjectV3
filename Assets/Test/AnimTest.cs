@@ -13,7 +13,8 @@ public class AnimTest : EASceneLogic
 
     protected override void OnInit()
     {
-        actor = CTestActor.Clone();
+        string modelIndex = dataAdapter.GetString("modelIndex");
+        actor = CTestActor.Clone(modelIndex);
         EAFrameUtil.Call<EAFPSCounter>(EAFPSCounter.instance);
     }
 

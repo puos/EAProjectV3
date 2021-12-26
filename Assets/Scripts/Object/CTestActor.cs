@@ -40,11 +40,11 @@ public class CTestActor : EAActor
         if (actorAnim != null) actorAnim.StopAnimation();
     }
 
-    public static CTestActor Clone() 
+    public static CTestActor Clone(string modelIndex) 
     {
         ObjectInfo objectInfo = new ObjectInfo()
         {
-            m_ModelTypeIndex = "Character/Amon/Amon",
+            m_ModelTypeIndex = modelIndex,
             m_objClassType   = typeof(CTestActor)
         };
 
