@@ -70,28 +70,27 @@ public class EAAnimationEventEditor : EditorWindow
             listAnimEventItem.Add(new EAAnimationEventItem(new AnimationEvent(),"AnimationEvent_Impact",string.Empty));
         }
 
-        float frameTime = Mathf.Round(1000f/currentClip.frameRate)/1000f;
-        float endFrame = currentClip.length / frameTime;
-        EditorGUILayout.LabelField("FrameTime=" + frameTime);
-
+        float endFrame  = currentClip.length * currentClip.frameRate;
+        EditorGUILayout.LabelField("FrameTime=" + 1f/currentClip.frameRate);
+               
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
         foreach(EAAnimationEventItem item in listAnimEventItem)
         {
             AnimationEvent animEvent = item.animationEvent;
-            int frame = (int)Mathf.Round(animEvent.time / frameTime);
+            float frame = animEvent.time * currentClip.frameRate;
 
             //Debug.Log(animEvent.stringParameter + " time : " + animEvent.time + " frame Time" + frameTime + "aniLength " + currentClip.length);
 
-            EditorGUILayout.PrefixLabel("Frame " + frame);
+            EditorGUILayout.PrefixLabel("Frame " + (int)frame);
           
             bool isRemove = false;
 
             EditorGUI.indentLevel++;
 
-            float curFrame = EditorGUILayout.IntSlider(frame, 0, (int)endFrame);       
-            animEvent.time = curFrame * frameTime;
+            float curFrame = EditorGUILayout.Slider(frame, 0 , endFrame);       
+            animEvent.time = Mathf.Min(curFrame/currentClip.frameRate, currentClip.length);
             EditorGUILayout.LabelField("Time", animEvent.time.ToString() + " / " + currentClip.length.ToString());
             animEvent.stringParameter = EditorGUILayout.TextField("params", animEvent.stringParameter);
             if (GUILayout.Button("Remove",GUILayout.Width(70)))
