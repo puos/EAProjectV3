@@ -67,8 +67,8 @@ public class EAWeapon : EAItem
         projectile.SetRotation(Quaternion.Euler(muzzleTransform.eulerAngles));
         projectile.SetWeaponInfo(weaponInfo);
         projectile.SetRotation(Quaternion.LookRotation(muzzleTransform.forward, Vector3.up));
-        projectile.FireEvent();
         projectile.Move(muzzleTransform.forward, weaponInfo.fProjectileSpeed, muzzleTransform, 0, weaponInfo.fKillDistance);
+        projectile.FireEvent();
     }
 
     public EAItemAttackWeaponInfo GetWeaponInfo() { return weaponInfo; }
