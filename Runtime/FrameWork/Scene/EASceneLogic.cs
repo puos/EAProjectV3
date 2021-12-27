@@ -27,6 +27,9 @@ public abstract class EASceneLogic : MonoBehaviour
 
     public EADataAdaptor dataAdapter = null;
 
+    private EAEventManager m_eventMgr = null;
+    private UIManager m_uiMgr = null;
+
     abstract protected void OnInit();
 
     protected virtual IEnumerator OnPostInit() { yield return null; }
@@ -42,6 +45,8 @@ public abstract class EASceneLogic : MonoBehaviour
         instance = this;
         prevSceneName = EASceneLoadingManager.prevSceneName;
         sceneLoadingState = SceneLoadingState.None;
+        m_eventMgr = EAEventManager.instance;
+        m_uiMgr = UIManager.instance;
     }
 
     public void Init()
