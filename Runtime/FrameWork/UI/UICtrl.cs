@@ -6,6 +6,7 @@ public class UICtrl : MonoBehaviour
 
     [HideInInspector] public GameObject m_CachedObject = null;
     [HideInInspector] public RectTransform m_CachedTransform = null;
+    [HideInInspector] public EAEventManager m_eventMgr = null;
 
     private bool m_bInitialized = false;
     private bool m_bActive = false;
@@ -31,6 +32,7 @@ public class UICtrl : MonoBehaviour
 
         m_CachedObject = gameObject;
         m_CachedTransform = GetComponent<RectTransform>();
+        m_eventMgr = EAEventManager.instance;
     }
 
     public virtual void Open()
