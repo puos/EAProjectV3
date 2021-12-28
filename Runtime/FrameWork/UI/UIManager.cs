@@ -202,7 +202,7 @@ public class UIManager : Singleton<UIManager>
             return uiDlg;
         return LoadPage(ePage);
     }
-    public UICtrl GetPage<T>(EUIPage ePage) where T : UICtrl
+    public T GetPage<T>(EUIPage ePage) where T : UICtrl
     {
         return GetPage(ePage) as T;
     }
