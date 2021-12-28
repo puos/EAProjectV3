@@ -95,7 +95,7 @@ public class EAScene : MonoBehaviour
 
         EADataAdaptor dataAdapter = GetComponent<EADataAdaptor>();
 
-        if (sm && dataAdapter) sm.dataAdapter = dataAdapter;
+        if (sm && dataAdapter) sm.SetAdapter(dataAdapter);
 
         string info = (sm == null) ? "null" : "valid";
         Debug.Log($"EA SceneConfig.CreateSceneLogic sm is {info} controller class type : {controllerClassType}");

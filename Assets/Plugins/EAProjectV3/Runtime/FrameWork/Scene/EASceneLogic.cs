@@ -25,7 +25,9 @@ public abstract class EASceneLogic : MonoBehaviour
 
     bool selfLoading = false;
 
-    public EADataAdaptor dataAdapter = null;
+    protected EADataAdaptor  dataAdapter { get; private set; }
+    protected EAEventManager m_eventMgr = null;
+    protected UIManager      m_uiMgr = null;
 
     abstract protected void OnInit();
 
@@ -42,6 +44,8 @@ public abstract class EASceneLogic : MonoBehaviour
         instance = this;
         prevSceneName = EASceneLoadingManager.prevSceneName;
         sceneLoadingState = SceneLoadingState.None;
+        m_eventMgr = EAEventManager.instance;
+        m_uiMgr = UIManager.instance;
     }
 
     public void Init()
@@ -120,14 +124,19 @@ public abstract class EASceneLogic : MonoBehaviour
         return OnEscapeKey();
     }
 
-    public void WillDestroy()
-    {
-        sceneLoadingState = SceneLoadingState.WillDestroy;
-    }
-
     protected GameObject GetData(string name)
     {
         if (dataAdapter == null) return null;
         return dataAdapter.GetData(name);
+    }
+
+    public void SetAdapter(EADataAdaptor dataAdaptor)
+    {
+        this.dataAdapter = dataAdapter;
+    }
+
+    public void WillDestroy()
+    {
+        sceneLoadingState = SceneLoadingState.WillDestroy;
     }
 }
