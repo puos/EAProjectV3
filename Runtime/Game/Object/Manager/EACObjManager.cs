@@ -415,7 +415,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         m_entities.Remove(gameEntity);
     }
 
-    public EA_CCharBPlayer GetActor(EAObjID id)
+    public EA_CCharBPlayer GetCharPlayer(EAObjID id)
     {
         EA_CCharBPlayer pActor = null;
         pActor = (pActor == null) ? GetPlayer(id) : pActor;
@@ -424,14 +424,37 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         
         return pActor;
     }
-
     public EA_CObjectBase GetGameObject(EAObjID id)
     {
         EA_CObjectBase obj = null;
-        obj = (obj == null) ? GetActor(id) : obj;
+        obj = (obj == null) ? GetCharPlayer(id) : obj;
         obj = (obj == null) ? GetMapObject(id) : obj;
         obj = (obj == null) ? GetItem(id) : obj;
 
         return obj;
+    }
+    public EAActor GetMobActor(EAObjID id)
+    {
+        var pActor = GetMob(id);
+        if (pActor == null) return null;
+        return pActor.GetLinkIActor();
+    }
+    public EAActor GetNpcActor(EAObjID id)
+    {
+        var pActor = GetNPC(id);
+        if (pActor == null) return null;
+        return pActor.GetLinkIActor();
+    }
+    public EAActor GetPlayerActor(EAObjID id)
+    {
+        var pActor = GetPlayer(id);
+        if (pActor == null) return null;
+        return pActor.GetLinkIActor();
+    }
+    public EAActor GetActor(EAObjID id)
+    {
+        var pActor = GetCharPlayer(id);
+        if (pActor == null) return null;
+        return pActor.GetLinkIActor();
     }
 }
