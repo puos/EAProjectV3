@@ -38,7 +38,7 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
     // Expose InsertPCEquip to the outside.
     public bool InsertEquip(EAObjID id,uint slot,EA_CItemUnit pItem)
     {
-        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetActor(id);
+        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetCharPlayer(id);
         if (pCharBase == null) return false;
 
         EA_Equipment pEquipment = GetPCEquipItem(id);
@@ -99,7 +99,7 @@ public class EA_ItemManager : EAGenericSingleton<EA_ItemManager>
     }
     public bool EquipmentItem(EAObjID id,uint equip_slot)
     {
-        EA_CCharBPlayer pUser = EACObjManager.instance.GetActor(id);
+        EA_CCharBPlayer pUser = EACObjManager.instance.GetCharPlayer(id);
         if (pUser == null) return false;
         EA_Equipment pEquipment = GetPCEquipItem(id);
         pEquipment.EquipItem(pUser, equip_slot);

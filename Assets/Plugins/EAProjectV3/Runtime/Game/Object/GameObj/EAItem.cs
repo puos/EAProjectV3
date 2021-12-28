@@ -34,8 +34,8 @@ public class EAItem : EAObject
         if (GetItemBase() == null) return null;
 
         EAObjID objID = GetItemBase().GetItemInfo().m_HavenUser;
-        EA_CCharBPlayer pCharBase = EACObjManager.instance.GetActor(objID);
-        if (pCharBase != null) return pCharBase.GetLinkIActor();
+        var pActor = EACObjManager.instance.GetActor(objID);
+        if (pActor != null) return pActor;
 
         return null;
     }
