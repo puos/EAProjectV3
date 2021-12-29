@@ -16,7 +16,7 @@ public class EAMainframeUtil
         EAFrameUtil.Call<UIManager>(UIManager.instance);
         EAFrameUtil.Call<EASceneLoadingManager>(EASceneLoadingManager.instance);
         EAFrameUtil.Call<EASoundManager>(EASoundManager.instance);
-        //EAFrameUtil.Call<EAOptio>
+        EAFrameUtil.Call<OptionManager>(OptionManager.instance);
         EAFrameUtil.Call<EACObjManager>(EACObjManager.instance);
         EAFrameUtil.Call<EA_ItemManager>(EA_ItemManager.instance);
         EAFrameUtil.Call<EASfxManager>(EASfxManager.instance);
