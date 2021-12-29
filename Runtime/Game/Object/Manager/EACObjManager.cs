@@ -415,7 +415,7 @@ public class EACObjManager : EAGenericSingleton<EACObjManager>
         m_entities.Remove(gameEntity);
     }
 
-    public EA_CCharBPlayer GetCharPlayer(EAObjID id)
+    internal EA_CCharBPlayer GetCharPlayer(EAObjID id)
     {
         EA_CCharBPlayer pActor = null;
         pActor = (pActor == null) ? GetPlayer(id) : pActor;
