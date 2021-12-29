@@ -12,7 +12,7 @@ using System.Reflection;
 public class EAMakeDB : Editor
 {
     const string dataAssetPath = "Assets/Resources/DataAssets";
-    const string codeTargetPath = "Assets/Script/DataStruct/";
+    const string codeTargetPath = "Assets/Scripts/DataStruct/";
     const string tmplDataFile = "[TableName]Info";
     const string tmplDataHolderFile = "[TableName]DataHolder";
     const string dataAssetLoc = "Assets/Developer/Datatables/";
