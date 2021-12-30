@@ -18,7 +18,7 @@ public class EAEventManager : EAGenericSingleton<EAEventManager>
     private Dictionary<Type, EventDelegate> m_dicDelegate = new Dictionary<Type, EventDelegate>();
     private Dictionary<Delegate, EventDelegate> m_dicDelegateLookup = new Dictionary<Delegate, EventDelegate>();
    
-    public void Addlistener<T>(EventDelegate<T> Callback) where T : EventBase
+    public void AddListener<T>(EventDelegate<T> Callback) where T : EventBase
     {
         if (m_dicDelegateLookup.ContainsKey(Callback)) return;
 
