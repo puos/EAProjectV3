@@ -7,8 +7,7 @@ using UnityEditor;
 public class EAActorAnimEditor : Editor
 {
     EAActorAnim _target;
-    bool isSnapFoldShow = false;
-
+    
     private void OnEnable()
     {
         _target = (EAActorAnim)target;
@@ -18,18 +17,21 @@ public class EAActorAnimEditor : Editor
     {
         base.OnInspectorGUI();
         base.serializedObject.Update();
-        
-        isSnapFoldShow = EditorGUILayout.Foldout(isSnapFoldShow, "AnimationEvent");
 
-        if(isSnapFoldShow)
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.LabelField("AnimationEvent");
+
+        GUILayoutOption w = GUILayout.Width(150);
+       
+        if (GUILayout.Button("Edit",w))
         {
-            if(GUILayout.Button("Edit"))
-            {
-                EAAnimationEventEditor.EAAnimationEventEditorMenu(_target.m_anim);
-            }
+            EAAnimationEventEditor.EAAnimationEventEditorMenu(_target.m_anim);
         }
 
-        if(GUI.changed)
+        EditorGUILayout.EndHorizontal();
+
+        if (GUI.changed)
         {
             base.serializedObject.ApplyModifiedProperties();
         }
