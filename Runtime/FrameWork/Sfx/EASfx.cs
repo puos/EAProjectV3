@@ -136,13 +136,13 @@ public class EASfx : EAObject
 
         if(start == false)
         {
-            m_anim.Rebind();
+            m_anim.ResetTrigger(animationName);
             return;
         }
 
-        m_anim.Rebind();
         m_anim.speed = 1;
-        m_anim.Play(animationName);
+        m_anim.ResetTrigger(animationName);
+        m_anim.SetTrigger(animationName);
     }
     private void StartRenderer(bool start = true)
     {
