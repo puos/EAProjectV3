@@ -25,7 +25,7 @@ public abstract class EASceneLogic : MonoBehaviour
 
     bool selfLoading = false;
 
-    protected EADataAdaptor  dataAdapter { get; private set; }
+    protected EADataAdaptor  dataAdapter { get; set; }
     protected EAEventManager m_eventMgr = null;
     protected UIManager      m_uiMgr = null;
 
@@ -130,7 +130,7 @@ public abstract class EASceneLogic : MonoBehaviour
         return dataAdapter.GetData(name);
     }
 
-    public void SetAdapter(EADataAdaptor dataAdaptor)
+    public void SetAdapter(EADataAdaptor dataAdapter)
     {
         this.dataAdapter = dataAdapter;
     }
