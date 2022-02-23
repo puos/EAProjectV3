@@ -75,7 +75,15 @@ public class GameResourceManager : Singleton<GameResourceManager>
 
     public void Clear()
     {
+        var it_pool = objectPool.GetEnumerator();
+       
+        while (it_pool.MoveNext())
+        {
+            it_pool.Current.Value.Clear();
+        } 
+
         objectPool.Clear();
+
         if (null != m_tRootObjectPool)
             m_tRootObjectPool.DestroyChildren(false);
 
