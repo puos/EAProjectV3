@@ -28,6 +28,7 @@ public abstract class EASceneLogic : MonoBehaviour
     protected EADataAdaptor  dataAdapter { get; set; }
     protected EAEventManager m_eventMgr = null;
     protected UIManager      m_uiMgr = null;
+    protected EASfxManager m_sfxMgr = null;
 
     abstract protected void OnInit();
 
@@ -46,6 +47,7 @@ public abstract class EASceneLogic : MonoBehaviour
         sceneLoadingState = SceneLoadingState.None;
         m_eventMgr = EAEventManager.instance;
         m_uiMgr = UIManager.instance;
+        m_sfxMgr = EASfxManager.instance;
     }
 
     public void Init()
