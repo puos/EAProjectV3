@@ -61,7 +61,7 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         m_IDGenerator.ReGenerate();
     }
 
-    public EASfx LoadSfx(EACEffectInfo info, float lifeTime)
+    private EASfx LoadSfx(EACEffectInfo info, float lifeTime)
     {
         info.m_EffectId = m_IDGenerator.GenerateID();
         if (m_effects.TryGetValue(info.m_EffectId, out EA_CEffectModule module))

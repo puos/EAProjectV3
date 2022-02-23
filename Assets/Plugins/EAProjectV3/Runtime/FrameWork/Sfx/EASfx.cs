@@ -47,7 +47,7 @@ public class EASfx : EAObject
     private SfxCategory sfxCategory = SfxCategory.sfxCommon;
 
     [SerializeField] private SfxParamSlot[] m_paramSlots;
-    [SerializeField] private PlayableDirector[] m_anims = null;
+    [SerializeField] private PlayableDirector[] m_timelines = null;
 
     public int timeLineId = 0;
     public EAEffectID effectId = CObjGlobal.InvalidEffectID;
@@ -101,22 +101,22 @@ public class EASfx : EAObject
     {
         int index = timeLineId;
 
-        if (m_anims == null) m_anims = GetComponentsInChildren<PlayableDirector>();
-        if (m_anims == null) return;
+        if (m_timelines == null) m_timelines = GetComponentsInChildren<PlayableDirector>();
+        if (m_timelines == null) return;
 
         if(start == false)
         {
-            if (m_anims.Length > index) m_anims[index].Stop();
+            if (m_timelines.Length > index) m_timelines[index].Stop();
             return;
         }
 
-        if (m_anims.Length > index)
+        if (m_timelines.Length > index)
         {
-            SfxNotiReceiver receiver = m_anims[index].GetComponent<SfxNotiReceiver>();
+            SfxNotiReceiver receiver = m_timelines[index].GetComponent<SfxNotiReceiver>();
             if(receiver != null) receiver.Initialize(this);
 
-            m_anims[index].time = 0;
-            m_anims[index].Play();
+            m_timelines[index].time = 0;
+            m_timelines[index].Play();
         }
             
     }
@@ -185,7 +185,7 @@ public class EASfx : EAObject
     private void SkipTimeLine() 
     {
         int index = timeLineId;
-        if (m_anims[index] != null) m_anims[index].time = m_anims[index].playableAsset.duration;
+        if (m_timelines[index] != null) m_timelines[index].time = m_timelines[index].playableAsset.duration;
     }
     private void SkipParticles() 
     {
@@ -223,8 +223,8 @@ public class EASfx : EAObject
     private bool IsAliveTimeLine() 
     {
         int index = timeLineId;
-        if (m_anims[index] == null) return false;
-        return (m_anims[index].time < m_anims[index].playableAsset.duration) ? true : false;
+        if (m_timelines[index] == null) return false;
+        return (m_timelines[index].time < m_timelines[index].playableAsset.duration) ? true : false;
     }
     private bool IsAliveRenderer()
     {
