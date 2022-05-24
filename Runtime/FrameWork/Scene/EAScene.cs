@@ -51,11 +51,19 @@ public class EAScene : MonoBehaviour
            
             Debug.Log("Create Mainframe Tree");
 
-            AudioListener audioListener = FindObjectOfType<AudioListener>();
-            if (audioListener == null) mainframe.gameObject.AddComponent<AudioListener>();
-
-            StandaloneInputModule inputModule = FindObjectOfType<StandaloneInputModule>();
-            if (inputModule == null) EAFrameUtil.AddChild<StandaloneInputModule>(mainframe.gameObject);
+            AudioListener[] audioListener = FindObjectsOfType<AudioListener>();
+            for(int i = 0; i < audioListener.Length; ++i)
+            {
+                if (i == 0) continue;
+                audioListener[i].enabled = false;
+            } 
+            
+            StandaloneInputModule[] inputModule = FindObjectsOfType<StandaloneInputModule>();
+            for(int i = 0; i < inputModule.Length;++i)
+            {
+                if (i == 0) continue;
+                inputModule[i].enabled = false;
+            } 
         }
     }
 
