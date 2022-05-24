@@ -6,6 +6,11 @@ public class TankUIPage
     public static readonly EUIPage ingameUi = new EUIPage(1, "IngameUI");
 }
 
+public class CustomUIPage
+{
+    public static readonly EUIPage customPage = new EUIPage(2, "UIAnimUI");
+}
+
 public class TankEFxTag
 {
     public static readonly EFxTag FireFx = new EFxTag(1, "FireExplosion");
