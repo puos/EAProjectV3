@@ -10,16 +10,27 @@ public class SceneTest1 : EASceneLogic
 {
     protected override void OnClose()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     protected override void OnInit()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     protected override void OnUpdate()
     {
-        throw new System.NotImplementedException();
+        
+    }
+
+    private void OnGUI()
+    {
+        GUILayoutOption w = GUILayout.Width(180.0f);
+        GUILayoutOption h = GUILayout.Height(40f);
+
+        if(GUILayout.Button("NextScene",w,h))
+        {
+            m_sceneMgr.SetNextScene("SceneTest2","Empty");
+        }
     }
 }

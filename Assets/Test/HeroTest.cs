@@ -19,7 +19,7 @@ public class HeroTest : EASceneLogic
     protected override void OnInit()
     {
         hero = CHero.MainPlayerCreate();
-        inGameUi = UIManager.instance.OpenPage<IngameUI>(TankUIPage.ingameUi);
+        inGameUi = m_uiMgr.OpenPage<IngameUI>(TankUIPage.ingameUi);
 
         inGameUi.SetMoveEndEvent(() =>
         {

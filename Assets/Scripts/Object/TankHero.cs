@@ -42,7 +42,7 @@ public class TankHero : EASceneLogic
 
         hero = CHero.MainPlayerCreate();
 
-        inGameUi = UIManager.instance.OpenPage<IngameUI>(TankUIPage.ingameUi);
+        inGameUi = m_uiMgr.OpenPage<IngameUI>(TankUIPage.ingameUi);
         fxManager = EASfxManager.instance;
 
         inGameUi.SetMoveEndEvent(() =>

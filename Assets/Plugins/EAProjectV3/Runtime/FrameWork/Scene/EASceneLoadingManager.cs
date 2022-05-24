@@ -51,14 +51,14 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
 
         StartCoroutine(CoProc(isWait));
     }
-    public void SetNextScene(string sceneType,string bridgeType)
+    public void SetNextScene(string sceneType,string bridgeType,bool isWait = false)
     {
         if (m_uiMgr == null) m_uiMgr = UIManager.instance;
 
         prevSceneName = m_strCurSceneName;
         m_strCurSceneName = sceneType;
         m_bridgeSceneName = bridgeType;
-        StartCoroutine(CoProcBridge());
+        StartCoroutine(CoProcBridge(isWait));
     }
 
     public void SetReady()
@@ -99,7 +99,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
         if (EASceneLogic.instance != null) EASceneLogic.instance.Init();
     }
 
-    IEnumerator CoProcBridge()
+    IEnumerator CoProcBridge(bool isWait)
     {
         while (m_bProcRunning)
             yield return EAFrameUtil.WaitForEndOfFrame;
@@ -128,7 +128,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
 
         m_strCurSceneName = targetSceneName;
         m_TaskLoad = SceneManager.LoadSceneAsync(m_strCurSceneName);
-        m_TaskLoad.allowSceneActivation = false;
+        if (isWait == true) m_TaskLoad.allowSceneActivation = false;
 
         yield return CoSceneLoading();
         yield return CoSceneUnloading();
