@@ -19,7 +19,8 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
 
     private bool m_bProcRunning = false;
     private bool m_bLoadingComplete = false;
-    private string m_strNextSceneName = string.Empty;
+    private string m_strCurSceneName = string.Empty;
+    private string m_bridgeSceneName = string.Empty;
  
     public override GameObject GetSingletonParent()
     {
@@ -45,11 +46,21 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
     {
         if (m_uiMgr == null) m_uiMgr = UIManager.instance;
 
-        prevSceneName = m_strNextSceneName;
-        m_strNextSceneName = sceneType;
+        prevSceneName = m_strCurSceneName;
+        m_strCurSceneName = sceneType;
 
         StartCoroutine(CoProc(isWait));
     }
+    public void SetNextScene(string sceneType,string bridgeType)
+    {
+        if (m_uiMgr == null) m_uiMgr = UIManager.instance;
+
+        prevSceneName = m_strCurSceneName;
+        m_strCurSceneName = sceneType;
+        m_bridgeSceneName = bridgeType;
+        StartCoroutine(CoProcBridge());
+    }
+
     public void SetReady()
     {
         if (m_TaskLoad == null) return;
@@ -58,7 +69,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
     IEnumerator CoProc(bool isWait)
     {
         while (m_bProcRunning)
-            yield return new WaitForEndOfFrame();
+            yield return EAFrameUtil.WaitForEndOfFrame;
 
         m_bProcRunning = true;
         m_uiMgr.Clear();
@@ -67,10 +78,10 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
         EACObjManager.instance.Destroy();
         EA_ItemManager.instance.Destroy();
         GameResourceManager.instance.Clear();
-        
+
         GC.Collect();
 
-        m_TaskLoad = SceneManager.LoadSceneAsync(m_strNextSceneName);
+        m_TaskLoad = SceneManager.LoadSceneAsync(m_strCurSceneName);
         if(isWait == true) m_TaskLoad.allowSceneActivation = false;
 
         yield return CoSceneLoading();
@@ -78,7 +89,53 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
 
         if (OnActReady != null) OnActReady.Invoke();
 
-        yield return new WaitForEndOfFrame();
+        yield return EAFrameUtil.WaitForEndOfFrame;
+
+        m_TaskLoad = null;
+        m_TaskUnLoad = null;
+        m_bProcRunning = false;
+        m_bLoadingComplete = false;
+
+        if (EASceneLogic.instance != null) EASceneLogic.instance.Init();
+    }
+
+    IEnumerator CoProcBridge()
+    {
+        while (m_bProcRunning)
+            yield return EAFrameUtil.WaitForEndOfFrame;
+
+        m_bProcRunning = true;
+        m_uiMgr.Clear();
+
+        if (EASceneLogic.instance != null) EASceneLogic.instance.Destroy();
+        EACObjManager.instance.Destroy();
+        EA_ItemManager.instance.Destroy();
+        GameResourceManager.instance.Clear();
+
+        string targetSceneName = m_strCurSceneName;
+        m_strCurSceneName = m_bridgeSceneName;
+        m_TaskLoad = SceneManager.LoadSceneAsync(m_strCurSceneName);
+        while (!m_TaskLoad.isDone)
+            yield return EAFrameUtil.WaitForEndOfFrame;
+
+        yield return CoSceneUnloading();
+
+        m_uiMgr.Clear();
+        GameResourceManager.instance.Clear();
+        if (EASceneLogic.instance != null) EASceneLogic.instance.Destroy();
+
+        GC.Collect();
+
+        m_strCurSceneName = targetSceneName;
+        m_TaskLoad = SceneManager.LoadSceneAsync(m_strCurSceneName);
+        m_TaskLoad.allowSceneActivation = false;
+
+        yield return CoSceneLoading();
+        yield return CoSceneUnloading();
+
+        if (OnActReady != null) OnActReady.Invoke();
+
+        yield return EAFrameUtil.WaitForEndOfFrame;
 
         m_TaskLoad = null;
         m_TaskUnLoad = null;
@@ -92,7 +149,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
     {
         while(!m_TaskLoad.isDone)
         {
-            yield return new WaitForEndOfFrame();
+            yield return EAFrameUtil.WaitForEndOfFrame;
 
             if (OnActLoading != null) 
                 OnActLoading.Invoke(m_TaskLoad.progress);
@@ -114,6 +171,6 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
         m_TaskUnLoad = Resources.UnloadUnusedAssets();
 
         while (!m_TaskUnLoad.isDone)
-            yield return new WaitForEndOfFrame();
+            yield return EAFrameUtil.WaitForEndOfFrame;
     }
 }
