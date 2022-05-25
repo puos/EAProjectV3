@@ -8,7 +8,7 @@ public class TankUIPage
 
 public class CustomUIPage
 {
-    public static readonly EUIPage customPage = new EUIPage(2, "UIAnimUI");
+    public static readonly EUIPage UIAnimUI = new EUIPage(2, "UIAnimUI");
 }
 
 public class TankEFxTag
