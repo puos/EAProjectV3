@@ -14,12 +14,13 @@ public class TestUI : UICtrl
 
     public void OnClickEvent()
     {
+        Debug.Log("TestUI OnClickEvent");
         m_Tween.enabled = true;
         m_Tween.Play();
     }
 
     public void OnClickComplete()
     {
-        Debug.Log("OnClickComplete");
+        Debug.Log("TestUI OnClickComplete");
     }
 }

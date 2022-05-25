@@ -12,13 +12,13 @@ public class UITween_TweenRuntime : MonoBehaviour
 
 	public enum PlayType
 	{
-		Deful,
+		Default,
 		One,
 		Loop,
 		PingPong
 	}
 
-	public PlayType playType = PlayType.Deful;
+	public PlayType playType = PlayType.Default;
 	public float animationTime = 1.0f;
 
 	public bool enablePlay = false;
@@ -193,7 +193,7 @@ public class UITween_TweenRuntime : MonoBehaviour
 	{
 		switch (playType)
 		{
-			case PlayType.Deful:
+			case PlayType.Default:
 			case PlayType.One:
 				_isPlaying = false;
 				this.enabled = false;
