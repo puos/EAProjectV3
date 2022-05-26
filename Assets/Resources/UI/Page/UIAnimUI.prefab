@@ -104,7 +104,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  playType: 3
+  playType: 1
   animationTime: 0.5
   enablePlay: 0
   awakePlay: 0
@@ -141,12 +141,49 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     _minAnimationTime: 0
-    _maxAnimationTime: 0.49999994
+    _maxAnimationTime: 0.5
     _isLocal: 1
     _fromVector: {x: 0, y: 0, z: 0}
     _toVector: {x: 0, y: 0, z: 0}
     _fromColor: {r: 1, g: 1, b: 1, a: 1}
     _toColor: {r: 1, g: 1, b: 1, a: 0}
+    _fromFloat: 0
+    _toFloat: 0
+    _bezierCurve: {fileID: 0}
+  - _tweenType: 3
+    _isSelf: 1
+    _tweenObject: {fileID: 2386780836527064478}
+    _curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    _minAnimationTime: 0.5
+    _maxAnimationTime: 1
+    _isLocal: 1
+    _fromVector: {x: 0, y: 0, z: 0}
+    _toVector: {x: 0, y: 0, z: 0}
+    _fromColor: {r: 1, g: 1, b: 1, a: 0}
+    _toColor: {r: 1, g: 1, b: 1, a: 1}
     _fromFloat: 0
     _toFloat: 0
     _bezierCurve: {fileID: 0}
@@ -210,6 +247,7 @@ RectTransform:
   - {fileID: 2731745679917549979}
   - {fileID: 813938670659243060}
   - {fileID: 2386780836527064478}
+  - {fileID: 3291553109620497907}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -233,8 +271,8 @@ MonoBehaviour:
   m_CachedObject: {fileID: 0}
   m_CachedTransform: {fileID: 0}
   m_Tween: {fileID: 7954176769304071745}
-  m_Tween2: {fileID: 3265719469422529130}
   m_Tween3: {fileID: 8294438439303110582}
+  uiSfx: {fileID: 6401116602243706685}
 --- !u!1 &7751379291733044403
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +378,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   playType: 1
-  animationTime: 0.5
+  animationTime: 0.3
   enablePlay: 0
   awakePlay: 0
   lgnoreTimeScale: 1
@@ -461,9 +499,8 @@ GameObject:
   m_Component:
   - component: {fileID: 813938670659243060}
   - component: {fileID: 824926466747880522}
-  - component: {fileID: 7983034239101449753}
-  - component: {fileID: 3265719469422529130}
   - component: {fileID: 3069158604962132168}
+  - component: {fileID: 9186305739606891088}
   m_Layer: 5
   m_Name: Anim2
   m_TagString: Untagged
@@ -498,109 +535,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8466029624910820761}
   m_CullTransparentMesh: 1
---- !u!114 &7983034239101449753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8466029624910820761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 75c669b920337154bb92b6eb0c76f6dd, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &3265719469422529130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8466029624910820761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 411dcac04aff248c4b98f1feb5595fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_onFinish:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4394715999041740619}
-        m_TargetAssemblyTypeName: TestUI, Assembly-CSharp
-        m_MethodName: OnClickComponent2
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  playType: 3
-  animationTime: 0.5
-  enablePlay: 0
-  awakePlay: 0
-  lgnoreTimeScale: 1
-  randomStartValue: 0
-  startValue: 0
-  _previewValue: 0
-  tweens:
-  - _tweenType: 3
-    _isSelf: 1
-    _tweenObject: {fileID: 813938670659243060}
-    _curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    _minAnimationTime: 0
-    _maxAnimationTime: 0.49999994
-    _isLocal: 1
-    _fromVector: {x: 0, y: 0, z: 0}
-    _toVector: {x: 0, y: 0, z: 0}
-    _fromColor: {r: 1, g: 1, b: 1, a: 1}
-    _toColor: {r: 1, g: 1, b: 1, a: 0}
-    _fromFloat: 0
-    _toFloat: 0
-    _bezierCurve: {fileID: 0}
 --- !u!114 &3069158604962132168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -630,3 +564,195 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &9186305739606891088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8466029624910820761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &9054918640715370298
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3291553109620497907}
+  - component: {fileID: 1413924178022631194}
+  - component: {fileID: 3503569962860613940}
+  - component: {fileID: 7159491804464749691}
+  - component: {fileID: 6401116602243706685}
+  m_Layer: 5
+  m_Name: sfxUiTween
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3291553109620497907
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054918640715370298}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4755383736982926841}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -408.00006, y: 250}
+  m_SizeDelta: {x: 66, y: 66}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1413924178022631194
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054918640715370298}
+  m_CullTransparentMesh: 1
+--- !u!114 &3503569962860613940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054918640715370298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 75c669b920337154bb92b6eb0c76f6dd, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7159491804464749691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054918640715370298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 411dcac04aff248c4b98f1feb5595fb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_onFinish:
+    m_PersistentCalls:
+      m_Calls: []
+  playType: 0
+  animationTime: 0.5
+  enablePlay: 0
+  awakePlay: 0
+  lgnoreTimeScale: 1
+  randomStartValue: 0
+  startValue: 0
+  _previewValue: 0
+  tweens:
+  - _tweenType: 0
+    _isSelf: 1
+    _tweenObject: {fileID: 3291553109620497907}
+    _curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    _minAnimationTime: 0
+    _maxAnimationTime: 1
+    _isLocal: 1
+    _fromVector: {x: -408, y: 250, z: 0}
+    _toVector: {x: -200, y: 250, z: 0}
+    _fromColor: {r: 1, g: 1, b: 1, a: 1}
+    _toColor: {r: 1, g: 1, b: 1, a: 1}
+    _fromFloat: 0
+    _toFloat: 0
+    _bezierCurve: {fileID: 0}
+--- !u!114 &6401116602243706685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054918640715370298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f575c743c41144f9d3b8136075d8bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: 
+  m_paramSlots: []
+  m_timelines: []
+  timeLineId: 0
+  effectId: 0
+  m_anim: {fileID: 0}
+  animationName: 
+  m_particles: []
+  m_renderers: []
+  m_uiTween: {fileID: 7159491804464749691}
+  m_sfxType: 4
+  m_soundCue: {fileID: 0}

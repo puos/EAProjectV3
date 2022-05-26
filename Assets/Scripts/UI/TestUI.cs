@@ -5,14 +5,13 @@ using UnityEngine;
 public class TestUI : UICtrl
 {
     [SerializeField] private UITween_TweenRuntime m_Tween = null;
-    [SerializeField] private UITween_TweenRuntime m_Tween2 = null;
     [SerializeField] private UITween_TweenRuntime m_Tween3 = null;
+    [SerializeField] private EASfx uiSfx = null;
 
     public override void Initialize()
     {
         base.Initialize();
         m_Tween.enabled = false;
-        m_Tween2.enabled = false;
         m_Tween3.enabled = false;
     }
 
@@ -25,11 +24,15 @@ public class TestUI : UICtrl
 
     public void OnClickEvent2() 
     {
-        if (m_Tween2.isPlaying) return;
-        
+        if (uiSfx.IsAlive()) return;
+
         Debug.Log("TestUI OnClickEvent2");
-        m_Tween2.enabled = true;
-        m_Tween2.Play();
+
+        uiSfx.StartFx();
+        uiSfx.eventCallback = (EASfx sfx, SfxEventType eventType, string slotName) => 
+        {
+            if(string.Equals(slotName,"0")) Debug.Log("TestUI OnClickComplete2");
+        };
     }
 
     public void OnClickEvent3()
@@ -44,11 +47,6 @@ public class TestUI : UICtrl
     public void OnClickComplete()
     {
         Debug.Log("TestUI OnClickComplete");
-    }
-
-    public void OnClickComponent2()
-    {
-        Debug.Log("TestUI OnClickComplete2");
     }
 
     public void OnClickComponent3()
