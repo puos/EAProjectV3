@@ -34,6 +34,7 @@ public class EASfx : EAObject
         sfxTypeTimeLine,
         sfxTypeAnimator,
         sfxTypeRenderer,
+        sfxTypeUiTween,
     }
 
     [System.Serializable]
@@ -56,6 +57,7 @@ public class EASfx : EAObject
     [SerializeField] private string animationName = string.Empty;
     [SerializeField] private ParticleSystem[] m_particles = null;
     [SerializeField] private Renderer[] m_renderers = null;
+    [SerializeField] private UITween_TweenRuntime m_uiTween = null;
     [SerializeField] SfxType m_sfxType = SfxType.sfxTypeParticles;
     [SerializeField] EASoundCue m_soundCue = null;
     [System.NonSerialized] public SfxEventCallback eventCallback;
@@ -72,7 +74,8 @@ public class EASfx : EAObject
             case SfxType.sfxTypeTimeLine: StartFxTimeLine(); break;
             case SfxType.sfxTypeParticles: StartParticles();  break;
             case SfxType.sfxTypeAnimator: StartAnimator();  break;
-            case SfxType.sfxTypeRenderer: StartRenderer();  break; 
+            case SfxType.sfxTypeRenderer: StartRenderer();  break;
+            case SfxType.sfxTypeUiTween: StartUITween(); break;
         }
     }
 
@@ -84,6 +87,7 @@ public class EASfx : EAObject
             case SfxType.sfxTypeParticles: StartParticles(false); break;
             case SfxType.sfxTypeAnimator: StartAnimator(false); break;
             case SfxType.sfxTypeRenderer: StartRenderer(false); break;
+            case SfxType.sfxTypeUiTween:  StartUITween(false); break;
         }
     }
 
@@ -94,6 +98,7 @@ public class EASfx : EAObject
             case SfxType.sfxTypeTimeLine: SkipTimeLine(); break;
             case SfxType.sfxTypeParticles: SkipParticles(); break;
             case SfxType.sfxTypeAnimator: SkipAnimator(); break;
+            case SfxType.sfxTypeUiTween: SkipUITween(); break;
         }
     }
 
@@ -152,6 +157,23 @@ public class EASfx : EAObject
             r.enabled = start;
         }
     }
+    private void StartUITween(bool start = true)
+    {
+        if (m_uiTween == null) m_uiTween = GetComponentInChildren<UITween_TweenRuntime>();
+        if (m_uiTween == null) return;
+
+        if(start)
+        {
+            m_uiTween.ClearOnFinished();
+            m_uiTween.AddOnFinished(() => AnimEvent_Impact("0"));
+            m_uiTween.Play();
+        }  
+        else
+        {
+            m_uiTween.ClearOnFinished();
+            m_uiTween.StopPlay();
+        }  
+    }
     public void AnimEvent_Impact(string iter)
     {
         SendEventToOwner(SfxEventType.Impact, iter);
@@ -200,6 +222,10 @@ public class EASfx : EAObject
         if (m_anim != null) m_anim.speed = 100f;
     }
 
+    private void SkipUITween()
+    {
+        if (m_uiTween != null) m_uiTween.StopPlay();
+    }
     public bool IsAlive()
     {
         switch (m_sfxType)
@@ -207,10 +233,13 @@ public class EASfx : EAObject
             case SfxType.sfxTypeTimeLine:  return IsAliveTimeLine();
             case SfxType.sfxTypeParticles: return IsAliveParticles();
             case SfxType.sfxTypeAnimator:  return IsAliveAnimator();
-            case SfxType.sfxTypeRenderer:  return IsAliveRenderer(); 
+            case SfxType.sfxTypeRenderer:  return IsAliveRenderer();
+            case SfxType.sfxTypeUiTween:   return IsAliveUITween();
             default: return false; 
         }
     }
+
+    private bool IsAliveUITween() => m_uiTween.isPlaying;
 
     private bool IsAliveAnimator() => m_anim.GetCurrentAnimatorStateInfo(0).IsName(animationName);
 
