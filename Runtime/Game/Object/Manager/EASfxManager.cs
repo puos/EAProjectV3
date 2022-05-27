@@ -123,6 +123,19 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
         return sfx;
     }
 
+    public EASfx LoadFx(EFxTag fxtag , float lifeTime = 0f)
+    {
+        EACEffectInfo info = new EACEffectInfo();
+        info.m_eEffectState = eEffectState.ES_Load;
+        info.m_eAttachType = eEffectAttachType.eNone;
+        info.m_EffectTableIndex = fxtag.ToString();
+        info.m_lifeTime = lifeTime;
+        info.isSpawn = true;
+
+        EASfx sfx = LoadSfx(info, lifeTime);
+        return sfx;
+    }
+
     public EASfx StartFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
     {
         EASfx sfx = LoadFxWorld(fxtag, emitPos, emitAngle, lifeTime);

@@ -165,6 +165,7 @@ public class EA_CEffectModule
 
         switch(effectInfo.m_eAttachType)
         {
+            case eEffectAttachType.eNone:
             case eEffectAttachType.eWorld:
             case eEffectAttachType.eLinkOffset:
                 {

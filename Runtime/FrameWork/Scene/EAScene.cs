@@ -44,11 +44,11 @@ public class EAScene : MonoBehaviour
         {
             OnSetting();
 
-            EAMainFrame.SetRefResolution(screenX, screenY);
-
             // When the first scene runs, it creates a MainFrame.
             EAMainFrame mainframe = EAMainframeUtil.CreateMainFrameTree();
-           
+
+            EAMainFrame.SetRefResolution(screenX, screenY);
+
             Debug.Log("Create Mainframe Tree");
 
             AudioListener[] audioListener = FindObjectsOfType<AudioListener>();
@@ -63,7 +63,9 @@ public class EAScene : MonoBehaviour
             {
                 if (i == 0) continue;
                 inputModule[i].enabled = false;
-            } 
+            }
+
+            
         }
     }
 

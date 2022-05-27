@@ -67,6 +67,7 @@ public class EASfx : EAObject
         base.Release();
         EASfxManager.instance.DeleteSfx(effectId);
     }
+
     public void StartFx()
     {
         switch(m_sfxType)

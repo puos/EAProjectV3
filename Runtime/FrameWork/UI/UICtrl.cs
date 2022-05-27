@@ -6,10 +6,14 @@ public class UICtrl : MonoBehaviour
 
     [HideInInspector] public GameObject m_CachedObject = null;
     [HideInInspector] public RectTransform m_CachedTransform = null;
-    [HideInInspector] public EAEventManager m_eventMgr = null;
+    protected EAEventManager m_eventMgr = null;
+    protected EASfxManager m_sfxMgr = null;
+    protected EAUIManager m_uiMgr = null;
 
     private bool m_bInitialized = false;
     private bool m_bActive = false;
+
+    public bool IsActivate { get { return (m_bActive && m_CachedObject.activeSelf) ? true : false; } }
 
     private void Awake()
     {
@@ -33,6 +37,8 @@ public class UICtrl : MonoBehaviour
         m_CachedObject = gameObject;
         m_CachedTransform = GetComponent<RectTransform>();
         m_eventMgr = EAEventManager.instance;
+        m_sfxMgr = EASfxManager.instance;
+        m_uiMgr = EAUIManager.instance;
     }
 
     public virtual void Open()
