@@ -19,6 +19,7 @@ public enum eEffectAttachType // attachment type of node
     eLinkBone = 0,   // link bone
     eLinkOffset,     // Link to Object / Avatar Offset
     eWorld,          // game world
+    eNone,           // attach none
 }
 
 public enum eEffectState

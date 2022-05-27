@@ -8,7 +8,7 @@ public class TankUIPage
 
 public class CustomUIPage
 {
-    public static readonly EUIPage UIAnimUI = new EUIPage(2, "UIAnimUI");
+    public static readonly EUIPage uianimUI = new EUIPage(2, "UIAnimUI");
 }
 
 public class TankEFxTag
@@ -16,6 +16,11 @@ public class TankEFxTag
     public static readonly EFxTag FireFx = new EFxTag(1, "FireExplosion");
     public static readonly EFxTag HitWallFx = new EFxTag(2, "ShellExplosion");
     public static readonly EFxTag HitTankFx = new EFxTag(3, "TankExplosion");
+}
+
+public class CustomFxTag
+{
+    public static readonly EFxTag customUiFx = new EFxTag(4, "sfxUiTween");
 }
 
 public enum ActorState

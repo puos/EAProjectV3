@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class UIManager : Singleton<UIManager>
+public class EAUIManager : Singleton<EAUIManager>
 {
     public enum UISpawntype
     {
@@ -56,8 +56,7 @@ public class UIManager : Singleton<UIManager>
             CanvasScaler cs = goRoot.GetComponent<CanvasScaler>();
             cs.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             cs.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-            cs.referenceResolution = new Vector2(EAMainFrame.screenX, EAMainFrame.screenY);
-
+            
             GraphicRaycaster ray = goRoot.GetComponent<GraphicRaycaster>();
             goRoot.layer = uiLayer;
             
@@ -82,6 +81,14 @@ public class UIManager : Singleton<UIManager>
             m_tRootAbove = m_tUIRoot.Find(UI_ROOT_ABOVE);
             m_tRootPopup = m_tUIRoot.Find(UI_ROOT_POPUP);
         }
+    }
+
+    public void SetCanvasResolution(float screenX,float screenY)
+    {
+        if (m_tUIRoot == null) return;
+        CanvasScaler cs = m_tUIRoot.GetComponent<CanvasScaler>();
+        if (cs == null) return;
+        cs.referenceResolution = new Vector2(screenX, screenY);
     }
 
     public void Clear()

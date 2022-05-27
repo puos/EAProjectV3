@@ -212,6 +212,8 @@ public class EAMainFrame : Singleton<EAMainFrame>
     {
         screenX = width;
         screenY = height;
+
+        EAUIManager.instance.SetCanvasResolution(screenX,screenY);
     }
 
     public static void ApplyDeviceOption(int level = 0,int frameRateType = 3, bool keepScreenOn = false)

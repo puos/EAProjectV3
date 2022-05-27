@@ -15,7 +15,7 @@ public class UiAnimTest : EASceneLogic
 
     protected override void OnInit()
     {
-        m_uiMgr.OpenPage<TestUI>(CustomUIPage.UIAnimUI);
+        m_uiMgr.OpenPage<TestUI>(CustomUIPage.uianimUI);
     }
 
     protected override void OnUpdate()

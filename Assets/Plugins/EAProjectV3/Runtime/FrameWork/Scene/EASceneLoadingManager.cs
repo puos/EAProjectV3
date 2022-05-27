@@ -15,7 +15,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
     private AsyncOperation m_TaskLoad = null;
     private AsyncOperation m_TaskUnLoad = null;
 
-    private UIManager m_uiMgr = null;
+    private EAUIManager m_uiMgr = null;
 
     private bool m_bProcRunning = false;
     private bool m_bLoadingComplete = false;
@@ -44,7 +44,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
     }
     public void SetNextScene(string sceneType,bool isWait = false)
     {
-        if (m_uiMgr == null) m_uiMgr = UIManager.instance;
+        if (m_uiMgr == null) m_uiMgr = EAUIManager.instance;
 
         prevSceneName = m_strCurSceneName;
         m_strCurSceneName = sceneType;
@@ -53,7 +53,7 @@ public class EASceneLoadingManager : Singleton<EASceneLoadingManager>
     }
     public void SetNextScene(string sceneType,string bridgeType,bool isWait = false)
     {
-        if (m_uiMgr == null) m_uiMgr = UIManager.instance;
+        if (m_uiMgr == null) m_uiMgr = EAUIManager.instance;
 
         prevSceneName = m_strCurSceneName;
         m_strCurSceneName = sceneType;
