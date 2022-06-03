@@ -6,18 +6,24 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public enum EASOUND_TYPE { BGM , SFX, UI,VOICE, AMBIENT }
+public enum EASOUND_TYPE { BGM , SFX, VOICE, AMBIENT }
 
 public class EASoundManager : Singleton<EASoundManager>
 {
     public const string bgmVolume = "BgmVolume";
     public const string sfxVolume = "SfxVolume";
+    public const string voiceVolume = "voiceVolume";
     public const float bgmMaxVolume = 100.0f;
     public const float sfxMaxVolume = 100.0f;
+    public const float voiceMaxVolume  = 100.0f;
 
     private AudioSource bgmAudio;
-    private AudioSource subAudio;
-    private AudioMixer audioMix;
+    private Queue<AudioSource> subAudios;
+    private Queue<AudioSource> voiceAudios;
+    private List<AudioSource> playSubAudio;
+    private List<AudioSource> playVoiceAudio;
+
+    private AudioMixer  audioMix;
 
     private Dictionary<string, AudioMixerGroup> dicAudioMixGroup;
 
@@ -37,14 +43,84 @@ public class EASoundManager : Singleton<EASoundManager>
         base.Initialize();
 
         if(bgmAudio == null) bgmAudio = gameObject.AddComponent<AudioSource>();
-        if(subAudio == null) subAudio = gameObject.AddComponent<AudioSource>();
         if (dicAudioMixGroup == null) dicAudioMixGroup = new Dictionary<string, AudioMixerGroup>();
         bgmAudioOriVolume = bgmAudio.volume;
         bgmAudio.volume = GetVolume(EASOUND_TYPE.BGM) * bgmAudio.volume;
         bgmAudio.playOnAwake = false;
-        subAudio.playOnAwake = false;
+
+        if (subAudios == null) subAudios = new Queue<AudioSource>();
+        if (voiceAudios == null) voiceAudios = new Queue<AudioSource>();
+        if (playSubAudio == null) playSubAudio = new List<AudioSource>();
+        if (playVoiceAudio == null) playVoiceAudio = new List<AudioSource>();
+
+        subAudios.Clear();
+
+        for (int i = 0; i < 3; ++i)
+        {
+            AddSubAudios();
+        }
+                
+        voiceAudios.Clear();
+
+        for(int i = 0; i < 3; ++i)
+        {
+            AddVoiceAudios();
+        }
 
         EAMainFrame.instance.OnMainFrameFacilityCreated(MainFrameAddFlags.SoundMgr);
+    }
+
+    private void AddVoiceAudios()
+    {
+        var audio = gameObject.AddComponent<AudioSource>();
+        audio.playOnAwake = false;
+        audio.loop = false;
+        audio.volume = GetVolume(EASOUND_TYPE.VOICE) * audio.volume;
+        voiceAudios.Enqueue(audio);
+    }
+
+    private void AddSubAudios()
+    {
+        var audio = gameObject.AddComponent<AudioSource>();
+        audio.playOnAwake = false;
+        audio.loop = false;
+        audio.volume = GetVolume(EASOUND_TYPE.SFX) * audio.volume;
+        subAudios.Enqueue(audio);
+    }
+
+    private AudioSource GetSubAudios()
+    {
+        for(int i = 0; i < playSubAudio.Count; ++i)
+        {
+            var tmp = playSubAudio[i];
+            if(tmp.isPlaying == false)
+            {
+                subAudios.Enqueue(tmp);
+                playSubAudio.RemoveAt(i);
+            }
+        } 
+
+        if (subAudios.Count <= 0) AddSubAudios();
+        AudioSource audio = subAudios.Dequeue();
+        playSubAudio.Add(audio);
+        return audio;
+    }
+
+    private AudioSource GetVoiceAudios()
+    {
+        for(int i = 0; i < playVoiceAudio.Count; ++i)
+        {
+            var tmp = playVoiceAudio[i];
+            if(tmp.isPlaying == false)
+            {
+                voiceAudios.Enqueue(tmp);
+                playVoiceAudio.RemoveAt(i);
+            }
+        }
+        if (voiceAudios.Count <= 0) AddVoiceAudios();
+        AudioSource audio = voiceAudios.Dequeue();
+        playVoiceAudio.Add(audio);
+        return audio;
     }
 
     // Once the volume has been modified it can be called to call back
@@ -113,13 +189,28 @@ public class EASoundManager : Singleton<EASoundManager>
         SetVolume(source, desiredVolume, type);
         if (source != null) source.Play();
     }
-    public void PlayOneShot(AudioClip clip, float volume , EASOUND_TYPE type)
+    public void PlaySFX(AudioClip clip, float volume , EASOUND_TYPE type , bool loop = false ,string mixKey = "Master" )
     {
         if (clip == null) return;
-        if (subAudio == null) return;
-        SetVolume(subAudio, volume, type);
-        subAudio.PlayOneShot(clip, GetVolume(type));
+
+        if(type == EASOUND_TYPE.SFX)
+        {
+            AudioSource audio = GetSubAudios();
+            audio.clip = clip;
+            audio.loop = loop;
+            if (dicAudioMixGroup.TryGetValue(mixKey, out AudioMixerGroup mix)) audio.outputAudioMixerGroup = mix;
+            Play(audio, volume, type);
+        }
+        if(type == EASOUND_TYPE.VOICE)
+        {
+            AudioSource audio = GetVoiceAudios();
+            audio.clip = clip;
+            audio.loop = loop;
+            if (dicAudioMixGroup.TryGetValue(mixKey, out AudioMixerGroup mix)) audio.outputAudioMixerGroup = mix;
+            Play(audio, volume, type);
+        }
     }
+    
     public void SetVolume(AudioSource source,float desiredVolume,EASOUND_TYPE type)
     {
         if (source != null) source.volume = GetVolume(type) * desiredVolume;
@@ -163,7 +254,14 @@ public class EASoundManager : Singleton<EASoundManager>
     }
     public void StopSfxSound()
     {
-        subAudio.Stop();
-        subAudio.clip = null;
+        for(int i = 0; i < playSubAudio.Count; ++i)
+        {
+            if (playSubAudio[i].isPlaying) playSubAudio[i].Stop();
+        }
+        
+        for(int i = 0; i < playVoiceAudio.Count; ++i)
+        {
+            if (playVoiceAudio[i].isPlaying) playVoiceAudio[i].Stop();
+        }
     }
 }
