@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public enum EASOUND_TYPE { BGM , SFX, UI,VOICE, AMBIENT }
 
@@ -14,16 +15,14 @@ public class EASoundManager : Singleton<EASoundManager>
     public const float bgmMaxVolume = 100.0f;
     public const float sfxMaxVolume = 100.0f;
 
-    private AudioSource mainAudio;
+    private AudioSource bgmAudio;
     private AudioSource subAudio;
-    float mainAudioOriVolume;
-    
-    AudioLowPassFilter lowPassFilter = null;
+    private AudioMixer audioMix;
 
-    readonly private float lowPassDefault  = 22000f;
-    readonly private float lowPassLowValue = 7000.0f;
-    readonly private float lowPasLowTime = 2.3f;
+    private Dictionary<string, AudioMixerGroup> dicAudioMixGroup;
 
+    float bgmAudioOriVolume;
+      
     EABGMGroup bGMGroup = null;
 
     // BGM , SFX volume
@@ -37,16 +36,13 @@ public class EASoundManager : Singleton<EASoundManager>
     {
         base.Initialize();
 
-        if(mainAudio == null)
-        {
-            mainAudio = gameObject.AddComponent<AudioSource>();
-            subAudio = gameObject.AddComponent<AudioSource>();
-            lowPassFilter = gameObject.AddComponent<AudioLowPassFilter>();
-            lowPassFilter.cutoffFrequency = 5000.0f;
-            
-            mainAudioOriVolume = mainAudio.volume;
-            mainAudio.volume = GetVolume(EASOUND_TYPE.BGM) * mainAudio.volume;
-        }
+        if(bgmAudio == null) bgmAudio = gameObject.AddComponent<AudioSource>();
+        if(subAudio == null) subAudio = gameObject.AddComponent<AudioSource>();
+        if (dicAudioMixGroup == null) dicAudioMixGroup = new Dictionary<string, AudioMixerGroup>();
+        bgmAudioOriVolume = bgmAudio.volume;
+        bgmAudio.volume = GetVolume(EASOUND_TYPE.BGM) * bgmAudio.volume;
+        bgmAudio.playOnAwake = false;
+        subAudio.playOnAwake = false;
 
         EAMainFrame.instance.OnMainFrameFacilityCreated(MainFrameAddFlags.SoundMgr);
     }
@@ -76,7 +72,7 @@ public class EASoundManager : Singleton<EASoundManager>
     {
         return OptionManager.instance.GetValueInRatio(sfxVolume, 0,sfxMaxVolume);
     }
-    public void LoadBGM(string bgmPath)
+    public void LoadBGM(string bgmPath = "Sound/BGM/BGMGroup")
     {
         if (bGMGroup != null) return;
 
@@ -92,6 +88,25 @@ public class EASoundManager : Singleton<EASoundManager>
         bgm.transform.localPosition = Vector3.zero;
 
         bGMGroup = bgm.GetComponent<EABGMGroup>();
+    }
+    public void LoadMixerGroup(string mixPath = "Sound/Mix",string[] audioMixPath = null)
+    {
+        if (audioMix != null) return;
+
+        dicAudioMixGroup.Clear();
+        audioMix = GameResourceManager.instance.Load<AudioMixer>(mixPath);
+        AudioMixerGroup[] mixGroup = audioMix.FindMatchingGroups("Master");
+        if (mixGroup.Length > 0) dicAudioMixGroup.Add("Master", mixGroup[0]);
+        if (audioMixPath == null) return;
+        for(int i = 0; i < audioMixPath.Length; ++i)
+        {
+            var mix = audioMix.FindMatchingGroups(audioMixPath[i]);
+            if(mix != null)
+            {
+                Debug.Log("success mixPath : " + audioMixPath[i]);
+                dicAudioMixGroup.Add(audioMixPath[i], mix[0]);
+            }
+        } 
     }
     public void Play(AudioSource source,float desiredVolume,EASOUND_TYPE type)
     {
@@ -111,8 +126,9 @@ public class EASoundManager : Singleton<EASoundManager>
     }
 
     // play bgm
-    public void PlayBGM(string name,bool useLowPassFilter = false)
+    public void PlayBGM(string name)
     {
+        if (bGMGroup == null) LoadBGM();
         if (bGMGroup == null) return;
 
         EABGMGroup.BGMSlot slot = bGMGroup.GetBGM(name);
@@ -122,49 +138,28 @@ public class EASoundManager : Singleton<EASoundManager>
 
         AudioClip clip = slot.audioClip;
 
-        if(mainAudio.clip == null)
+        if(bgmAudio.clip == null)
         {
-            mainAudio.clip = clip;
-            mainAudio.loop = slot.loop;
-            lowPassFilter.cutoffFrequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
-            Play(mainAudio, slot.volume, EASOUND_TYPE.BGM);
+            bgmAudio.clip = clip;
+            bgmAudio.loop = slot.loop;
+            Play(bgmAudio, slot.volume, EASOUND_TYPE.BGM);
             return;
         }
 
-        if (mainAudio.isPlaying)
+        if (bgmAudio.isPlaying)
         {
-            if (mainAudio.clip.name.Equals(clip.name, StringComparison.Ordinal)) return;
+            if (bgmAudio.clip.name.Equals(clip.name, StringComparison.Ordinal)) return;
         }
 
-        mainAudio.clip = clip;
-        mainAudio.loop = slot.loop;
-        lowPassFilter.cutoffFrequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
-        Play(mainAudio, slot.volume, EASOUND_TYPE.BGM);
+        bgmAudio.clip = clip;
+        bgmAudio.loop = slot.loop;
+        Play(bgmAudio, slot.volume, EASOUND_TYPE.BGM);
     }
-    public void SetLowPassFilter(bool useLowPassFilter,float desiredVolume = 1.0f)
-    {
-        float frequency = (useLowPassFilter == true) ? lowPassLowValue : lowPassDefault;
-
-        float numFrom = lowPassFilter.cutoffFrequency;
-        float numTo = frequency;
-
-        SetVolume(mainAudio, desiredVolume, EASOUND_TYPE.BGM);
-
-        if(useLowPassFilter == true)
-        {
-            lowPassFilter.cutoffFrequency = frequency;
-            return;
-        }
-
-        var tweener = EANumberTween.Start(numFrom, numTo, 0, lowPasLowTime);
-        tweener.onUpdate = (EANumberTween.Event e) => { lowPassFilter.cutoffFrequency = e.number; };
-        tweener.onComplete = (EANumberTween.Event e) => { lowPassFilter.cutoffFrequency = frequency; };
-    }
-
+   
     public void StopBGM()
     {
-        mainAudio.Stop();
-        mainAudio.clip = null;
+        bgmAudio.Stop();
+        bgmAudio.clip = null;
     }
     public void StopSfxSound()
     {
