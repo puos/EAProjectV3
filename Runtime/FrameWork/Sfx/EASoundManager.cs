@@ -13,8 +13,8 @@ public class EASoundManager : Singleton<EASoundManager>
     public const string bgmVolume = "BgmVolume";
     public const string sfxVolume = "SfxVolume";
     public const string voiceVolume = "voiceVolume";
-    public const float bgmMaxVolume = 100.0f;
-    public const float sfxMaxVolume = 100.0f;
+    public const float bgmMaxVolume    = 100.0f;
+    public const float sfxMaxVolume    = 100.0f;
     public const float voiceMaxVolume  = 100.0f;
 
     private AudioSource bgmAudio;
@@ -30,9 +30,6 @@ public class EASoundManager : Singleton<EASoundManager>
     float bgmAudioOriVolume;
       
     EABGMGroup bGMGroup = null;
-
-    // BGM , SFX volume
-    private Action<float, float> onChangeVolume;
 
     public override GameObject GetSingletonParent()
     {
@@ -75,7 +72,7 @@ public class EASoundManager : Singleton<EASoundManager>
         var audio = gameObject.AddComponent<AudioSource>();
         audio.playOnAwake = false;
         audio.loop = false;
-        audio.volume = GetVolume(EASOUND_TYPE.VOICE) * audio.volume;
+        audio.volume = GetVolume(EASOUND_TYPE.VOICE);
         voiceAudios.Enqueue(audio);
     }
 
@@ -84,7 +81,7 @@ public class EASoundManager : Singleton<EASoundManager>
         var audio = gameObject.AddComponent<AudioSource>();
         audio.playOnAwake = false;
         audio.loop = false;
-        audio.volume = GetVolume(EASOUND_TYPE.SFX) * audio.volume;
+        audio.volume = GetVolume(EASOUND_TYPE.SFX);
         subAudios.Enqueue(audio);
     }
 
@@ -123,21 +120,12 @@ public class EASoundManager : Singleton<EASoundManager>
         return audio;
     }
 
-    // Once the volume has been modified it can be called to call back
-    public void OnAddListner_OnChangeVolume(Action<float,float> action)
-    {
-        onChangeVolume -= action;
-        onChangeVolume += action;
-    }
-    public void RemoveListener_OnChangeVolume(Action<float,float> action)
-    {
-        onChangeVolume -= action;
-    }
     public float GetVolume(EASOUND_TYPE type)
     {
         float result = 1;
         if (type == EASOUND_TYPE.BGM) result = GetBGMVolumeNormalized();
         if (type == EASOUND_TYPE.SFX) result = GetSFXVolumeNormalized();
+        if (type == EASOUND_TYPE.VOICE) result = GetVoiceVolumeNormalized();
         return result;
     }
     public float GetBGMVolumeNormalized() 
@@ -148,6 +136,11 @@ public class EASoundManager : Singleton<EASoundManager>
     {
         return OptionManager.instance.GetValueInRatio(sfxVolume, 0,sfxMaxVolume);
     }
+    public float GetVoiceVolumeNormalized()
+    {
+        return OptionManager.instance.GetValueInRatio(voiceVolume, 0, voiceMaxVolume);
+    }
+
     public void LoadBGM(string bgmPath = "Sound/BGM/BGMGroup")
     {
         if (bGMGroup != null) return;
@@ -184,12 +177,12 @@ public class EASoundManager : Singleton<EASoundManager>
             }
         } 
     }
-    public void Play(AudioSource source,float desiredVolume,EASOUND_TYPE type)
+    public void Play(AudioSource source,EASOUND_TYPE type)
     {
-        SetVolume(source, desiredVolume, type);
+        source.volume = GetVolume(type);
         if (source != null) source.Play();
     }
-    public void PlaySFX(AudioClip clip, float volume , EASOUND_TYPE type , bool loop = false ,string mixKey = "Master" )
+    public void PlaySFX(AudioClip clip, EASOUND_TYPE type , bool loop = false ,string mixKey = "Master" )
     {
         if (clip == null) return;
 
@@ -199,7 +192,7 @@ public class EASoundManager : Singleton<EASoundManager>
             audio.clip = clip;
             audio.loop = loop;
             if (dicAudioMixGroup.TryGetValue(mixKey, out AudioMixerGroup mix)) audio.outputAudioMixerGroup = mix;
-            Play(audio, volume, type);
+            Play(audio, type);
         }
         if(type == EASOUND_TYPE.VOICE)
         {
@@ -207,16 +200,11 @@ public class EASoundManager : Singleton<EASoundManager>
             audio.clip = clip;
             audio.loop = loop;
             if (dicAudioMixGroup.TryGetValue(mixKey, out AudioMixerGroup mix)) audio.outputAudioMixerGroup = mix;
-            Play(audio, volume, type);
+            Play(audio, type);
         }
     }
     
-    public void SetVolume(AudioSource source,float desiredVolume,EASOUND_TYPE type)
-    {
-        if (source != null) source.volume = GetVolume(type) * desiredVolume;
-    }
-
-    // play bgm
+     // play bgm
     public void PlayBGM(string name)
     {
         if (bGMGroup == null) LoadBGM();
@@ -233,7 +221,7 @@ public class EASoundManager : Singleton<EASoundManager>
         {
             bgmAudio.clip = clip;
             bgmAudio.loop = slot.loop;
-            Play(bgmAudio, slot.volume, EASOUND_TYPE.BGM);
+            Play(bgmAudio, EASOUND_TYPE.BGM);
             return;
         }
 
@@ -244,7 +232,7 @@ public class EASoundManager : Singleton<EASoundManager>
 
         bgmAudio.clip = clip;
         bgmAudio.loop = slot.loop;
-        Play(bgmAudio, slot.volume, EASOUND_TYPE.BGM);
+        Play(bgmAudio, EASOUND_TYPE.BGM);
     }
    
     public void StopBGM()
@@ -262,6 +250,17 @@ public class EASoundManager : Singleton<EASoundManager>
         for(int i = 0; i < playVoiceAudio.Count; ++i)
         {
             if (playVoiceAudio[i].isPlaying) playVoiceAudio[i].Stop();
+        }
+    }
+    public void ChangeMixSnapShot(string scene)
+    {
+        if (audioMix == null) return;
+        AudioMixerSnapshot snapShot = audioMix.FindSnapshot(scene);
+        if (snapShot != null) audioMix.TransitionToSnapshots(new AudioMixerSnapshot[] { snapShot }, new float[] { 1f }, Time.deltaTime);
+        else
+        {
+            snapShot = audioMix.FindSnapshot("Default");
+            audioMix.TransitionToSnapshots(new AudioMixerSnapshot[] { snapShot }, new float[] { 1f }, Time.deltaTime);
         }
     }
 }
