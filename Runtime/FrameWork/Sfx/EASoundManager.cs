@@ -48,18 +48,11 @@ public class EASoundManager : Singleton<EASoundManager>
         if (playVoiceAudio == null) playVoiceAudio = new List<AudioSource>();
 
         subAudios.Clear();
+        for (int i = 0; i < 3; ++i) AddSubAudios();
 
-        for (int i = 0; i < 3; ++i)
-        {
-            AddSubAudios();
-        }
-                
+
         voiceAudios.Clear();
-
-        for(int i = 0; i < 3; ++i)
-        {
-            AddVoiceAudios();
-        }
+        for(int i = 0; i < 3; ++i) AddVoiceAudios();
 
         OptionManager.instance.RemoveListener(bgmVolume, ChangeBGMVolume);
         OptionManager.instance.AddListener(bgmVolume,ChangeBGMVolume);
@@ -171,7 +164,7 @@ public class EASoundManager : Singleton<EASoundManager>
 
         bGMGroup = bgm.GetComponent<EABGMGroup>();
     }
-    public void LoadMixerGroup(string mixPath = "Sound/Mix",string[] audioMixPath = null)
+    public void LoadMixerGroup(string mixPath = "Sound/mix",string[] audioMixPath = null)
     {
         if (audioMix != null) return;
 
@@ -218,7 +211,7 @@ public class EASoundManager : Singleton<EASoundManager>
     }
     
      // play bgm
-    public void PlayBGM(string name)
+    public void PlayBGM(string name,string mixKey = "Master/Main/BGM")
     {
         if (bGMGroup == null) LoadBGM();
         if (bGMGroup == null) return;
@@ -234,6 +227,7 @@ public class EASoundManager : Singleton<EASoundManager>
         {
             bgmAudio.clip = clip;
             bgmAudio.loop = slot.loop;
+            if (dicAudioMixGroup.TryGetValue(mixKey, out AudioMixerGroup mix)) bgmAudio.outputAudioMixerGroup = mix;
             Play(bgmAudio, EASOUND_TYPE.BGM);
             return;
         }
@@ -245,6 +239,7 @@ public class EASoundManager : Singleton<EASoundManager>
 
         bgmAudio.clip = clip;
         bgmAudio.loop = slot.loop;
+        if (dicAudioMixGroup.TryGetValue(mixKey, out AudioMixerGroup mix2)) bgmAudio.outputAudioMixerGroup = mix2;
         Play(bgmAudio, EASOUND_TYPE.BGM);
     }
    
@@ -272,7 +267,7 @@ public class EASoundManager : Singleton<EASoundManager>
         if (snapShot != null) audioMix.TransitionToSnapshots(new AudioMixerSnapshot[] { snapShot }, new float[] { 1f }, Time.deltaTime);
         else
         {
-            snapShot = audioMix.FindSnapshot("Default");
+            snapShot = audioMix.FindSnapshot("Snapshot");
             audioMix.TransitionToSnapshots(new AudioMixerSnapshot[] { snapShot }, new float[] { 1f }, Time.deltaTime);
         }
     }
