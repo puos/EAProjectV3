@@ -27,8 +27,6 @@ public class EASoundManager : Singleton<EASoundManager>
 
     private Dictionary<string, AudioMixerGroup> dicAudioMixGroup;
 
-    float bgmAudioOriVolume;
-      
     EABGMGroup bGMGroup = null;
 
     public override GameObject GetSingletonParent()
@@ -41,8 +39,7 @@ public class EASoundManager : Singleton<EASoundManager>
 
         if(bgmAudio == null) bgmAudio = gameObject.AddComponent<AudioSource>();
         if (dicAudioMixGroup == null) dicAudioMixGroup = new Dictionary<string, AudioMixerGroup>();
-        bgmAudioOriVolume = bgmAudio.volume;
-        bgmAudio.volume = GetVolume(EASOUND_TYPE.BGM) * bgmAudio.volume;
+        bgmAudio.volume = GetVolume(EASOUND_TYPE.BGM);
         bgmAudio.playOnAwake = false;
 
         if (subAudios == null) subAudios = new Queue<AudioSource>();
@@ -64,7 +61,23 @@ public class EASoundManager : Singleton<EASoundManager>
             AddVoiceAudios();
         }
 
+        OptionManager.instance.RemoveListener(bgmVolume, ChangeBGMVolume);
+        OptionManager.instance.AddListener(bgmVolume,ChangeBGMVolume);
+
+
         EAMainFrame.instance.OnMainFrameFacilityCreated(MainFrameAddFlags.SoundMgr);
+    }
+
+    protected override void Close()
+    {
+        base.Close();
+        OptionManager.instance.RemoveListener(bgmVolume, ChangeBGMVolume);
+    }
+
+    private void ChangeBGMVolume()
+    {
+        if (bgmAudio == null) return;
+        bgmAudio.volume = GetVolume(EASOUND_TYPE.BGM);
     }
 
     private void AddVoiceAudios()

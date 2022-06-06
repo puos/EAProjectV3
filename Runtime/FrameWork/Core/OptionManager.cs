@@ -13,7 +13,7 @@ public class OptionManager : Singleton<OptionManager>
     {
         private string value;
         public string key { get; private set; }
-        public Action<object> onChange;
+        public Action onChange;
         public OptionValue(string key,string value)
         {
             this.key = key;
@@ -29,7 +29,7 @@ public class OptionManager : Singleton<OptionManager>
             bool notifyChange = this.value != value;
             this.value = value;
             if (notifyChange == false) return;
-            if (onChange != null) onChange(value);
+            if (onChange != null) onChange();
         }
         public void Set(int value)
         {
@@ -131,42 +131,25 @@ public class OptionManager : Singleton<OptionManager>
             optionValues.Add(optionConverted, new OptionValue(option, value));
         }
     }
-    public void AddListener(string option,Action<int> listener)
+    public void AddListener(string option,Action listener)
     {
         var optionConverted = CRC32.GetHashForAnsi(option);
         if (optionValues.TryGetValue(optionConverted, out OptionValue Value))
         {
-            Action<object> internalDelegate = (e) => listener((int)e);
+            Action internalDelegate = () => listener();
             Value.onChange += internalDelegate;
         }
     }
-    public void RemoveListener(string option,Action<int> listener)
+    public void RemoveListener(string option,Action listener)
     {
         var optionConverted = CRC32.GetHashForAnsi(option);
         if(optionValues.TryGetValue(optionConverted,out OptionValue Value))
         {
-            Action<object> internalDelegate = (e) => listener((int)e);
-            optionValues[optionConverted].onChange -= internalDelegate;
+            Action internalDelegate = () => listener();
+            Value.onChange -= internalDelegate;
         }
     }
-    public void AddListener(string option, Action<string> listener)
-    {
-        var optionConverted = CRC32.GetHashForAnsi(option);
-        if (optionValues.TryGetValue(optionConverted, out OptionValue Value))
-        {
-            Action<object> internalDelegate = (e) => listener((string)e);
-            Value.onChange += internalDelegate;
-        }
-    }
-    public void RemoveListener(string option, Action<string> listener)
-    {
-        var optionConverted = CRC32.GetHashForAnsi(option);
-        if (optionValues.TryGetValue(optionConverted, out OptionValue Value))
-        {
-            Action<object> internalDelegate = (e) => listener((string)e);
-            optionValues[optionConverted].onChange -= internalDelegate;
-        }
-    }
+    
     public int Get(string option)
     {
         int optionConverted = CRC32.GetHashForAnsi(option);
@@ -188,7 +171,8 @@ public class OptionManager : Singleton<OptionManager>
     public float GetValueInRatio(string option,float min,float max)
     {
         int originValue = Get(option);
-        originValue = Mathf.Max(originValue, 0);
+        originValue = (int)Mathf.Max(originValue, min);
+        originValue = (int)Mathf.Min(originValue, max);
         float gap = Mathf.Abs(max - min);
         return (originValue - min) / gap;
     }
