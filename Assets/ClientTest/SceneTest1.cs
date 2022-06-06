@@ -15,6 +15,14 @@ public class SceneTest1 : EASceneLogic
 
     protected override void OnInit()
     {
+        if(string.IsNullOrEmpty(prevSceneName))
+        {
+            OptionManager.instance.SetOptionValue(EASoundManager.bgmVolume, 100);
+            OptionManager.instance.SetOptionValue(EASoundManager.sfxVolume, 100);
+            EASoundManager.instance.LoadBGM();
+        }
+
+        EASoundManager.instance.PlayBGM("testBGM");
         
     }
 
@@ -30,7 +38,12 @@ public class SceneTest1 : EASceneLogic
 
         if(GUILayout.Button("NextScene",w,h))
         {
+            EASoundManager.instance.ChangeMixSnapShot("SceneTest2");
             m_sceneMgr.SetNextScene("SceneTest2","Empty");
         }
+
+        int v = OptionManager.instance.Get(EASoundManager.bgmVolume);
+        float fv = GUILayout.HorizontalScrollbar(v, 10f, 0f, 100f);
+        OptionManager.instance.SetOptionValue(EASoundManager.bgmVolume, (int)fv);
     }
 }
