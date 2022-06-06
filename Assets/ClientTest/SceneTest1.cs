@@ -8,6 +8,14 @@ using UnityEngine;
 
 public class SceneTest1 : EASceneLogic
 {
+    private string[] mixPaths = new string[]
+    {
+        "Master/CV/Voice",
+        "Master/SFX/UI",
+        "Master/Main/BGM",
+        "Master/Main/Movie"
+    };
+
     protected override void OnClose()
     {
         
@@ -20,6 +28,7 @@ public class SceneTest1 : EASceneLogic
             OptionManager.instance.SetOptionValue(EASoundManager.bgmVolume, 100);
             OptionManager.instance.SetOptionValue(EASoundManager.sfxVolume, 100);
             EASoundManager.instance.LoadBGM();
+            EASoundManager.instance.LoadMixerGroup("Sound/mix", mixPaths);
         }
 
         EASoundManager.instance.PlayBGM("testBGM");
