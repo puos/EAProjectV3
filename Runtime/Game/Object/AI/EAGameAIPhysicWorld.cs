@@ -26,10 +26,6 @@ public class EAAIGroup
     public void SetCrosshair(Vector3 p)
     {
         m_vCrosshair = p;
-        for(int i = 0; i < m_aiAgents.Count;++i)
-        {
-            m_aiAgents[i].SetVTarget(p);
-        }
     }
     public void AddAgent(EAAIAgent agent)
     {
@@ -46,28 +42,11 @@ public class EAAIGroup
     }
 }
 
-public class EAGamePhysicWorld
+public class EAGameAIPhysicWorld : EAGenericSingleton<EAGameAIPhysicWorld>
 {
-    static EAGamePhysicWorld _instance = null;
-
-    public static EAGamePhysicWorld instance
-    {
-        get 
-        {
-            if (_instance == null) _instance = new EAGamePhysicWorld();
-            return _instance;
-        }
-    }
-
     private List<EAAIObject> m_Obstacles = new List<EAAIObject>();
     private Dictionary<int, EAAIGroup> m_aiGroup = new Dictionary<int, EAAIGroup>();
-    private List<Wall> m_walls = new List<Wall>();
-
-    public List<Wall> Walls()
-    {
-        return m_walls;
-    }
-
+   
     public List<EAAIObject> Obstacles()
     {
         return m_Obstacles;
@@ -132,13 +111,12 @@ public class EAGamePhysicWorld
         }
     }
 
-    public bool Overlapped(EAAIObject ob,List<EAAIObject> conOb,float minDistBetweenObstacles)
+    public bool Overlapped(Vector3 pos,float radius, IEnumerator<EAAIObject> it,float minDistBetweenObstacles)
     {
-        IEnumerator<EAAIObject> it = conOb.GetEnumerator();
         while(it.MoveNext())
         {
             EAAIObject tmp = it.Current;
-            if (EAMathUtil.TwoCirclesOverlapped(ob.GetPos(),ob.GetBRadius() + minDistBetweenObstacles,tmp.GetPos(),tmp.GetBRadius())) return true;
+            if (EAMathUtil.TwoCirclesOverlapped(pos,radius + minDistBetweenObstacles,tmp.GetPos(),tmp.GetBRadius())) return true;
         }
         return false;
     }

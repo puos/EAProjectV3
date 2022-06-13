@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface EAAIObject
 {
@@ -15,8 +10,11 @@ public interface EAAIObject
    public void SetBRadius(float r);
    public Vector3 GetPos();
    public void SetPos(Vector3 vPos);
-   public Vector3 GetHeading();
-   public void SetHeading(Vector3 newHeading, float smoothRatio = 1f);
+   public Vector3 GetColliderPos();
+   public Vector3 GetSide();
+   public Quaternion GetRotation();
+   public void SetRotation(Quaternion rot);
+   public void SetRotation(Quaternion rot,float ratio);
 }
 
 

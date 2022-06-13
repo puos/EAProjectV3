@@ -61,7 +61,12 @@ public class EAObject : MonoBehaviour
         return cachedTransform.transform.position;
     }
 
-    public void SetRotation(Quaternion rot, float ratio = 1.0f)
+    public void SetRotation(Quaternion rot)
+    {
+        SetRotation(rot, 1.0f);
+    }
+
+    public void SetRotation(Quaternion rot, float ratio)
     {
         ratio = Mathf.Clamp01(ratio);
         if (ratio < 1.0f)
@@ -72,9 +77,9 @@ public class EAObject : MonoBehaviour
         cachedTransform.rotation = rot;
     }
 
-    public Vector3 GetRotation()
+    public Quaternion GetRotation()
     {
-        return cachedTransform.rotation.eulerAngles;
+        return cachedTransform.rotation;
     }
 
     public void SetLocalPos(Vector3 localPos)
@@ -86,6 +91,12 @@ public class EAObject : MonoBehaviour
     {
         cachedTransform.localRotation = localRot;
     }
+
+    public Vector3 TransformDirection(Vector3 v) => tr.TransformDirection(v);
+
+    public Vector3 GetColliderPos() => col.bounds.center + rb.position - rb.transform.position;
+
+    public Vector3 GetOrientationToVector() => EAMathUtil.OrientationToVector(rb.rotation.eulerAngles.y * Mathf.Deg2Rad);
 
     public virtual void SetObjState(eObjectState state)  { }
 

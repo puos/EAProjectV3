@@ -1431,8 +1431,11 @@ public static class DebugExtension
 		DrawCapsule(start, end, Color.white, radius);
 	}
 
-    public static void DrawLineArrow(Vector3 from, Vector3 to, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f)
+    public static void DrawLineArrow(Vector3 from, Vector3 to,Color color,float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f)
     {
+        Color oldColor = Gizmos.color;
+        Gizmos.color = color;
+
         Gizmos.DrawLine(from, to);
 
         Vector3 normal = (to - from).normalized;
@@ -1442,6 +1445,8 @@ public static class DebugExtension
 
         Gizmos.DrawRay(to, right * arrowHeadLength);
         Gizmos.DrawRay(to, left * arrowHeadLength);
+
+        Gizmos.color = oldColor;
     }
 
     public static void DrawLineArrow2(Vector3 from, Vector3 to, Color headcolor ,float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f)
