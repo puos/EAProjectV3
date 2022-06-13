@@ -98,12 +98,6 @@ public class CHero : EAActor
         turret.localRotation = Quaternion.identity;
     }
 
-    public override void Stop()
-    {
-        steering.ResetInfo();
-        base.Stop();
-    }
-
     public void SetSpeed(float speed) { actorMover.SetSpeed(speed); }
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null) 

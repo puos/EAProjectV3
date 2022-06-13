@@ -47,5 +47,8 @@ public partial class EAActor : EAAIAgent
        rb.velocity = Vector3.zero;
        rb.angularVelocity = Vector3.zero;
        rb.isKinematic = false;
+
+       steering.ZeroFlag();
+       steering.ResetInfo();
     }
 }

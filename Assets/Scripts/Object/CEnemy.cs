@@ -85,12 +85,6 @@ public class CEnemy : EAActor
         this.target = target;
     }
 
-    public override void Stop() 
-    {
-        steering.ResetInfo();
-        base.Stop();
-    }
-
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
     {
         actorMover.MoveTo(targetPosition, onMoveComplete);
