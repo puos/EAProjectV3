@@ -49,7 +49,7 @@ public partial class EAActor : EAObject
 
         EA_ItemManager.instance.RemoveEquip(Id);
         EACObjManager.instance.DeleteGameObject(objType, Id);
-        EASfxManager.instance.DeleteRelatedSfxActor(Id);
+        EASfxManager.instance.DeleteRelatedFxActor(Id);
         
     }
     // Works after SetItemAttachment function
