@@ -308,6 +308,9 @@ public class EASteeringBehaviour : MonoBehaviour
         }
     }
 
+    public void ZeroFlag() => m_iflag = 0;
+
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
