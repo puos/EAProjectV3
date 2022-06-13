@@ -42,14 +42,14 @@ public class EA_CEffectModule
         {
             if (updateCheckTime <= Time.time)
             {
-                EASfxManager.instance.DeleteSfx(m_effectInfo.m_EffectId);
+                EASfxManager.instance.DeleteFx(m_effectInfo.m_EffectId);
                 m_bAutoDelete = false;
             }
             return;
         }
         if (m_pSfx.IsAlive() == false)
         {
-            EASfxManager.instance.DeleteSfx(m_effectInfo.m_EffectId);
+            EASfxManager.instance.DeleteFx(m_effectInfo.m_EffectId);
             m_bAutoDelete = false;
             return;
         }

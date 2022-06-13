@@ -65,7 +65,7 @@ public class EASfx : EAObject
     public override void Release()
     {
         base.Release();
-        EASfxManager.instance.DeleteSfx(effectId);
+        EASfxManager.instance.DeleteFx(effectId);
     }
 
     public void StartFx()

@@ -139,37 +139,42 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
     public EASfx StartFxWorld(EFxTag fxtag, Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
     {
         EASfx sfx = LoadFxWorld(fxtag, emitPos, emitAngle, lifeTime);
-        sfx.StartFx();
+        StartFx(sfx.effectId);
         return sfx;
     }
 
     public EASfx StartFxOffset(EFxTag fxtag,EAObject obj,string attachBoneName , Vector3 emitPos, Vector3 emitAngle, float lifeTime = 0f)
     {
         EASfx sfx = LoadFxOffset(fxtag, obj, attachBoneName, emitPos, emitAngle, lifeTime);
-        sfx.StartFx();
+        StartFx(sfx.effectId);
         return sfx;
     }
 
     public EASfx StartFxLinkBone(EFxTag fxtag, EAObject obj, string attachBoneName,float lifeTime = 0f)
     {
         EASfx sfx = LoadFxLinkBone(fxtag, obj, attachBoneName, lifeTime);
-        sfx.StartFx();
+        StartFx(sfx.effectId);
         return sfx;
     }
 
-    public void DeleteSfx(EAEffectID id)
+    public void StartFx(EAEffectID id)
     {
         if (!m_effects.TryGetValue(id, out EA_CEffectModule module)) return;
+        module.ResetInfo(eEffectState.ES_Start);
+    }
 
+    public void DeleteFx(EAEffectID id)
+    {
+        if (!m_effects.TryGetValue(id, out EA_CEffectModule module)) return;
         module.ResetInfo(eEffectState.ES_UnLoad);
         m_effects.Remove(id);
         m_IDGenerator.FreeID(id);
     }
 
     // puos 20141019 Delete an effect associated with a specific actor
-    public void DeleteRelatedSfxActor(uint ActorId , bool bOnlyNotLoop = false)
+    public void DeleteRelatedFxActor(uint ActorId , bool bOnlyNotLoop = false)
     {
-        List<uint> sfxIdList = new List<uint>();
+        List<uint> fxIdList = new List<uint>();
 
         var it = m_effects.GetEnumerator();
 
@@ -182,15 +187,15 @@ public class EASfxManager : EAGenericSingleton<EASfxManager>
             if(bOnlyNotLoop) 
             {
                 // loop passes.
-                if (it.Current.Value.GetEffectInfo().m_lifeTime > 0) sfxIdList.Add(id);
+                if (it.Current.Value.GetEffectInfo().m_lifeTime > 0) fxIdList.Add(id);
             }
             if(!bOnlyNotLoop)
             {
-                sfxIdList.Add(id);
+                fxIdList.Add(id);
             }
         }
 
         // Delete the effect list.
-        for (int i = 0; i < sfxIdList.Count; ++i) DeleteSfx(sfxIdList[i]);
+        for (int i = 0; i < fxIdList.Count; ++i) DeleteFx(fxIdList[i]);
     }
 }
