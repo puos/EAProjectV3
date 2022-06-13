@@ -7,31 +7,27 @@ using UnityEngine;
 
 public class EAActorMover 
 {
-    public EAAIAgent aiAgent { get; private set; }
-
-    private EASteeringBehaviour steeringBehaviour = null;
+    private EASteeringBehaviour steering = null;
+    private Arrive arrive = null;
+    private FollowPathV2 followPath = null;
     protected System.Action onMoveComplete = null;
+    private float epsillon = 0.71f;
 
     public bool AIOn { get; set; }
     public bool LookOn { get; set; }
     public bool LookAtTarget { get; set; }
     public float smoothRatio { get; set; }
 
-    public EASteeringBehaviour Steering { get { return steeringBehaviour; } }
-
-    public void Initialize(EAAIAgent aiAgent)
+    public void Initialize(EASteeringBehaviour steering)
     {
-        this.aiAgent = aiAgent;
-        steeringBehaviour = new EASteeringBehaviour(aiAgent);
+        this.steering = steering;
         AIOn = true;
         LookOn = false;
         LookAtTarget = false;
         smoothRatio = 0.25f;
-    }
-
-    public void Release()
-    {
-        EAGamePhysicWorld.instance.RemoveAgent(aiAgent); 
+        epsillon = 0.71f;
+        arrive = steering.Get<Arrive>(Steering.behaviour_type.arrive);
+        followPath = steering.Get<FollowPathV2>(Steering.behaviour_type.follow_path_v2);
     }
 
     public void AIUpdate()
@@ -40,62 +36,68 @@ public class EAActorMover
 
         //keep a record of its old position so we can update its cell later
         //in this method
-        Vector3 oldVelocity = aiAgent.GetVelocity();
+        Vector3 oldVelocity = steering.agent.GetVelocity();
 
-        //calculate the combined force from each steering behavior in the 
-        //vehicle's list
-        Vector3 force = steeringBehaviour.Calculate();
-
-        aiAgent.AIUpdate(force, Time.deltaTime);
-
-        if (LookAtTarget) LookAtDirection(aiAgent.VTarget() - aiAgent.GetPos(), smoothRatio);
+        if (LookAtTarget)
+        {
+            Vector3 vTarget = Vector3.zero;
+            if (steering.IsOn(Steering.behaviour_type.arrive)) vTarget = arrive.GetVTarget();
+            if (steering.IsOn(Steering.behaviour_type.follow_path_v2)) vTarget = followPath.GetCurVTarget();
+            LookAtDirection(vTarget - steering.agent.GetPos(), smoothRatio);
+        }
+        else if (LookOn) steering.LookWhereYourGoing();
 
         //moveState
-        if (steeringBehaviour.IsSteering())
+        if (steering.IsOn(Steering.behaviour_type.arrive))
         {
-            float epsillon = aiAgent.GetEpsilon();
-            Vector3 vel = aiAgent.GetVelocity();
-
-            if (EAMathUtil.Equal(vel, Vector3.zero , epsillon) &&
-                (oldVelocity.magnitude - vel.magnitude) >= 0f)
+            Vector3 endPos = arrive.GetVTarget();
+            bool isReached = Vector3.Distance(steering.agent.GetPos(), endPos) < epsillon;
+            if (isReached)
             {
-                if (IsLookOn()) aiAgent.SetHeading(vel);
+                steering.ArriveOff();
                 if (onMoveComplete != null) onMoveComplete();
                 return;
             }
-
-            if (IsLookOn()) aiAgent.SetHeading(vel, smoothRatio);
-        }  
-    }
-
-    private bool IsLookOn()
-    {
-        return (LookOn && !LookAtTarget);
+        }
+        if(steering.IsOn(Steering.behaviour_type.follow_path_v2))
+        {
+            if(followPath.IsAtEndOfPath())
+            {
+                steering.Follow2Off();
+                if (onMoveComplete != null) onMoveComplete();
+                return;
+            }
+        }
     }
 
     protected void LookAtDirection(Vector3 direction,float smoothRatio = 1f)
     {
-        direction.Normalize();
-        aiAgent.SetHeading(direction, smoothRatio);
+        if (!steering.isCanFly) direction.y = 0;
+        steering.agent.SetRotation(Quaternion.LookRotation(direction.normalized, Vector3.up), smoothRatio);
     } 
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)
     {
-        aiAgent.SetVTarget(targetPosition);
-        steeringBehaviour.ArriveOn();
+        steering.ArriveOn();
+        arrive.SetVTarget(targetPosition);
         this.onMoveComplete = onMoveComplete;
     }
 
-    public void SetSpeed(float speed,float epsilon = 0.01f)
+    public void SetSpeed(float speed,float epsillon = 0.71f)
     {
-        aiAgent.SetMaxSpeed(speed);
-        aiAgent.SetEpsilon(epsilon);
+        steering.SetMaxSpeed(speed);
+        this.epsillon = epsillon;
     }
 
-    public void MoveToPath(List<Vector3> paths,bool isLoop = false , System.Action onMoveComplete = null)
+    public void MoveToPath(EAAIPath aiPath, bool isLoop = false , System.Action onMoveComplete = null)
     {
-        steeringBehaviour.SetPath(paths, isLoop);
-        steeringBehaviour.FollowPathOn();
+        followPath.SetAIPath(aiPath);
+        if (isLoop) followPath.LoopOn();
+        if (!isLoop) followPath.LoopOff();
+
+        steering.Follow2On();
+        steering.ResetInfo();
+
         this.onMoveComplete = onMoveComplete;
     }
 }

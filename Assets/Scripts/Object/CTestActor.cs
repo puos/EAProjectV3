@@ -10,8 +10,6 @@ public class CTestActor : EAActor
     {
         base.Initialize();
 
-        actorMover.AIOn = false;
-        
         actorAnim = GetComponent<EAActorAnim>();
         actorAnim.Initialize();
         actorAnim.eventCallback = (EAActorAnim anim, AnimationEventType eventType, string slotName, string slotValue) =>

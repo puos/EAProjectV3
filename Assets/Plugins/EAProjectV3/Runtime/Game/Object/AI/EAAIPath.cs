@@ -5,121 +5,159 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[Serializable]
 public class EAAIPath
 {
-    private List<Vector3> m_wayPoints = new List<Vector3>();
-    int currentIdx = 0;
-    bool m_bLooped;
+    public Vector3[] nodes;
 
-    public EAAIPath()
-    {
-        m_bLooped = false;
-    }
+    [NonSerialized]
+    public float maxDist;
 
-    public EAAIPath(List<Vector3> path,bool looped)
+    [NonSerialized]
+    public float[] distances;
+
+    public Vector3 this[int i]
     {
-        Set(path);
-        m_bLooped = looped;
-    }
+        get { return nodes[i]; }
+        set { nodes[i] = value; }
+    } 
+
+    public int Length { get { return nodes.Length; } } 
+
+    public Vector3 EndNode { get { return nodes[nodes.Length - 1]; } }
+
+    private bool m_bLooped;
+    private bool m_bReversePath;
 
     public void LoopOn() => m_bLooped = true;
     public void LoopOff() => m_bLooped = false;
+    public bool IsLoop() => m_bLooped;
 
-    public void Set(List<Vector3> new_path)
+    public void ReverseOn() => m_bReversePath = true;
+    public void ReverseOff() => m_bReversePath = false;
+    public bool IsReverse() => m_bReversePath;
+
+    public EAAIPath()
     {
-        m_wayPoints.Clear();
-        for (int i = 0; i < new_path.Count; ++i) m_wayPoints.Add(new_path[i]);
-        currentIdx = 0;
+        this.nodes = new Vector3[] { Vector3.zero };
+        CalcDistances();
     }
 
-    public List<Vector3> GetPath() 
+    public EAAIPath(Vector3[] nodes)
     {
-        return m_wayPoints;
-    }
-   
-    public Vector3 CurrentWayPoint()
-    {
-        if (m_wayPoints.Count <= 0) return Vector3.zero;
-        if (m_wayPoints.Count <= currentIdx) return m_wayPoints[m_wayPoints.Count - 1];
-
-        return m_wayPoints[currentIdx];
+        this.nodes = nodes;
+        CalcDistances();
     }
 
-    public bool Finished()
+    public EAAIPath Clone()
     {
-        if ((currentIdx >= (m_wayPoints.Count - 1) && !m_bLooped)) return true;
-
-        return false;
+        return new EAAIPath((Vector3[])this.nodes.Clone());
     }
 
-    // Change the next waypoint in the path.
-    public void SetNextWayPoint() 
+    public void CalcDistances()
     {
-        Debug.Assert(m_wayPoints.Count > 0);
+        distances = new float[nodes.Length];
+        distances[0] = 0;
 
-        int limit = (m_wayPoints.Count == 0) ? 1 : m_wayPoints.Count;
-        if (m_bLooped) currentIdx = (currentIdx + 1) % limit;
-        if (!m_bLooped) currentIdx = Math.Min(currentIdx + 1, limit - 1);
-    }
-    //creates a random path which is bound by rectangle described by
-    //the min/max values
-    public List<Vector3> CreateRandomPath(int numWayPoints,float minX,float minY,float maxX,float maxY,float fHeight)
-    {
-        m_wayPoints.Clear();
-        float midX = (maxX + minX) * 0.5f;
-        float midY = (maxY + minY) * 0.5f;
-        float smaller = Math.Min(midX, midY);
-        float spacing = EAMathUtil.TWO_PI / (float)numWayPoints;
-        for(int i = 0 ; i < numWayPoints; ++i)
+        for(var i = 0; i < nodes.Length - 1; ++i)
         {
-            float radialDist = EAMathUtil.RandInRange(smaller * 0.2f, smaller);
-            Vector2 temp = new Vector2(radialDist, 0f);
-            temp = Vec2RotateAroundOrigin(temp, i * spacing);
-            Vector3 temp2 = Vector3.zero;
-
-            temp2.x = temp.x + midX;
-            temp2.y = fHeight;
-            temp2.z = temp.y + midY;
-
-            m_wayPoints.Add(temp2);
+            distances[i + 1] = distances[i] + Vector3.Distance(nodes[i], nodes[i + 1]);
         }
-        currentIdx = 0;
-        return m_wayPoints;
-    }
-    public Vector2 Vec2RotateAroundOrigin(Vector2 v, float ang)
-    {
-        Quaternion q = Quaternion.Euler(0, 0, ang);
-
-        // now transform the object's vertices
-        Vector2 t = q * v;
-        return t;
+        maxDist = distances[distances.Length - 1];
     }
 
-    // renders the path in orange
-    public void OnDebugRender() 
+    public float GetParam(Vector3 position, EAAIAgent agent)
     {
-        if (m_wayPoints.Count <= 0) return;
+        int closestSegment = GetClosetSegment(position);
+        float param = this.distances[closestSegment] + GetParamForSegment(position, nodes[closestSegment], nodes[closestSegment + 1], agent);
+        return param;
+    }
 
-        int idx = 0;
-
-        Vector3 wp = m_wayPoints[idx];
-
-        Gizmos.color = Color.red;
-
-        while(idx < m_wayPoints.Count - 1)
+    public int GetClosetSegment(Vector3 position)
+    {
+        float closestDist = DistToSegment(position, nodes[0], nodes[1]);
+        int closetSegment = 0;
+        for(int i = 1; i < nodes.Length - 1; ++i)
         {
-            idx += 1;
-            Vector3 n = m_wayPoints[idx];
-            DebugExtension.DrawLineArrow2(wp, n, Color.black);
-            wp = n;
+            float dist = DistToSegment(position, nodes[i], nodes[i + 1]);
+            if(dist <= closestDist)
+            {
+                closestDist   = dist;
+                closetSegment =    i;
+            }
+        }
+        return closetSegment;
+    }
+
+    float DistToSegment(Vector3 p,Vector3 v,Vector3 w)
+    {
+        Vector3 vw = w - v;
+        float l2 = Vector3.Dot(vw, vw);
+        if (l2 == 0) return Vector3.Distance(p, v);
+        float t = Vector3.Distance(p - v, vw) / l2;
+        if (t < 0) return Vector3.Distance(p, v);
+        if (t > 1) return Vector3.Distance(p, w);
+        Vector3 closetPoint = Vector3.Lerp(v, w, t);
+        return Vector3.Distance(p, closetPoint);
+    }
+
+    float GetParamForSegment(Vector3 p,Vector3 v,Vector3 w,EAAIAgent agent)
+    {
+        Vector3 vw = w - v;
+        float l2 = Vector3.Dot(vw, vw);
+        if (l2 == 0) return 0;
+        float t = Vector3.Dot(p - v, w) / l2;
+        if (t < 0) t = 0;
+        else if (t > 1) t = 1;
+        return t * (v - w).magnitude;
+    }
+
+    public Vector3 GetPosition(float param)
+    {
+        if (param < 0) param = (m_bLooped) ? param + maxDist : 0;
+        else if (param > maxDist) param = (m_bLooped) ? param - maxDist : maxDist;
+
+        int i = 0;
+        for(;i<distances.Length;++i)
+        {
+            if (distances[i] > param) break;
         }
 
-        if (m_bLooped) DebugExtension.DrawLineArrow2(wp, m_wayPoints[0], Color.black);
+        if (i > distances.Length - 2) i = distances.Length - 2;
+        else i -= 1;
 
-        Gizmos.DrawSphere(wp, 0.1f);
+        float t = (param - distances[i]) / Vector3.Distance(nodes[i], nodes[i + 1]);
+        return Vector3.Lerp(nodes[i], nodes[i + 1], t);
+    }
+    public void RemoveNode(int i)
+    {
+        Vector3[] newNodes = new Vector3[nodes.Length - 1];
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(m_wayPoints[currentIdx], 0.1f);
-        Gizmos.color = Color.white;
+        int newNodeIndex = 0;
+        for(int j = 0; j < newNodes.Length; ++i)
+        {
+            if (j == i) continue;
+            
+            newNodes[newNodeIndex] = nodes[j];
+            newNodeIndex++;
+        }
+
+        this.nodes = newNodes;
+        CalcDistances();
+    }
+    public void ReversePath()
+    {
+        Array.Reverse(nodes);
+        CalcDistances();
+    }
+
+    public void DrawGizmo(Color color)
+    {
+        for(int i = 0; i < nodes.Length - 1; ++i)
+        {
+            DebugExtension.DrawLineArrow2(nodes[i], nodes[i + 1], color);
+        }
+
+        if (IsLoop()) DebugExtension.DrawLineArrow2(nodes[nodes.Length - 1], nodes[0] , color);
     }
 }

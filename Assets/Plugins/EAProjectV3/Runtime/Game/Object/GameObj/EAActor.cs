@@ -5,8 +5,7 @@ using UnityEngine;
 
 public partial class EAActor : EAObject 
 {
-    private    EA_CCharBPlayer m_CharBase = new EA_CCharBPlayer();
-    protected EAActorMover actorMover = null;
+    private  EA_CCharBPlayer m_CharBase = new EA_CCharBPlayer();
     protected  EAWeapon currWeapon = null;
 
     protected Dictionary<int, Transform> bones = new Dictionary<int, Transform>();
@@ -34,23 +33,20 @@ public partial class EAActor : EAObject
         SetSkeleton();
         SetRenderer();
 
-        if(actorMover == null) actorMover = new EAActorMover();
-        actorMover.Initialize(this);
-
+        InitializeAI();
+        
         objectId = Id;
     }
     public override void Release()
     {
         base.Release();
 
-        actorMover.Release();
-
         ReleaseParts();
+        ReleaseAI();
 
         EA_ItemManager.instance.RemoveEquip(Id);
         EACObjManager.instance.DeleteGameObject(objType, Id);
         EASfxManager.instance.DeleteRelatedFxActor(Id);
-        
     }
     // Works after SetItemAttachment function
     public virtual void DoAttachItem(eAttachType attachType, eItemType itemType)
@@ -66,7 +62,7 @@ public partial class EAActor : EAObject
     protected override void UpdatePerFrame()
     {
         base.UpdatePerFrame();
-        actorMover.AIUpdate();
+        UpdateAI();
     }
     public void FSMUpdate()
     {

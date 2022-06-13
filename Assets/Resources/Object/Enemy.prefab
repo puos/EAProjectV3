@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4244049200001788}
   - component: {fileID: 33359026951457104}
   - component: {fileID: 23314012701724456}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TankTracksLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4100280803173364}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: SP1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4790842153560548}
   - component: {fileID: 33760106325745718}
   - component: {fileID: 23691586456518028}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TankTracksRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,7 +203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4070670886554054}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: SP2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,8 @@ GameObject:
   - component: {fileID: 8106693076413179786}
   - component: {fileID: 2817186376191478574}
   - component: {fileID: 4273215439600796057}
-  m_Layer: 10
+  - component: {fileID: 1866304886567485678}
+  m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,6 +325,31 @@ MonoBehaviour:
   - {fileID: 23000606554525178}
   - {fileID: 23314012701724456}
   - {fileID: 23691586456518028}
+--- !u!114 &1866304886567485678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317711653960856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffa0856d224a77d4bb7d9b96966810a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSpeed: 3.5
+  maxAcceleration: 15
+  turnSpeed: 20
+  targetRadius: 0.005
+  slowRadius: 1
+  timetoTarget: 0.1
+  sensor: {fileID: 0}
+  canFly: 0
+  slopeLimit: 80
+  panicDist: 3.5
+  decelerateOnStop: 1
+  smoothing: 1
+  numSamplesForSmoothing: 5
 --- !u!1 &1774695782116710
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +359,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4855042662882726}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: ShootPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +393,7 @@ GameObject:
   - component: {fileID: 4669579990828612}
   - component: {fileID: 33143610439930716}
   - component: {fileID: 23000606554525178}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TankChassis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4692404715736840}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TankBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -482,7 +508,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4233304373910206}
   - component: {fileID: 65284043584944294}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TankRenderers
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -529,7 +555,7 @@ GameObject:
   - component: {fileID: 4737133072379870}
   - component: {fileID: 33557868714014262}
   - component: {fileID: 23346738104536986}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TankTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}

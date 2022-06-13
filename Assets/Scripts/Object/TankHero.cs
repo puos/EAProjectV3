@@ -121,16 +121,10 @@ public class TankHero : EASceneLogic
                     unitList.Add(hero);
                     users.Add(hero);
 
-                    //target = CTarget.Clone();
-                    //unitList.Add(target);
-                    //users.Add(target);
-
                     if(cameraFollow != null) cameraFollow.Initialize(hero.transform);
 
                     MakeMaze(_TileX, _TileY);
 
-                    //MazeGen.CTileAttrib tile = SpawnUnit(target, false);
-                    //if (tile != null) tile.cubeObject.DoorAllClose();
                     SpawnUnit(hero);
                     ChangeState(State.Start);
                 }
@@ -358,9 +352,9 @@ public class TankHero : EASceneLogic
 
             DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f + enemy.GetBRadius() , 1f);
 
-            EAGamePhysicWorld.instance.TagAIAgentWithinViewRange(enemy, 10f + enemy.GetBRadius());
+            EAGameAIPhysicWorld.instance.TagAIAgentWithinViewRange(enemy, 10f + enemy.GetBRadius());
 
-            EAAIGroup heroes = EAGamePhysicWorld.instance.GetAIGroup("hero");
+            EAAIGroup heroes = EAGameAIPhysicWorld.instance.GetAIGroup("hero");
 
             if (heroes == null) return;
 
@@ -386,10 +380,7 @@ public class TankHero : EASceneLogic
                 return false;
             });
 
-            if (m != null)
-            {
-                return;
-            }
+            if (m != null) return;
 
             enemy.SetTarget(actor);
             enemy.ChangeFSMState((int)CEnemy.EFSMState.Chasing);

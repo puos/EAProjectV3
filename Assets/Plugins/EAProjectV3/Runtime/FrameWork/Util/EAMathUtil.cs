@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EAMathUtil
+public static class EAMathUtil
 {
     public const float HALF_PI = Mathf.PI * 0.5f;
     public const float TWO_PI = Mathf.PI * 2f;
@@ -182,5 +182,19 @@ public class EAMathUtil
     {
         float epsilon = 0.01f;
         return (Mathf.Abs(f1 - f2) < epsilon) ? true : false;
+    }
+
+    public static Vector3 OrientationToVector(float orientation)
+    {
+        return new Vector3(Mathf.Sin(orientation), 0, Mathf.Cos(orientation));
+    }
+
+    public static float VectorToOrientation(Vector3 direction)
+    {
+        return -1f * Mathf.Atan2(-1f * direction.x, direction.z);
+    }
+    public static float RotationInRadians(this Rigidbody r)
+    {
+        return r.rotation.eulerAngles.y * Mathf.Deg2Rad;
     }
 }

@@ -9,6 +9,8 @@ public class CEnemy : EAActor
     [SerializeField] private Transform muzzle = null;
     [SerializeField] private Transform turret = null;
 
+    private EAActorMover actorMover = null;
+
     public EAActor target { get; private set; }
 
     public override void Initialize()
@@ -20,11 +22,7 @@ public class CEnemy : EAActor
         rb.useGravity = true;
 
         target = null;
-
-        actorMover.SetSpeed(3.5f, 0.1f);
-        actorMover.aiAgent.AddAgent("enemy");
-        actorMover.LookOn = true;
-
+              
         collisionEvent = (Collision c, EAObject myObj) =>
         {
             EAActor unit = c.gameObject.GetComponent<EAActor>();
@@ -35,9 +33,21 @@ public class CEnemy : EAActor
         };
     }
 
-    public override void Release()
+    public override void InitializeAI()
     {
-        base.Release();
+        base.InitializeAI();
+
+        if (actorMover == null) actorMover = new EAActorMover();
+        actorMover.Initialize(steering);
+        actorMover.SetSpeed(3.5f);
+        actorMover.LookOn = true;
+        AddAgent("enemy");
+    }
+
+    public override void UpdateAI()
+    {
+        base.UpdateAI();
+        if (actorMover != null) actorMover.AIUpdate();
     }
 
     protected override void UpdatePerFrame()
@@ -75,10 +85,10 @@ public class CEnemy : EAActor
         this.target = target;
     }
 
-    public void Stop() 
+    public override void Stop() 
     {
-        actorMover.Steering.DefaultOn();
-        actorMover.aiAgent.StopMove();
+        steering.ResetInfo();
+        base.Stop();
     }
 
     public void MoveTo(Vector3 targetPosition, System.Action onMoveComplete = null)

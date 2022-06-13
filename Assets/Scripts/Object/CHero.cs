@@ -7,7 +7,8 @@ public class CHero : EAActor
     private Transform muzzle = null;
     private Transform turret = null;
     private Quaternion turret_rotation = Quaternion.identity;
-
+    private EAActorMover actorMover = null;
+    
     public override void Initialize()
     {
         base.Initialize();
@@ -15,9 +16,7 @@ public class CHero : EAActor
         turret = GetTransform("TankTurret");
 
         rb.useGravity = true;
-        actorMover.SetSpeed(2f , 0.1f);
-        actorMover.aiAgent.AddAgent("hero");
-
+    
         if (turret != null) turret_rotation = turret.rotation;
         collisionEvent = (Collision c, EAObject myObj) => 
         {
@@ -25,6 +24,22 @@ public class CHero : EAActor
             if (unit == null) return;
             Stop();
         };
+    }
+
+    public override void InitializeAI()
+    {
+        base.InitializeAI();
+
+        if (actorMover == null) actorMover = new EAActorMover();
+        actorMover.Initialize(steering);
+        actorMover.SetSpeed(2f);
+        AddAgent("hero");
+    }
+
+    public override void UpdateAI()
+    {
+        base.UpdateAI();
+        if (actorMover != null) actorMover.AIUpdate();
     }
 
     protected override void UpdatePerFrame()
@@ -83,10 +98,10 @@ public class CHero : EAActor
         turret.localRotation = Quaternion.identity;
     }
 
-    public void Stop() 
+    public override void Stop()
     {
-        actorMover.Steering.DefaultOn();
-        actorMover.aiAgent.StopMove();
+        steering.ResetInfo();
+        base.Stop();
     }
 
     public void SetSpeed(float speed) { actorMover.SetSpeed(speed); }

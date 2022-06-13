@@ -5,78 +5,47 @@ using UnityEngine;
 
 public partial class EAActor : EAAIAgent
 {
-    private float maxSpeed = 1f;
-    private float epsilon  = 0.01f;
-    private Vector3 m_vCrosshair;
+    protected EASteeringBehaviour steering = null;
+
     private EAAIGroup m_aiGroup = new EAAIGroup();
     public uint objectId { get; set; }
     public bool Tag { get; set; }
-    public float GetMaxSpeed() => maxSpeed; 
-    public void SetMaxSpeed(float newSpeed) => maxSpeed = newSpeed;
-    public float GetEpsilon() => epsilon;
-    public void SetEpsilon(float epsilon) => this.epsilon = epsilon;
-    public Vector3 GetVelocity() => rb.velocity; 
-    public float GetSpeed() => rb.velocity.magnitude; 
-    public Vector3 VTarget() => m_vCrosshair;
-    public void SetVTarget(Vector3 vCrosshair) => m_vCrosshair = vCrosshair; 
-    public Vector3 GetSide() => tr.right;
+
+    public virtual void InitializeAI()
+    {
+        if (steering == null) steering = GetComponent<EASteeringBehaviour>();
+        if (steering != null) steering.Initialize();
+    }
+    public virtual void UpdateAI()
+    {
+        if (steering == null) return;
+        steering.Steer();
+    }
+    public virtual void ReleaseAI()
+    {
+        EAGameAIPhysicWorld.instance.RemoveAgent(this);
+    }
+    public Vector3 GetVelocity() => rb.velocity;
+    public void SetVelocity(Vector3 v) => rb.velocity = v;
+    public float GetSpeed() => rb.velocity.magnitude;
     public EAAIGroup GetAIGroup() => m_aiGroup;
     public void SetAIGroup(EAAIGroup aiGroup) => m_aiGroup = aiGroup;
-    public float GetTimeElapsed()
+    public void AddAgent(string teamId)
     {
-        return Time.deltaTime;
+        World().AddAgent(teamId, this);
     }
-
-    public EAGamePhysicWorld World()
+    public EAGameAIPhysicWorld World()
     {
-        return EAGamePhysicWorld.instance;
+        return EAGameAIPhysicWorld.instance;
     }
-
-    public void UnTagging()
-    {
-        Tag = false;
-    }
-
-    public void Tagging()
-    {
-        Tag = true;
-    }
-
-    public Vector3 GetHeading()
-    {
-        return tr.forward;
-    }
-
-    public void SetHeading(Vector3 newHeading , float smoothRatio = 1f)
-    {
-       newHeading.y = 0;
-       SetRotation(Quaternion.LookRotation(newHeading.normalized, Vector3.up), smoothRatio);
-    }
-
-    public void AIUpdate(Vector3 velocity, float fElapsedTime)
-    {
-        float gravitySpeed = GetVelocity().y;
-
-        Vector3 v = GetVelocity();
-        v.y = 0f;
-        v = v + velocity;
-
-        //make sure vehicle does not exceed maximum velocity
-        v = EAMathUtil.Truncate(v, maxSpeed);
-        v.Set(v.x, gravitySpeed, v.z);
-        rb.velocity = v;
-    }
-
-    public void StopMove()
+    public Vector3 GetSide() => tr.right;
+    public void UnTagging() => Tag = false;
+    public void Tagging() => Tag = true;
+    public virtual void Stop()
     {
        rb.isKinematic = true;
        rb.velocity = Vector3.zero;
        rb.angularVelocity = Vector3.zero;
        rb.isKinematic = false;
-    }
-
-    public void AddAgent(string teamId)
-    {
-        World().AddAgent(teamId, this);
     }
 }
