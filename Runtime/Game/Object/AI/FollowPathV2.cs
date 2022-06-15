@@ -59,6 +59,8 @@ class FollowPathV2 : Steering
         return result;
     }
 
+    public void SetWaypointSeekDist(float pathOffset) => this.pathOffset = pathOffset;
+    
     public Vector3 GetCurVTarget()
     {
         if (currentIdx < 0 || currentIdx >= aiPath.Length) return aiPath[aiPath.Length - 1];
