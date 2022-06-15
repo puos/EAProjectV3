@@ -70,6 +70,12 @@ public class EAActorMover
         }
     }
 
+    public void SetVTarget(Vector3 vTarget)
+    {
+        if (arrive == null) return;
+        arrive.SetVTarget(vTarget);
+    }
+
     protected void LookAtDirection(Vector3 direction,float smoothRatio = 1f)
     {
         if (!steering.isCanFly) direction.y = 0;
