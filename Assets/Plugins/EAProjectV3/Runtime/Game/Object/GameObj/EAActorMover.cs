@@ -92,6 +92,8 @@ public class EAActorMover
     public void MoveToPath(EAAIPath aiPath, bool isLoop = false , System.Action onMoveComplete = null)
     {
         followPath.SetAIPath(aiPath);
+        followPath.SetWaypointSeekDist(epsillon);
+
         if (isLoop) followPath.LoopOn();
         if (!isLoop) followPath.LoopOff();
 
