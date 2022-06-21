@@ -14,6 +14,7 @@ public partial class EAActor : EAAIAgent
     public virtual void InitializeAI()
     {
         if (steering == null) steering = GetComponent<EASteeringBehaviour>();
+        if (steering == null) steering = AddComponent<EASteeringBehaviour>();
         if (steering != null) steering.Initialize();
     }
     public virtual void UpdateAI()
