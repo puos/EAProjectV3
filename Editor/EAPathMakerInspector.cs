@@ -40,12 +40,15 @@ public class EAPathMakerInspector : Editor
 
         EditorGUILayout.Space();
 
-        bool refresh = GUILayout.Button("Refresh", GUILayout.Width(60));
-
-        if(refresh)
+        if(!string.IsNullOrEmpty(p.key))
         {
-            p.Generate();
-            p.Initialize();
+            bool refresh = GUILayout.Button("Refresh", GUILayout.Width(60));
+
+            if (refresh)
+            {
+                p.Generate();
+                p.Initialize();
+            }
         }
 
         GUILayout.EndVertical();
