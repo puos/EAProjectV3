@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-class FollowPathV2 : Steering
+public class FollowPathV2 : Steering
 {
     private float pathOffset = 0.71f;
     private int   currentIdx = 0;

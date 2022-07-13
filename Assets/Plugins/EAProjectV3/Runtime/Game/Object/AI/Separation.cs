@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-class Separation : Steering
+public class Separation : Steering
 {
     private float sepMaxAcceleration = 25;
     private float maxSepDist = 1f;
