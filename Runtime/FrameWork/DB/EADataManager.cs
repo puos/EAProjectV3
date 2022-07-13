@@ -63,15 +63,13 @@ public class EADataManager<classT> : EAGenericSingleton<classT> , IEADataManager
         var it = DataInfoList.GetEnumerator();
         while(it.MoveNext())
         {
-            EADataTable so = GameResourceManager.instance.Load<EADataTable>(it.Current.Value);
-            if(so != null)
+            int key = CRC32.GetHashForAnsi(it.Current.Key);
+            if (!dicDataTables.TryGetValue(key, out EADataTable outDatas))
             {
-                int key = CRC32.GetHashForAnsi(it.Current.Key);
-                if(!dicDataTables.TryGetValue(key,out EADataTable outDatas))
-                {
-                    so.Load();
-                    dicDataTables.Add(key, so);
-                }
+                EADataTable so = GameResourceManager.instance.Load<EADataTable>(it.Current.Value);
+                if (so == null) continue;
+                so.Load();
+                dicDataTables.Add(key, so);
             }
         }
     }
