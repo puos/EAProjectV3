@@ -155,6 +155,100 @@ public class AITest : EASceneLogic
         }
     }
 
+    public void OnGUI()
+    {
+        float width = 200;
+
+        GUILayoutOption w = GUILayout.Width(width);
+        GUILayoutOption h = GUILayout.Height(30);
+
+        GUILayout.BeginArea(new Rect(Screen.width - width, 0, width, 50 * 20.0f));
+
+        if(GUILayout.Button("Wander1",w,h))
+        {
+            UnitsStop();
+
+            for(int i = 0; i < units.Count; ++i)
+            {
+                EASteeringBehaviour steering = units[i].GetComponent<EASteeringBehaviour>();
+                steering.Wander1On();
+            }
+        }
+        
+        if(GUILayout.Button("Wander2",w,h))
+        {
+            UnitsStop();
+
+            for(int i = 0; i < units.Count; ++i)
+            {
+                EASteeringBehaviour steering = units[i].GetComponent<EASteeringBehaviour>();
+                steering.Wander2On();
+            }
+        }
+
+        if(GUILayout.Button("flee",w,h))
+        {
+            UnitsStop();
+            Flee(0, 1);
+            Flee(1, 0);
+        }
+
+        if(GUILayout.Button("Evade",w,h))
+        {
+            UnitsStop();
+            Evade(0, 1);
+            Evade(1, 0);
+        }
+
+        if(GUILayout.Button("followPath",w,h))
+        {
+            UnitsStop();
+            EAAIPath aiPath = AIPathManager.instance.GetPath("aitest01");
+            if (aiPath != null) FollowPath(aiPath);
+        }
+
+        if(GUILayout.Button("followPath2",w,h))
+        {
+            UnitsStop();
+            EAAIPath aiPath = AIPathManager.instance.GetPath("aitest01");
+            if (aiPath != null) FollowPath2(aiPath);
+        }
+
+        if(GUILayout.Button("pursuit",w,h))
+        {
+            UnitsStop();
+            Evade(0, 1);
+            Pursuit(1, 0);
+        }
+
+        if(GUILayout.Button("pursuit_offset",w,h))
+        {
+            UnitsStop();
+            Evade(0, 1);
+            PursuitOffset(1, 0, 3f);
+        }
+
+        if(GUILayout.Button("cohesion",w,h))
+        {
+            UnitsStop();
+            Cohesion();
+        }
+
+        if(GUILayout.Button("separation",w,h))
+        {
+            UnitsStop();
+            Separation();
+        }
+
+        if(GUILayout.Button("hide",w,h))
+        {
+            UnitsStop();
+            Hide(0, 1);
+        }
+
+        GUILayout.EndArea();
+    }
+
 
     protected override void OnUpdate()
     {
