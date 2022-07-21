@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 8129298115615883214}
   - component: {fileID: 8705305123595635807}
   - component: {fileID: 6443389341285873563}
+  - component: {fileID: 6661826117888583279}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -147,3 +148,16 @@ MonoBehaviour:
     m_Bits: 64
   IgnoreTag: 
   CameraRadius: 0.22
+--- !u!114 &6661826117888583279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423804887290523610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4c41ac9245b87c4192012080077d830, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Damping: 1
