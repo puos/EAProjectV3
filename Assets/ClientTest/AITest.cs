@@ -10,7 +10,7 @@ public class AITest : EASceneLogic
     private int unitNumber = 2;
     private float floorHeight = -1f;
     private readonly List<DemoUnit> units = new List<DemoUnit>();
-
+    private int switchCamIdx = 0;
     protected override void OnInit()
     {
         pathMakers.AddRange(FindObjectsOfType<EAPathMaker>(true));
@@ -43,6 +43,7 @@ public class AITest : EASceneLogic
             units.Add(instance);
         }
 
+        units[0].SwitchCam();
     }
 
     private void Flee(int index,int tindex)
@@ -240,10 +241,19 @@ public class AITest : EASceneLogic
             Separation();
         }
 
-        if(GUILayout.Button("hide",w,h))
+        GUILayout.EndArea();
+        GUILayout.BeginArea(new Rect(Screen.width - width * 2, 0, width, 50 * 20.0f));
+
+        if (GUILayout.Button("hide",w,h))
         {
             UnitsStop();
             Hide(0, 1);
+        }
+
+        if (GUILayout.Button("switchCam",w,h))
+        {
+            switchCamIdx = (switchCamIdx + 1) % units.Count;
+            units[switchCamIdx].SwitchCam();
         }
 
         GUILayout.EndArea();

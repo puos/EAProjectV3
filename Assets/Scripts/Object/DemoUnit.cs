@@ -4,6 +4,20 @@ using UnityEngine;
 
 public class DemoUnit : EAActor
 {
+    private UserCam userCam = null;
+    public override void Initialize()
+    {
+        base.Initialize();
+        userCam = GameResourceManager.instance.Create(EResourceGroup.Object, nameof(UserCam)).GetComponent<UserCam>();
+        userCam.Initialize();
+        userCam.SetFollow(tr);
+    }
+
+    public override void Release()
+    {
+        base.Release();
+    }
+
     public override void InitializeAI()
     {
         base.InitializeAI();
@@ -16,7 +30,12 @@ public class DemoUnit : EAActor
         base.UpdateAI();
         steering.LookWhereYourGoing();
     }
-   
+
+    public void SwitchCam()
+    {
+        if (userCam) userCam.SwitchCam();
+    }
+
     public static DemoUnit Clone()
     {
         ObjectInfo objectInfo = new ObjectInfo()
