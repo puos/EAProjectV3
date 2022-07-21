@@ -176,6 +176,32 @@ public static class EAFrameUtil
         }
     }
 
+    public static List<T> Unique<T>(IList<T> source,Func<T, T, bool> match)
+    {
+        if (source == null) return null;
+        List<T> uniques = new List<T>();
+        foreach(T item in source)
+        {
+            int idx = uniques.FindIndex(x => match(item, x));
+            if (idx == -1) uniques.Add(item);
+        }
+        return uniques;
+    }
+
+    public static void Shuffle<T>(List<T> source,System.Random rand = null)
+    {
+        if (rand == null) rand = new System.Random();
+        for (var i = 0; i < source.Count; ++i)
+            Swap(source, i, rand.Next(i, source.Count));
+    }
+
+    public static void Swap<T>(List<T> source,int i, int j)
+    {
+        var temp = source[i];
+        source[i] = source[j];
+        source[j] = temp;
+    }
+
     // size setting
     public static void setSize(this RectTransform rt,Vector2 newSize)
     {
