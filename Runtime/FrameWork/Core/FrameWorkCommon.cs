@@ -176,7 +176,7 @@ public static class EAFrameUtil
         }
     }
 
-    public static List<T> Unique<T>(IList<T> source,Func<T, T, bool> match)
+    public static List<T> Unique<T>(this IList<T> source,Func<T, T, bool> match)
     {
         if (source == null) return null;
         List<T> uniques = new List<T>();
@@ -188,7 +188,7 @@ public static class EAFrameUtil
         return uniques;
     }
 
-    public static void Shuffle<T>(List<T> source,System.Random rand = null)
+    public static void Shuffle<T>(this List<T> source,System.Random rand = null)
     {
         if (rand == null) rand = new System.Random();
         for (var i = 0; i < source.Count; ++i)
