@@ -16,6 +16,9 @@ public class DemoUnit : EAActor
     public override void Release()
     {
         base.Release();
+        if (userCam) userCam.Close();
+        if (userCam) GameResourceManager.instance.ReleaseObject(userCam.gameObject);
+        userCam = null;
     }
 
     public override void InitializeAI()
