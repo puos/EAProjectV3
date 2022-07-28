@@ -20,7 +20,7 @@ public class EAFSMMaker
 
     public void AddState<T>(T nState,Action stateA = null,Action updateA = null) where T : Enum
     {
-        if (!states.TryGetValue(System.Convert.ToUInt32(nState), out Action value)) return;
+        if (states.TryGetValue(System.Convert.ToUInt32(nState), out Action value)) return;
 
         states.Add(System.Convert.ToUInt32(nState), stateA);
         updates.Add(System.Convert.ToUInt32(nState), updateA);
