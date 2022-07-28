@@ -40,8 +40,7 @@ public class EAActorMover
 
         if (LookAtTarget)
         {
-            Vector3 vTarget = Vector3.zero;
-            if (steering.IsOn(Steering.behaviour_type.arrive)) vTarget = arrive.GetVTarget();
+            Vector3 vTarget = arrive.GetVTarget();
             if (steering.IsOn(Steering.behaviour_type.follow_path_v2)) vTarget = followPath.GetCurVTarget();
             LookAtDirection(vTarget - steering.agent.GetPos(), smoothRatio);
         }
