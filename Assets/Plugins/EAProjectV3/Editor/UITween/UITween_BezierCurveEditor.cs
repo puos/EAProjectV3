@@ -53,7 +53,7 @@ public class UITween_BezierCurveEditor : Editor
 
 			float handleSize = HandleUtility.GetHandleSize(thisPoint.transform.position) * 0.1f;
 
-            Vector3 pointPos = Handles.FreeMoveHandle(thisPoint.transform.position, Quaternion.identity, handleSize, Vector3.zero, Handles.SphereHandleCap);
+            var fmh_56_85_638553095609947776 = Quaternion.identity; Vector3 pointPos = Handles.FreeMoveHandle(thisPoint.transform.position, handleSize, Vector3.zero, Handles.SphereHandleCap);
             if (thisPoint.transform.position != pointPos)
             {
                 thisPoint.transform.position = pointPos;
@@ -64,7 +64,7 @@ public class UITween_BezierCurveEditor : Editor
 			{            
 				if (thisPoint.type != UITween_BezierPoint.PointType.None)
 				{
-					Vector3 handle01Pos = Handles.FreeMoveHandle(thisPoint.worldHandles01, Quaternion.identity, handleSize, Vector3.zero, Handles.CubeHandleCap);
+					var fmh_67_77_638553095609988621 = Quaternion.identity; Vector3 handle01Pos = Handles.FreeMoveHandle(thisPoint.worldHandles01, handleSize, Vector3.zero, Handles.CubeHandleCap);
 
 					if (thisPoint.worldHandles01 != handle01Pos)
 					{
@@ -72,7 +72,7 @@ public class UITween_BezierCurveEditor : Editor
 						if (thisPoint.type == UITween_BezierPoint.PointType.Smooth) thisPoint.worldHandles02 = -(handle01Pos - pointPos) + pointPos;
 					}
 
-					Vector3 handle02Pos = Handles.FreeMoveHandle(thisPoint.worldHandles02, Quaternion.identity, handleSize, Vector3.zero, Handles.CubeHandleCap);
+					var fmh_75_77_638553095609992550 = Quaternion.identity; Vector3 handle02Pos = Handles.FreeMoveHandle(thisPoint.worldHandles02, handleSize, Vector3.zero, Handles.CubeHandleCap);
 					if (thisPoint.worldHandles02 != handle02Pos)
 					{
 						thisPoint.worldHandles02 = handle02Pos;
