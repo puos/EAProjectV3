@@ -7,18 +7,10 @@ public partial class EAActor : EAObject
 {
     private  EA_CCharBPlayer m_CharBase = new EA_CCharBPlayer();
     protected  EAWeapon currWeapon = null;
-
     protected Dictionary<int, Transform> bones = new Dictionary<int, Transform>();
-    protected Renderer[] renderers = null;
+    protected Renderer[] renders = null;
     protected string[] m_PartTblId = new string[(int)eCharParts.CP_MAX];
-    
-    protected Dictionary<int, System.Action> states = new Dictionary<int, System.Action>();
-    protected Dictionary<int, System.Action> updates = new Dictionary<int, System.Action>();
-
-    public int curState { get; private set; }
-   
     public uint Id { get { return (m_CharBase != null) ? m_CharBase.GetObjID() : CObjGlobal.InvalidObjID; } }
-
     public eObjectType objType { get { return (m_CharBase != null) ? m_CharBase.GetObjInfo().m_eObjType : eObjectType.CT_MAXNUM; } }
     
     public override void Initialize()
@@ -27,13 +19,11 @@ public partial class EAActor : EAObject
 
         if(cachedCollider == null) cachedCollider = gameObject.AddComponent<CapsuleCollider>();
 
-        states.Clear();
-        updates.Clear();
-
         SetSkeleton();
         SetRenderer();
 
         InitializeAI();
+        InitializeFSM();
         
         objectId = Id;
     }
@@ -43,6 +33,7 @@ public partial class EAActor : EAObject
 
         ReleaseParts();
         ReleaseAI();
+        ReleaseFSM();
 
         EA_ItemManager.instance.RemoveEquip(Id);
         EACObjManager.instance.DeleteGameObject(objType, Id);
@@ -63,20 +54,9 @@ public partial class EAActor : EAObject
     {
         base.UpdatePerFrame();
         UpdateAI();
+        UpdateFSM();
     }
-    public void FSMUpdate()
-    {
-        if (updates.TryGetValue(curState, out Action value)) value();
-    }
-    public void ChangeFSMState(int newState)
-    {
-        if (curState == newState) return;
-
-        curState = newState;
-        Debug.Log("id : " + Id + " State : " + curState);
-
-        if (states.TryGetValue(curState, out Action value)) value();
-    }
+    
     public void SetCharBase(EA_CCharBPlayer CharBase) 
     {
         m_CharBase = CharBase;
@@ -204,7 +184,7 @@ public partial class EAActor : EAObject
     {
         EACharacterInfo characterInfo = tr.GetComponent<EACharacterInfo>();
         if (characterInfo == null) return;
-        renderers = characterInfo.renderers;
+        renders = characterInfo.renders;
 
     }
     public void AddTransform(string key, Transform obj)

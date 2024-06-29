@@ -10,6 +10,8 @@ public class EAFSMMaker
     private uint currState = 0;
     private uint uid = 0;
 
+    public uint CurrentState => currState;
+    public uint Uid => uid;
     public void Initialize(uint uid = 0) 
     {
         states.Clear();
@@ -18,6 +20,13 @@ public class EAFSMMaker
         this.uid = uid;
     }
 
+    public void Close()
+    {
+        states.Clear();
+        updates.Clear();
+        currState = 0;
+        this.uid = 0;
+    }
     public void AddState<T>(T nState,Action stateA = null,Action updateA = null) where T : Enum
     {
         if (states.TryGetValue(System.Convert.ToUInt32(nState), out Action value)) return;

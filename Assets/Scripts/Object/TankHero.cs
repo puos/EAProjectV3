@@ -132,7 +132,7 @@ public class TankHero : EASceneLogic
 
             case State.Start:
                 {
-                    tankSpawnCount = 0;
+                    tankSpawnCount = 3;
                     updateWaveWaitTime = 0;
                     enemiesCount = 0;
                     enemies.Clear();
@@ -299,8 +299,8 @@ public class TankHero : EASceneLogic
             if (updateWaveWaitTime < Time.time) updateWaveWaitTime = Time.time;
 
             CEnemy enemy = CEnemy.Clone();
-            
-            Move(enemy);
+
+            MoveFSM(enemy);
             SpawnUnit(enemy);
             enemy.ChangeFSMState(CEnemy.EFSMState.Move);
             enemies.Add(enemy);
@@ -310,9 +310,9 @@ public class TankHero : EASceneLogic
         }
     }
 
-    private void Move(CEnemy enemy)
+    private void MoveFSM(CEnemy enemy)
     {
-        enemy.StateAdd(CEnemy.EFSMState.Move, () =>
+        enemy.AddState(CEnemy.EFSMState.Move, () =>
         {
             enemy.SetTarget(null);
 
@@ -338,19 +338,16 @@ public class TankHero : EASceneLogic
 
             enemy.MoveTo(pos, () =>
             {
-                enemy.CmdState(CEnemy.EFSMState.Move);
+                enemy.ChangeFSMState(CEnemy.EFSMState.None);
+                enemy.ChangeFSMState(CEnemy.EFSMState.Move);
             });
-        });
-
-        float updateTime = Time.time;
-
-        enemy.UpdateAdd(CEnemy.EFSMState.Move, () =>
+        },()=>
         {
-            if (Time.time - updateTime <= 0) return;
+            if (Time.time - enemy.UpdateTime <= 0) return;
 
-            updateTime = Time.time + 1f;
+            enemy.UpdateTime = Time.time + 1f;
 
-            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f + enemy.GetBRadius() , 1f);
+            DebugExtension.DebugCircle(enemy.GetCenterPos(), Vector3.up, Color.red, 10f + enemy.GetBRadius(), 1f);
 
             EAGameAIPhysicWorld.instance.TagAIAgentWithinViewRange(enemy, 10f + enemy.GetBRadius());
 
@@ -383,7 +380,7 @@ public class TankHero : EASceneLogic
             if (m != null) return;
 
             enemy.SetTarget(actor);
-            enemy.ChangeFSMState((int)CEnemy.EFSMState.Chasing);
+            enemy.ChangeFSMState(CEnemy.EFSMState.Chasing);
         });
     }
 
