@@ -8,5 +8,5 @@ public class EACharacterInfo : MonoBehaviour
 {
     public string[] BoneNames;
     public Transform[] Bones;
-    public Renderer[] renderers;
+    public Renderer[] renders;
 }
