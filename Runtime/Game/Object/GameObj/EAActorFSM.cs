@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 partial class EAActor
 {
-    protected virtual void InitializeFSM() { }
-    protected virtual void UpdateFSM() { }
-    protected virtual void ReleaseFSM() { }
+    protected EAFSMMaker fsmMaker = new EAFSMMaker();
+    protected virtual void InitializeFSM() => fsmMaker.Initialize(Id);
+    protected virtual void UpdateFSM() => fsmMaker.OnUpdate();
+    protected virtual void ReleaseFSM() => fsmMaker.Close(); 
+    
 }
