@@ -36,7 +36,7 @@ public class EAMeshTool : Editor
 
         skeleton.BoneNames = new string[transformList.Keys.Count];
         skeleton.Bones = new Transform[transformList.Keys.Count];
-        skeleton.renderers = new Renderer[renderList.Values.Count];
+        skeleton.renders = new Renderer[renderList.Values.Count];
 
         int idx = 0;
         foreach (string key in transformList.Keys) 
@@ -48,7 +48,7 @@ public class EAMeshTool : Editor
 
         idx = 0;
         foreach (Renderer r in renderList.Values) 
-         skeleton.renderers[idx++] = r; 
+         skeleton.renders[idx++] = r; 
     }
 
     [MenuItem("Assets/EACharacterInfo", false, 0)]
