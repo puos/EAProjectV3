@@ -12,8 +12,6 @@ partial class CEnemy
 {
     public enum EFSMState { None = 0, Move, Chasing, Attack, Dead }
 
-    EAFSMMaker fsmMaker = new EAFSMMaker();
-
     private float updateTime= 0;
 
     public EFSMState state = EFSMState.None;
@@ -26,21 +24,19 @@ partial class CEnemy
     
     protected override void InitializeFSM()
     {
+        base.InitializeFSM();
+        
         updateTime = Time.time;
-        fsmMaker.Initialize(Id);
+        state = EFSMState.None;
+
         fsmMaker.AddState(EFSMState.Chasing, Chasing , ChasingUpdate);
         fsmMaker.AddState(EFSMState.Attack, Attack , AttackUpdate);
     }
 
     protected override void UpdateFSM()
     {
+        base.UpdateFSM();
         state = (EFSMState)fsmMaker.CurrentState;
-        fsmMaker.OnUpdate();
-    }
-
-    protected override void ReleaseFSM()
-    {
-        fsmMaker.Close();
     }
 
     public void AddState(EFSMState state,Action stateAction,Action updateAction)
