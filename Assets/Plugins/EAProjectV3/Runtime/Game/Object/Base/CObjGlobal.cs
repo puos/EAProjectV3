@@ -116,11 +116,20 @@ public class CharInfo
     public uint m_ClassType;	    //	Character occupation
     public string[] m_PartTblId;    //	Index number of the part you are currently wearing (obtained from Item Manager)
 
-    public float Hp;
-    public float Atk;
+    public float baseHP;
+    public float currHP;
 
-    public float maxHp;
-    public float maxAtk;
+    public float baseMP;
+    public float currMP;
+
+    public float baseATK;
+    public float currATK;
+
+    public float baseDEF;
+    public float currDEF;
+
+    public int nLevel;
+    public int nPoint;
 
     public CharInfo() { }
 
@@ -132,10 +141,21 @@ public class CharInfo
         {
             m_PartTblId[i] = charInfo.m_PartTblId[i];
         }
-        Hp = charInfo.Hp;
-        Atk = charInfo.Atk;
-        maxHp = charInfo.maxHp;
-        maxAtk = charInfo.maxAtk;
+        baseHP = charInfo.baseHP;
+        currHP = charInfo.currHP;
+
+        baseMP = charInfo.baseMP;
+        currMP = charInfo.currMP;
+
+        baseATK = charInfo.baseATK;
+        currATK = charInfo.currATK;
+
+        baseDEF = charInfo.baseDEF;
+        currDEF = charInfo.currDEF; 
+
+        nLevel = charInfo.nLevel;
+        nPoint = charInfo.nPoint;
+                        
         m_ClassType = charInfo.m_ClassType;
     }
 }
@@ -143,29 +163,24 @@ public class CharInfo
 //	ObjectInfo and other mob information
 public class MobInfo : CharInfo
 {
-    public int level;
-    public int nPoint;
-
     public MobInfo() { }
 
     public MobInfo(MobInfo mobInfo) : base(mobInfo)
-    {
-        level   = mobInfo.level;
-        nPoint = mobInfo.nPoint;
+    {        
     }
 }
 
 /// ObjectInfo and NPC Information
 public class NPCInfo : CharInfo
 {
-    public EATblID m_Npcindex = CObjGlobal.InvalidObjID; //	Feature table index on Npc
+    public EATblID m_NpcIndex = CObjGlobal.InvalidObjID; //	Feature table index on Npc
     public uint m_OwnerId = 0;
 
     public NPCInfo() { }
 
     public NPCInfo(NPCInfo npcInfo) : base(npcInfo) 
     {
-        m_Npcindex = npcInfo.m_Npcindex;
+        m_NpcIndex = npcInfo.m_NpcIndex;
         m_OwnerId = npcInfo.m_OwnerId;
     }
 }
