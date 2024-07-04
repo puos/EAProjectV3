@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Reflection;
+using CustomFileBrowser;
 
 
 public class EAMakeDB : Editor
@@ -51,38 +52,71 @@ public class EAMakeDB : Editor
     [MenuItem("Tools/MakeDB")]
     public static void MakeDB()
     {
-        string path = EditorUtility.OpenFilePanel("Please select a CSV file. The file name becomes the data table","","csv");
+        FileBrowser fileBrowser = new FileBrowser();
 
-        if (string.IsNullOrEmpty(path)) return;
+        List<ExtensionFilter> extensions = new List<ExtensionFilter>();
+        extensions.Add(new ExtensionFilter()
+        {
+            Name = "csv",
+            Extensions = new string[] { "csv" }
+        });
+
+        string[] paths = fileBrowser.OpenFilePanel("Please select a CSV file. The file name becomes the data tables", "", extensions.ToArray(), true);
+
+        if (paths.Length == 0)
+        {
+            return;
+        }
 
         EditorPrefs.DeleteKey("MakeDB_PATH");
 
-        path = path.Replace("\\", "/");
-        string tableName = MakeLines(path);
-        tableName = tableName.Split('.')[0];
+        List<string> realPaths = new List<string>();
 
-        GenerateDataTableTemplate(tableName);
-        GenerateDataHolderTemplate(tableName, fieldNames[0], fieldTypes[0]);
-              
+        for (int i = 0; i < paths.Length; i++)
+        {
+            var path = paths[i];
 
-        EditorPrefs.SetString("MakeDB_PATH", path);
+            if (string.IsNullOrEmpty(path)) continue;
+
+            path = path.Replace("\\", "/");
+            string tableName = MakeLines(path);
+            tableName = tableName.Split('.')[0];
+
+            GenerateDataTableTemplate(tableName);
+            GenerateDataHolderTemplate(tableName, fieldNames[0], fieldTypes[0]);
+
+            realPaths.Add(path);
+        }
+
+        string result = String.Join(";", realPaths);
+
+        EditorPrefs.SetString("MakeDB_PATH", result);
     }
 
     [UnityEditor.Callbacks.DidReloadScripts]
-    static void ResourceGen() 
+    static void ResourceGen()
     {
         if (!EditorPrefs.HasKey("MakeDB_PATH")) return;
 
-        string path = EditorPrefs.GetString("MakeDB_PATH");
-        string tableName = MakeLines(path);
-        tableName = tableName.Split('.')[0];
-        
-        string targetClass = tmplDataHolderFile;
-        targetClass = targetClass.Replace("[TableName]", tableName);
-        Type T = Type.GetType(targetClass + ",Assembly-CSharp");
-        MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.NonPublic);
-        MethodInfo generic = method.MakeGenericMethod(T);
-        generic.Invoke(null, new object[] { tableName });
+        string result = EditorPrefs.GetString("MakeDB_PATH");
+
+        var paths = result.Split(";");
+
+        for (int i = 0; i < paths.Length; i++)
+        {
+            var path = paths[i];
+
+            string tableName = MakeLines(path);
+            tableName = tableName.Split('.')[0];
+
+            string targetClass = tmplDataHolderFile;
+            targetClass = targetClass.Replace("[TableName]", tableName);
+            Type T = Type.GetType(targetClass + ",Assembly-CSharp");
+            MethodInfo method = typeof(EAMakeDB).GetMethod("CreateAsset", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo generic = method.MakeGenericMethod(T);
+            generic.Invoke(null, new object[] { tableName });
+        }
+
         EditorUtility.DisplayDialog("dataTable creation complete", "Conversion complete", "OK");
         EditorPrefs.DeleteKey("MakeDB_PATH");
     }
