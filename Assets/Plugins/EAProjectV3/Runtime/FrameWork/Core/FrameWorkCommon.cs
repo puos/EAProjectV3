@@ -29,9 +29,12 @@ public static class EAFrameUtil
         return go.GetComponent<T>();
     }
 
-    public static GameObject AddChild(GameObject parent, GameObject prefab)
+    public static GameObject AddChild(GameObject parent, GameObject prefab , bool bInstance = true)
     {
-        GameObject go = GameObject.Instantiate(prefab) as GameObject;
+        GameObject go = prefab;
+
+        if (bInstance)
+           go = GameObject.Instantiate(prefab) as GameObject;
 
         if(go != null && parent != null)
         {

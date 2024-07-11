@@ -7,19 +7,12 @@ using UnityEngine;
 public class EASceneInspector : Editor
 {
     EAScene t;
-    
-    static readonly GUIContent controllerClass = new GUIContent("controllerClassType");
+
     public override void OnInspectorGUI()
     {
         t = target as EAScene;
 
-        SerializedProperty scriptProperty = base.serializedObject.FindProperty("script");
-
         EditorGUI.BeginChangeCheck();
-
-        EditorGUILayout.PropertyField(scriptProperty, controllerClass);
-
-        if (t.script != null) t.controllerClassType = t.script.name;
 
         t.screenX = EditorGUILayout.FloatField("screenX ", t.screenX);
         t.screenY = EditorGUILayout.FloatField("screenY ", t.screenY);
@@ -28,4 +21,6 @@ public class EASceneInspector : Editor
 
         base.serializedObject.ApplyModifiedProperties();
     }
+
+    
 }

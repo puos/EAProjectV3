@@ -27,8 +27,8 @@ public class TankHero : EASceneLogic
 
     public State state { get; private set; }
 
-    private CameraFollow cameraFollow = null;
-    private Transform cubeParent    = null;
+    [SerializeField] private CameraFollow cameraFollow = null;
+    [SerializeField] private Transform cubeParent    = null;
     private EASfxManager fxManager = null;
 
     private IngameUI inGameUi = null;
@@ -58,16 +58,6 @@ public class TankHero : EASceneLogic
         unitList.Clear();
         enemies.Clear();
         users.Clear();
-
-        {
-            GameObject obj = GetData("CubeParent");
-            if (obj != null) cubeParent = obj.transform;
-        }
-
-        {
-            GameObject obj = GetData("CameraFollow");
-            if (obj != null) cameraFollow = obj.GetComponent<CameraFollow>();
-        }
 
         EA_GameEvents.onAttackMsg -= OnAttackMsg;
         EA_GameEvents.onAttackMsg += OnAttackMsg;

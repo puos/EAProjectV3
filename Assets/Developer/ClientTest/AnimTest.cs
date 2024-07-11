@@ -6,6 +6,7 @@ using UnityEngine;
 public class AnimTest : EASceneLogic
 {
     private CTestActor actor = null;
+    private string modelIndex;
     protected override void OnClose()
     {
         actor.Release();
@@ -13,7 +14,6 @@ public class AnimTest : EASceneLogic
 
     protected override void OnInit()
     {
-        string modelIndex = dataAdapter.GetString("modelIndex");
         actor = CTestActor.Clone(modelIndex);
         EAFrameUtil.Call<EAFPSCounter>(EAFPSCounter.instance);
     }

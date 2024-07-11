@@ -15,15 +15,10 @@ public class EAScene : MonoBehaviour
 {
     public float screenX = 1280f;
     public float screenY = 720f;
-    public string controllerClassType;
-        
+            
     public static EAScene instance { get; private set; }
 
     protected static Dictionary<string, System.Type> sceneInfo = new Dictionary<string, System.Type>();
-
-#if UNITY_EDITOR
-    [HideInInspector] public MonoScript script = null;
-#endif
 
     void Awake() 
     {
@@ -99,16 +94,23 @@ public class EAScene : MonoBehaviour
 
     private void CreateSceneLogic()
     {
-        sceneInfo.TryGetValue(controllerClassType, out Type t);
-        EASceneLogic sm = (EASceneLogic)EAFrameUtil.AddChild(EAMainFrame.instance.gameObject,t,"gameLogic") as EASceneLogic;
+        var sm = GetComponent<EASceneLogic>();
+
+        if (sm == null)
+            return;
+
+        var logicType = sm.GetType().ToString();
+
+        bool scenceCheck = sceneInfo.TryGetValue(logicType , out Type t);
+
+        if (!scenceCheck)
+            return;
+
+        EAFrameUtil.AddChild(EAMainFrame.instance.gameObject, 
+                             sm.gameObject , false);
         sm.Initialize();
 
-        EADataAdaptor dataAdapter = GetComponent<EADataAdaptor>();
-
-        if (sm && dataAdapter) sm.SetAdapter(dataAdapter);
-
-        string info = (sm == null) ? "null" : "valid";
-        Debug.Log($"EA SceneConfig.CreateSceneLogic sm is {info} controller class type : {controllerClassType}");
+        Debug.Log($"EA SceneConfig.CreateSceneLogic class type : {logicType}");
     }
 
     private void OnUpdate() 

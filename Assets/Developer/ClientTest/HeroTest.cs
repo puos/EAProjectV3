@@ -9,7 +9,7 @@ public class HeroTest : EASceneLogic
 {
     private CHero hero = null;
     private IngameUI inGameUi = null;
-    private CameraFollow cameraFollow = null;
+    [SerializeField] private CameraFollow cameraFollow = null;
 
     protected override void OnClose()
     {
@@ -30,11 +30,6 @@ public class HeroTest : EASceneLogic
         {
             if (hero != null) hero.StartFire();
         });
-
-        {
-            GameObject obj = GetData("CameraFollow");
-            if (obj != null) cameraFollow = obj.GetComponent<CameraFollow>();
-        }
 
         if (cameraFollow != null) cameraFollow.Initialize(hero.transform);
     }

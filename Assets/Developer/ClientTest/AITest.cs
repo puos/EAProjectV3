@@ -7,8 +7,8 @@ public class AITest : EASceneLogic
 {
     private List<EAPathMaker> pathMakers = new List<EAPathMaker>();
     private SpawnPoint spawns = null;
-    private int unitNumber = 2;
-    private float floorHeight = -1f;
+    [SerializeField] private int unitNumber = 2;
+    [SerializeField] private float floorHeight = -1f;
     private readonly List<DemoUnit> units = new List<DemoUnit>();
     private int switchCamIdx = 0;
     protected override void OnInit()
@@ -18,9 +18,6 @@ public class AITest : EASceneLogic
 
         spawns = FindObjectOfType<SpawnPoint>();
         spawns.Initialize();
-
-        unitNumber = dataAdapter.GetInt(nameof(unitNumber));
-        floorHeight = dataAdapter.GetFloat(nameof(floorHeight));
 
         for (int i = 0; i < unitNumber; ++i)
         {

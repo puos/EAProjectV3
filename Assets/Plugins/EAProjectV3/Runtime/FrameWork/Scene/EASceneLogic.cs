@@ -25,7 +25,6 @@ public abstract class EASceneLogic : MonoBehaviour
 
     bool selfLoading = false;
 
-    protected EADataAdaptor  dataAdapter { get; set; }
     protected EAEventManager m_eventMgr = null;
     protected EAUIManager      m_uiMgr = null;
     protected EASfxManager m_sfxMgr = null;
@@ -33,7 +32,7 @@ public abstract class EASceneLogic : MonoBehaviour
 
     abstract protected void OnInit();
 
-    protected virtual IEnumerator OnPostInit() { yield return null; }
+    protected virtual IEnumerator OnPostInit() => null;
 
     abstract protected void OnUpdate();
 
@@ -83,7 +82,8 @@ public abstract class EASceneLogic : MonoBehaviour
 
     public IEnumerator DoPostInit()
     {
-        if (sceneLoadingState == SceneLoadingState.PostInited) yield break;
+        if (sceneLoadingState == SceneLoadingState.PostInited) 
+            yield break;
 
         sceneLoadingState = SceneLoadingState.PostInited;
 
@@ -116,7 +116,9 @@ public abstract class EASceneLogic : MonoBehaviour
     // run in mainframe
     public void SceneLogicOnLazyUpdate(EAMainFrame.LazyUpdateType lazyType)
     {
-        if (sceneLoadingState != SceneLoadingState.PostInited) return;
+        if (sceneLoadingState != SceneLoadingState.PostInited)
+            return;
+
         OnLazyUpdate(lazyType);
     }
 
@@ -124,19 +126,10 @@ public abstract class EASceneLogic : MonoBehaviour
 
     public bool HandleEscapeKey()
     {
-        if (sceneLoadingState != SceneLoadingState.PostInited) return true;
+        if (sceneLoadingState != SceneLoadingState.PostInited) 
+            return true;
+
         return OnEscapeKey();
-    }
-
-    protected GameObject GetData(string name)
-    {
-        if (dataAdapter == null) return null;
-        return dataAdapter.GetData(name);
-    }
-
-    public void SetAdapter(EADataAdaptor dataAdapter)
-    {
-        this.dataAdapter = dataAdapter;
     }
 
     public void WillDestroy()
