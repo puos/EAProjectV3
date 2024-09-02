@@ -12,8 +12,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "DOTween.dll",
-        "DOTweenEditor.dll",
-        "JsonFx.Json.dll"
+        "JsonFx.Json.dll",
+        "websocket-sharp.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
