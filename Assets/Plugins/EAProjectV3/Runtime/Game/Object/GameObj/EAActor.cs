@@ -17,15 +17,16 @@ public partial class EAActor : EAObject
     {
         if(cachedCollider == null) cachedCollider = gameObject.AddComponent<CapsuleCollider>();
 
+        InitializeAI();
+        
+        base.Initialize();
+
         SetSkeleton();
         SetRenderer();
-
-        InitializeAI();
+               
         InitializeFSM();
 
         objectId = Id;
-
-        base.Initialize();
     }
     public override void Release()
     {
