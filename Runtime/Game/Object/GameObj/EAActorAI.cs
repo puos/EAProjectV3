@@ -16,6 +16,12 @@ public partial class EAActor : EAAIAgent
         if (steering == null) steering = GetComponent<EASteeringBehaviour>();
         if (steering == null) steering = AddComponent<EASteeringBehaviour>();
         if (steering != null) steering.Initialize();
+
+        rigidBody = GetComponent<Rigidbody>();
+        cachedCollider = GetComponent<Collider>();
+
+        if (rigidBody != null) rigidBody.velocity = Vector3.zero;
+        if (rigidBody != null) rigidBody.angularVelocity = Vector3.zero;
     }
     public virtual void UpdateAI()
     {
