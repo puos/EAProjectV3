@@ -6,8 +6,8 @@ public class EAObject : MonoBehaviour
 {
     private bool initialized = false;
     
-    private Rigidbody rigidBody = null;
-    private Transform cachedTransform = null;
+    protected Rigidbody rigidBody = null;
+    protected Transform cachedTransform = null;
     protected Collider cachedCollider = null;
    
     public Rigidbody rb { get{ return rigidBody; } }

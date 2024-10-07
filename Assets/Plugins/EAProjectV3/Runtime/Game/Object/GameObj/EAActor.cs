@@ -15,15 +15,13 @@ public partial class EAActor : EAObject
     
     public override void Initialize()
     {
-        if(cachedCollider == null) cachedCollider = gameObject.AddComponent<CapsuleCollider>();
-
-        InitializeAI();
-        
         base.Initialize();
 
+        if (cachedCollider == null) cachedCollider = gameObject.AddComponent<CapsuleCollider>();
+
+        InitializeAI();
         SetSkeleton();
         SetRenderer();
-               
         InitializeFSM();
 
         objectId = Id;
