@@ -29,6 +29,7 @@ public partial class EAActor : EAAIAgent
     public Vector3 GetVelocity() => rb.velocity;
     public void SetVelocity(Vector3 v) => rb.velocity = v;
     public float GetSpeed() => rb.velocity.magnitude;
+    public void UseGravity(bool gravity) => rb.useGravity = gravity;
     public EAAIGroup GetAIGroup() => m_aiGroup;
     public void SetAIGroup(EAAIGroup aiGroup) => m_aiGroup = aiGroup;
     public void AddAgent(string teamId)
