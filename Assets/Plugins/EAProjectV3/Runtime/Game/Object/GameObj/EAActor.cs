@@ -15,8 +15,6 @@ public partial class EAActor : EAObject
     
     public override void Initialize()
     {
-        base.Initialize();
-
         if(cachedCollider == null) cachedCollider = gameObject.AddComponent<CapsuleCollider>();
 
         SetSkeleton();
@@ -24,8 +22,10 @@ public partial class EAActor : EAObject
 
         InitializeAI();
         InitializeFSM();
-        
+
         objectId = Id;
+
+        base.Initialize();
     }
     public override void Release()
     {
